@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divindades - Era dos Heróis</title>
+    <style>
+        :root {
+            --bg-body: #0b0b0f;
+            --bg-card: #16161e;
+            --gold: #d4af37;
+            --text-main: #eee;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container { width: 100%; max-width: 900px; }
+        header { text-align: center; margin-bottom: 20px; }
+        header img { max-width: 150px; }
+
+        nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+        nav a { border: 1px solid var(--gold); color: var(--gold); padding: 8px 14px; text-decoration: none; transition: 0.3s; }
+        nav a:hover { background: var(--gold); color: #000; }
+
+        h2 { color: var(--gold); text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; }
+
+        .grid-deuses {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .deus-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 4px;
+        }
+
+        .deus-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+        .deus-card.maior { border-left: 4px solid var(--gold); }
+        .deus-card.menor { border-left: 4px solid #555; }
+
+        #painelDetalhes {
+            display: none; 
+            background: #1c1c24;
+            border: 2px solid var(--gold);
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 20px;
+            position: relative;
+            width: 100%;
+        }
+
+        .btn-fechar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e63946;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .atributo-tag {
+            background: #000;
+            color: var(--gold);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .habilidade-box {
+            background: #111;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 3px solid var(--gold);
+            text-align: left;
+        }
+
+        .lista-detalhada { list-style: none; padding: 0; }
+        .lista-detalhada li {
+            background: #222;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 2px solid #555;
+            text-align: left;
+        }
+        .lista-detalhada b { color: var(--gold); display: block; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="icon-192.png" alt="Logo">
+        <h1 style="color: var(--gold);">Divindades da Era dos Heróis</h1>
+    </header>
+
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="criar.html">Criar Personagem</a>
+        <a href="personagens.html">Personagens</a>
+    </nav>
+
+    <section id="listaGeral">
+        <h2>Divindades Maiores (Olimpianos)</h2>
+        <div class="grid-deuses" id="gridMaiores"></div>
+
+        <h2>Divindades Menores</h2>
+        <div class="grid-deuses" id="gridMenores"></div>
+    </section>
+
+    <div id="painelDetalhes">
+        <button class="btn-fechar" onclick="fecharDetalhes()">X Fechar</button>
+        <div id="conteudoDeus"></div>
+    </div>
+</div>
+
+<script>
+    const deusesMaiores = [
+        { 
+            nome: "Zeus", attr: "+2 Carisma", desc: "Soberano do Olimpo e senhor dos céus.", 
+            hab: "Raio de Autoridade: Vantagem em testes de Intimidação e dano de raio adicional.",
+            talentos: ["Líder Inspirador", "Adepto Elemental (Raio)", "Atacante Selvagem", "Sentinela"]
+        },
+        { 
+            nome: "Hera", attr: "+2 Carisma", desc: "Rainha do Olimpo e deusa do matrimônio.", 
+            hab: "Vínculo Inquebrável: Pode usar uma reação para proteger um aliado próximo, concedendo +2 na CA dele.",
+            talentos: ["Líder Inspirador", "Alerta", "Observador", "Resiliente"]
+        },
+        { 
+            nome: "Poseidon", attr: "+2 Força", desc: "Senhor dos Mares e Terremotos.", 
+            hab: "Fúria Abissal: Deslocamento de natação e capacidade de empurrar inimigos com ataques de água.",
+            talentos: ["Mestre de Armas de Haste", "Combatente Montado", "Atleta", "Durão"]
+        },
+        { 
+            nome: "Atena", attr: "+2 Inteligência", desc: "Deusa da estratégia, sabedoria e guerra justa.", 
+            hab: "Mente Tática: Adicione seu modificador de INT à sua Iniciativa.",
+            talentos: ["Estrategista de Batalha", "Mestre de Escudos", "Observador", "Mente Astuta"]
+        },
+        { 
+            nome: "Apolo", attr: "+2 Destreza", desc: "Deus do sol, artes, cura e profecia.", 
+            hab: "Precisão Solar: Seus ataques à distância ignoram cobertura parcial e meia cobertura.",
+            talentos: ["Atirador de Elite", "Curandeiro", "Ator", "Sortudo"]
+        },
+        { 
+            nome: "Ártemis", attr: "+2 Sabedoria", desc: "Deusa da caça, da lua e dos animais selvagens.", 
+            hab: "Passo do Caçador: Você não deixa rastros físicos e ganha +2 em testes de Sobrevivência.",
+            talentos: ["Atirador de Elite", "Explorador de Masmorras", "Observador", "Móvel"]
+        },
+        { 
+            nome: "Ares", attr: "+2 Força", desc: "Deus da guerra brutal e da violência.", 
+            hab: "Sede de Sangue: Quando você derruba um inimigo, pode realizar um ataque adicional como ação bônus.",
+            talentos: ["Mestre de Armas Grandes", "Sortudo", "Durão", "Assustador"]
+        },
+        { 
+            nome: "Afrodite", attr: "+2 Carisma", desc: "Deusa do amor, beleza e desejo.", 
+            hab: "Aura de Fascínio: Criaturas têm desvantagem em testes contra serem encantadas por você.",
+            talentos: ["Ator", "Líder Inspirador", "Sortudo", "Resiliente (Carisma)"]
+        },
+        { 
+            nome: "Hefesto", attr: "+2 Força", desc: "Deus do fogo, da forja e da tecnologia.", 
+            hab: "Mestre Artífice: Proficiência com ferramentas de ferreiro e resistência a dano de fogo.",
+            talentos: ["Mestre de Armadura Pesada", "Adepto Elemental (Fogo)", "Resiliente (Constituição)", "Durão"]
+        },
+        { 
+            nome: "Hermes", attr: "+2 Destreza", desc: "Mensageiro dos deuses, deus do comércio e ladrões.", 
+            hab: "Pés Alados: Seu deslocamento terrestre aumenta em 3 metros (10 ft).",
+            talentos: ["Móvel", "Alerta", "Mãos Rápidas", "Especialista em Perícia"]
+        },
+        { 
+            nome: "Dionísio", attr: "+2 Constituição", desc: "Deus do vinho, da loucura e do teatro.", 
+            hab: "Êxtase Divino: Você é imune à condição Envenenado e tem vantagem contra Medo.",
+            talentos: ["Durão", "Resiliente (Constituição)", "Ator", "Taberneiro de Aluguel"]
+        },
+        { 
+            nome: "Deméter", attr: "+2 Constituição", desc: "Deusa da agricultura e dos ciclos da vida.", 
+            hab: "Resiliência da Terra: Você recupera o dobro de vida ao gastar Dados de Vida em descansos.",
+            talentos: ["Resiliente", "Curandeiro", "Iniciado em Magia (Druida)", "Duro de Matar"]
+        }
+    ];
+
+    const deusesMenores = [
+        { nome: "Hécate", habs: [{n:"Mestra Arcanista", d:"Ganha um truque extra de feiticeiro."}, {n:"Visão Sombria", d:"Vê no escuro mágico até 9m."}, {n:"Sorte", d:"Repete um teste de resistência 1x/dia."}, {n:"Ervas", d:"Proficiência em Kits de Herbalismo."}] },
+        { nome: "Pan", habs: [{n:"Pânico", d:"Urro que pode amedrontar animais."}, {n:"Flauta", d:"Vantagem em Performance musical."}, {n:"Cascos", d:"Ignora terreno difícil em florestas."}, {n:"Instinto", d:"Sente a presença de intrusos."}] },
+        { nome: "Niké", habs: [{n:"Triunfo", d:"+1 no ataque se HP < 50%."}, {n:"Asas", d:"Pode saltar o dobro da distância."}, {n:"Inspirar", d:"+1 na CA para aliados próximos."}, {n:"Fôlego", d:"Vantagem contra exaustão."}] },
+        { nome: "Tique", habs: [{n:"Sorte", d:"Transforma um 1 num 20 (1x/descanso longo)."}, {n:"Aposta", d:"Rola um d4 extra em testes de perícia."}, {n:"Proteção", d:"Projéteis têm desvantagem contra si."}, {n:"Moeda", d:"Encontra dobro de moedas em tesouros."}] },
+        { nome: "Perséfone", habs: [{n:"Raízes", d:"Prende os pés de um alvo com vinhas."}, {n:"Dualidade", d:"Resistência a frio ou veneno."}, {n:"Rainha", d:"Vantagem social com fantasmas."}, {n:"Florescer", d:"+1d6 cura sob luz solar."}] },
+        { nome: "Thanatos", habs: [{n:"Toque", d:"Dano necrótico extra em críticos."}, {n:"Sentir", d:"Sabe se o alvo tem < 10 PV."}, {n:"Mortalha", d:"Invisível para mortos-vivos."}, {n:"Silêncio", d:"Vantagem em Furtividade sozinho."}] },
+        { nome: "Hypnos", habs: [{n:"Sono", d:"Coloca alvo pequeno para dormir 1 rodada."}, {n:"Descanso", d:"Recupera exaustão em 1 hora."}, {n:"Névoa", d:"Reduz percepção de inimigos."}, {n:"Lúcido", d:"Imune a ser enfeitiçado."}] },
+        { nome: "Éris", habs: [{n:"Pomo", d:"Faz dois inimigos lutarem entre si."}, {n:"Caos", d:"Inimigos não podem flanqueá-lo."}, {n:"Língua", d:"Proficiência em Enganação."}, {n:"Sorriso", d:"Confunde alvos ao tocar objetos."}] },
+        { nome: "Íris", habs: [{n:"Mensagem", d:"Envia mensagens via arco-íris."}, {n:"Ponte", d:"Teleporte de 9m através da luz."}, {n:"Cores", d:"Aliados curados ganham velocidade."}, {n:"Verdade", d:"Vantagem para detetar ilusões."}] },
+        { nome: "Hélios", habs: [{n:"Brilho", d:"Luz solar pura num raio de 18m."}, {n:"Olhar", d:"Dano de fogo extra em ataques."}, {n:"Carruagem", d:"Vantagem com montarias."}, {n:"Fervor", d:"Imune a cegueira por luz."}] },
+        { nome: "Hebe", habs: [{n:"Néctar", d:"Cria poção de cura com água."}, {n:"Juventude", d:"Imune a envelhecimento mágico."}, {n:"Vigor", d:"+1 PV extra por nível."}, {n:"Hospitalidade", d:"Vantagem em Persuasão."}] },
+        { nome: "Nêmesis", habs: [{n:"Olho por Olho", d:"+2 no ataque após sofrer dano."}, {n:"Rastro", d:"Vantagem para rastrear culpados."}, {n:"Justiça", d:"Ignora desvantagem por escuridão."}, {n:"Retribuição", d:"Dano psíquico a quem o atacar."}] }
+    ];
+
+    function renderizar() {
+        const gm = document.getElementById('gridMaiores');
+        const gn = document.getElementById('gridMenores');
+        gm.innerHTML = ''; gn.innerHTML = '';
+
+        deusesMaiores.forEach(d => {
+            const card = document.createElement('div');
+            card.className = 'deus-card maior';
+            card.innerHTML = `<strong>${d.nome}</strong><br><small>${d.attr}</small>`;
+            card.onclick = () => exibirMaior(d);
+            gm.appendChild(card);
+        });
+
+        deusesMenores.forEach(d => {
+            const card = document.createElement('div');
+            card.className = 'deus-card menor';
+            card.innerHTML = `<strong>${d.nome}</strong>`;
+            card.onclick = () => exibirMenor(d);
+            gn.appendChild(card);
+        });
+    }
+
+    function exibirMaior(d) {
+        // Cria a lista de talentos em HTML
+        const talentosHtml = d.talentos.map(t => `<li>${t}</li>`).join('');
+        
+        document.getElementById('conteudoDeus').innerHTML = `
+            <h1 style="color:var(--gold)">${d.nome}</h1>
+            <span class="atributo-tag">Bónus: ${d.attr}</span>
+            <p>${d.desc}</p>
+            <div class="habilidade-box">
+                <b>Habilidade Única:</b><br>${d.hab}
+            </div>
+            <div style="margin-top:20px; text-align:left;">
+                <b style="color:var(--gold)">Talentos Recomendados (D&D 5e):</b>
+                <ul style="margin-top:10px; columns: 2;">
+                    ${talentosHtml}
+                </ul>
+            </div>
+        `;
+        abrirPainel();
+    }
+
+    function exibirMenor(d) {
+        let html = d.habs.map(h => `<li><b>${h.n}:</b> ${h.d}</li>`).join('');
+        document.getElementById('conteudoDeus').innerHTML = `
+            <h1 style="color:#aaa">${d.nome}</h1>
+            <p>Habilidades de seguidor:</p>
+            <ul class="lista-detalhada">${html}</ul>
+        `;
+        abrirPainel();
+    }
+
+    function abrirPainel() {
+        document.getElementById('listaGeral').style.display = 'none';
+        document.getElementById('painelDetalhes').style.display = 'block';
+        window.scrollTo(0,0);
+    }
+
+    function fecharDetalhes() {
+        document.getElementById('listaGeral').style.display = 'block';
+        document.getElementById('painelDetalhes').style.display = 'none';
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

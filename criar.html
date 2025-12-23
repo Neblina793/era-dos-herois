@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciador de Fichas D&D 5e - Era dos Heróis</title>
+  <style>
+    :root {
+      --bg-body: #101014;
+      --bg-card: #1c1c24;
+      --bg-input: #252530;
+      --text-main: #e0e0e0;
+      --text-muted: #888899;
+      --border-color: #333344;
+      --primary-color: #e63946;
+      --primary-hover: #c92a37;
+      --accent-gold: #ffb703;
+    }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding: 20px; }
+    
+    h1, h2 { text-align: center; color: var(--primary-color); }
+    h2 { font-size: 1.2rem; color: var(--accent-gold); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+    .container { max-width: 1000px; margin: auto; }
+    .panel { background: var(--bg-card); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+    
+    label { display: block; margin: 10px 0 5px; font-size: 0.9em; color: var(--text-muted); }
+    input, textarea { 
+      width: 100%; padding: 10px; background: var(--bg-input); 
+      border: 1px solid var(--border-color); color: #fff; border-radius: 4px; box-sizing: border-box;
+    }
+    input:focus, textarea:focus { border-color: var(--primary-color); outline: none; }
+
+    .row { display: flex; gap: 15px; margin-bottom: 10px; }
+    .col { flex: 1; }
+    @media (max-width: 600px) { .row { flex-direction: column; } }
+
+    .attributes-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; text-align: center; margin-top: 10px; }
+    .attr-box label { color: var(--accent-gold); font-weight: bold; margin-bottom: 2px; font-size: 0.7em; }
+    .attr-box input { text-align: center; font-weight: bold; font-size: 1.1em; }
+    
+    button { 
+      width: 100%; padding: 12px; border: none; border-radius: 4px; 
+      background: var(--primary-color); color: white; font-weight: bold; cursor: pointer; margin-top: 15px; 
+    }
+    button:hover { background: var(--primary-hover); }
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: #aaa; margin-top: 5px;}
+
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+    .card { background: var(--bg-card); border-left: 4px solid var(--primary-color); padding: 15px; border-radius: 6px; }
+    
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+    .card-title { font-size: 1.2em; font-weight: bold; color: #fff; }
+    
+    .stats-row { display: flex; justify-content: space-between; background: #111; padding: 8px; border-radius: 4px; margin: 10px 0; }
+    .stat { text-align: center; font-size: 0.8em; }
+    .stat sub { color: var(--accent-gold); }
+
+    .combat-info { display: flex; gap: 10px; margin-bottom: 10px; text-align: center; flex-wrap: wrap; }
+    .combat-box { flex: 1; min-width: 80px; background: #2a2a35; padding: 5px; border-radius: 4px; font-size: 0.8em; }
+    .combat-box strong { display: block; font-size: 1.1em; color: #fff; }
+
+    .list-section { margin-top: 10px; padding: 8px; background: #1a1a24; border-radius: 4px; font-size: 0.85em; }
+    .list-section strong { color: var(--accent-gold); display: block; margin-bottom: 3px; }
+
+    .actions { display: flex; gap: 5px; margin-top: 10px; }
+    .actions button { padding: 8px; font-size: 0.8em; margin-top: 0; background: #445566; }
+    .actions .btn-del { background: #7f1d1d; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header><h1>⚔️ Criador de Fichas D&D</h1></header>
+
+  <form id="formFicha" class="panel">
+    <h2>Novo Personagem</h2>
+    <div class="row">
+      <div class="col"><label>Nome</label><input type="text" id="nome" required></div>
+      <div class="col"><label>Raça</label><input type="text" id="raca" required></div>
+    </div>
+    <div class="row">
+      <div class="col"><label>Classe</label><input type="text" id="classe" required></div>
+      <div class="col"><label>Nível</label><input type="number" id="nivel" value="1" required></div>
+    </div>
+
+    <div class="row">
+      <div class="col"><label>Iniciativa</label><input type="text" id="iniciativa" placeholder="+2"></div>
+      <div class="col"><label>Percepção Passiva</label><input type="number" id="percepcao" placeholder="10"></div>
+    </div>
+
+    <div class="row">
+      <div class="col"><label>Divindade</label><input type="text" id="divindade"></div>
+      <div class="col"><label>Divindade Menor</label><input type="text" id="divindade_menor"></div>
+    </div>
+
+    <div class="attributes-grid">
+      <div class="attr-box"><label>FOR</label><input type="number" id="for" value="10"></div>
+      <div class="attr-box"><label>DES</label><input type="number" id="des" value="10"></div>
+      <div class="attr-box"><label>CON</label><input type="number" id="con" value="10"></div>
+      <div class="attr-box"><label>INT</label><input type="number" id="int" value="10"></div>
+      <div class="attr-box"><label>SAB</label><input type="number" id="sab" value="10"></div>
+      <div class="attr-box"><label>CAR</label><input type="number" id="car" value="10"></div>
+    </div>
+
+    <div class="row" style="margin-top:15px;">
+      <div class="col"><label>PV Máximo</label><input type="number" id="hp" required></div>
+      <div class="col"><label>CA</label><input type="number" id="ca" required></div>
+      <div class="col"><label>Deslocamento</label><input type="text" id="speed" placeholder="9m"></div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Talentos</label>
+        <textarea id="talentos" rows="2" placeholder="Ex: Iniciado em Magia, Robusto..."></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Habilidades</label>
+        <textarea id="habilidades" rows="3"></textarea>
+      </div>
+      <div class="col">
+        <label>Livro de Magias</label>
+        <textarea id="magias" rows="3"></textarea>
+      </div>
+    </div>
+
+    <button type="submit" id="btnSalvar">Salvar Ficha</button>
+  </form>
+
+  <div class="panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+      <h2 style="margin:0; border:none;">Fichas Salvas</h2>
+      <button class="btn-outline" onclick="limparTudo()" style="width:auto; padding:5px 10px;">⚠ Limpar Tudo</button>
+    </div>
+    <div id="gridFichas" class="cards-grid"></div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'rpg_sheets_v3'; 
+  let fichas = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  let editIndex = null;
+
+  function calcMod(valor) {
+    let v = parseInt(valor) || 10;
+    const mod = Math.floor((v - 10) / 2);
+    return mod >= 0 ? '+' + mod : mod;
+  }
+
+  function renderizar() {
+    const container = document.getElementById('gridFichas');
+    container.innerHTML = '';
+
+    fichas.forEach((f, index) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-header">
+          <div>
+            <div class="card-title">${f.nome}</div>
+            <div style="color:var(--accent-gold); font-size:0.8em;">Nvl ${f.nivel} - ${f.raca} ${f.classe}</div>
+            <div style="color:var(--text-muted); font-size:0.7em;">${f.divindade || 'Sem Divindade'}</div>
+          </div>
+        </div>
+        <div class="combat-info">
+          <div class="combat-box">PV <strong>${f.hp}</strong></div>
+          <div class="combat-box">CA <strong>${f.ca}</strong></div>
+          <div class="combat-box">Ini <strong>${f.iniciativa || '+0'}</strong></div>
+          <div class="combat-box">Perc <strong>${f.percepcao || '10'}</strong></div>
+        </div>
+        <div class="stats-row">
+          <div class="stat">FOR<br><b>${f.stats.for}</b><sub>${calcMod(f.stats.for)}</sub></div>
+          <div class="stat">DES<br><b>${f.stats.des}</b><sub>${calcMod(f.stats.des)}</sub></div>
+          <div class="stat">CON<br><b>${f.stats.con}</b><sub>${calcMod(f.stats.con)}</sub></div>
+          <div class="stat">INT<br><b>${f.stats.int}</b><sub>${calcMod(f.stats.int)}</sub></div>
+          <div class="stat">SAB<br><b>${f.stats.sab}</b><sub>${calcMod(f.stats.sab)}</sub></div>
+          <div class="stat">CAR<br><b>${f.stats.car}</b><sub>${calcMod(f.stats.car)}</sub></div>
+        </div>
+        ${f.talentos ? `<div class="list-section"><strong>Talentos:</strong> ${f.talentos}</div>` : ''}
+        <div class="list-section"><strong>Habilidades:</strong> ${f.habilidades || '---'}</div>
+        <div class="list-section"><strong>Magias:</strong> ${f.magias || '---'}</div>
+        <div class="actions">
+          <button onclick="editar(${index})">Editar</button>
+          <button class="btn-del" onclick="excluir(${index})">Excluir</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(fichas));
+  }
+
+  document.getElementById('formFicha').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const novaFicha = {
+      nome: document.getElementById('nome').value,
+      raca: document.getElementById('raca').value,
+      classe: document.getElementById('classe').value,
+      nivel: document.getElementById('nivel').value,
+      iniciativa: document.getElementById('iniciativa').value,
+      percepcao: document.getElementById('percepcao').value,
+      divindade: document.getElementById('divindade').value,
+      divindade_menor: document.getElementById('divindade_menor').value,
+      hp: document.getElementById('hp').value,
+      ca: document.getElementById('ca').value,
+      speed: document.getElementById('speed').value,
+      talentos: document.getElementById('talentos').value,
+      habilidades: document.getElementById('habilidades').value,
+      magias: document.getElementById('magias').value,
+      stats: {
+        for: document.getElementById('for').value,
+        des: document.getElementById('des').value,
+        con: document.getElementById('con').value,
+        int: document.getElementById('int').value,
+        sab: document.getElementById('sab').value,
+        car: document.getElementById('car').value
+      }
+    };
+
+    if (editIndex !== null) {
+      fichas[editIndex] = novaFicha;
+      editIndex = null;
+      document.getElementById('btnSalvar').innerText = "Salvar Ficha";
+    } else {
+      fichas.push(novaFicha);
+    }
+
+    renderizar();
+    this.reset();
+    ['for','des','con','int','sab','car'].forEach(id => document.getElementById(id).value = 10);
+  });
+
+  window.editar = function(index) {
+    const f = fichas[index];
+    document.getElementById('nome').value = f.nome;
+    document.getElementById('raca').value = f.raca;
+    document.getElementById('classe').value = f.classe;
+    document.getElementById('nivel').value = f.nivel;
+    document.getElementById('iniciativa').value = f.iniciativa || "";
+    document.getElementById('percepcao').value = f.percepcao || "";
+    document.getElementById('divindade').value = f.divindade || "";
+    document.getElementById('divindade_menor').value = f.divindade_menor || "";
+    document.getElementById('hp').value = f.hp;
+    document.getElementById('ca').value = f.ca;
+    document.getElementById('speed').value = f.speed;
+    document.getElementById('talentos').value = f.talentos || "";
+    document.getElementById('habilidades').value = f.habilidades || "";
+    document.getElementById('magias').value = f.magias || "";
+    
+    document.getElementById('for').value = f.stats.for;
+    document.getElementById('des').value = f.stats.des;
+    document.getElementById('con').value = f.stats.con;
+    document.getElementById('int').value = f.stats.int;
+    document.getElementById('sab').value = f.stats.sab;
+    document.getElementById('car').value = f.stats.car;
+
+    editIndex = index;
+    document.getElementById('btnSalvar').innerText = "Atualizar Ficha";
+    window.scrollTo(0,0);
+  };
+
+  window.excluir = function(index) {
+    if(confirm('Apagar ficha?')) {
+      fichas.splice(index, 1);
+      renderizar();
+    }
+  };
+
+  window.limparTudo = function() {
+    if(confirm('Apagar TUDO?')) {
+      fichas = [];
+      renderizar();
+    }
+  };
+
+  renderizar();
+</script>
+</body>
+</html>

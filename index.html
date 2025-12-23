@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <title>Era dos Heróis</title>
+    <style>
+        :root {
+            --bg: #0b0b0f;
+            --gold: #d4af37;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #eee;
+            /* Centralização global do conteúdo */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid #222;
+        }
+
+        header img {
+            max-width: 420px;
+            width: 100%;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            background: #111;
+            padding: 10px;
+            width: 100%;
+        }
+
+        nav a {
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 14px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            background: var(--gold);
+            color: #000;
+        }
+
+        /* Ajuste do container principal para centralizar o texto */
+        main {
+            max-width: 800px;
+            width: 90%;
+            text-align: center; /* Centraliza títulos e parágrafos curtos */
+            padding: 40px 0;
+        }
+
+        .gold {
+            color: var(--gold);
+        }
+
+        /* Alinhamento das listas e secções de texto */
+        section {
+            text-align: left; /* Mantém o corpo do texto à esquerda para melhor leitura */
+            display: inline-block;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        ul {
+            display: inline-block;
+            text-align: left;
+            margin: 10px 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="icon-192.png" alt="Era dos Heróis">
+    </header>
+    
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="criar.html">Criar Personagem</a>
+        <a href="personagens.html">Personagens</a>
+        <a href="divindades.html">Divindades</a>
+    </nav>
+
+    <main>
+        <h2 class="gold">Bem-vindo à Era dos Heróis</h2>
+        <p style="font-style: italic; color: var(--gold);">Feito por Evandro Neto de Oliveira</p>
+
+        <section>
+            <p>Neste mundo, os mitos não são apenas histórias contadas ao redor da fogueira; eles são a realidade que molda o destino dos mortais. <strong>Era dos Heróis</strong> é um sistema de RPG baseado no conjunto de regras da <strong>5ª Edição (D&D 5e)</strong>, adaptado para mergulhar você em uma jornada épica por uma Grécia Mitológica.</p>
+
+            <h3 class="gold">📜 A Essência do Jogo</h3>
+            <p>O jogo utiliza a mecânica clássica do <strong>D20</strong> para determinar o sucesso ou fracasso de suas ações. A lógica fundamental é simples:</p>
+            <ul>
+                <li><strong>Rolar o Dado:</strong> Você rola 1d20.</li>
+                <li><strong>Adicionar Modificadores:</strong> Soma-se o bônus do atributo relevante e o Bônus de Proficiência.</li>
+                <li><strong>Superar a Dificuldade:</strong> Se o total igualar ou superar a Classe de Armadura (CA) ou a Classe de Dificuldade (CD), você obteve sucesso.</li>
+            </ul>
+
+            <h3 class="gold">⚡ Atributos e Poderes</h3>
+            <p>Seu personagem é definido por seis atributos fundamentais:</p>
+            <ul>
+                <li><strong>Força (FOR):</strong> Poder físico e combate corporal.</li>
+                <li><strong>Destreza (DES):</strong> Agilidade, reflexos e Iniciativa.</li>
+                <li><strong>Constituição (CON):</strong> Resistência e Pontos de Vida (PV).</li>
+                <li><strong>Inteligência (INT):</strong> Raciocínio e conhecimento arcano.</li>
+                <li><strong>Sabedoria (SAB):</strong> Intuição e Percepção Passiva.</li>
+                <li><strong>Carisma (CAR):</strong> Influência e o favor dos deuses.</li>
+            </ul>
+
+            <h3 class="gold">🏺 Mecânicas Mitológicas</h3>
+            <p>Elementos específicos reforçam o tema grego:</p>
+            <ul>
+                <li><strong>Piedade e Divindade:</strong> Carregue o favor de uma Divindade principal ou Menor.</li>
+                <li><strong>Talentos de Linhagem:</strong> Representam o sangue heróico ou dádivas recebidas.</li>
+                <li><strong>Magia e Mistério:</strong> Canalização do <em>Aether</em> ou presentes diretos dos deuses.</li>
+            </ul>
+
+            <h3 class="gold">⚔️ O Combate e a Lenda</h3>
+            <p>O combate é tático. Monitorize a sua <strong>Classe de Armadura (CA)</strong> e <strong>Deslocamento</strong> para sobreviver.</p>
+            
+            <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--gold);">
+                Prepare seu escudo, invoque o favor dos deuses e escreva sua própria Odisseia!
+            </p>
+        </section>
+    </main>
+</body>
+</html>
