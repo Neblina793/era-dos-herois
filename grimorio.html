@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grimório de Atena — Consulta</title>
+    <style>
+        :root {
+            --ouro: #d4af37;
+            --marmore: #f0ead6;
+            --preto: #1a1a1a;
+            --borda: #3d3d3d;
+        }
+
+        body {
+            background-color: var(--preto);
+            color: var(--marmore);
+            font-family: 'Times New Roman', serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px double var(--ouro);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 { color: var(--ouro); font-variant: small-caps; letter-spacing: 3px; }
+
+        .btn-home {
+            align-self: flex-start;
+            color: var(--ouro);
+            text-decoration: none;
+            border: 1px solid var(--ouro);
+            padding: 5px 15px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .btn-home:hover { background: var(--ouro); color: black; }
+
+        /* Organização por Nível */
+        .nivel-section {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 25px;
+        }
+
+        .nivel-titulo {
+            border-bottom: 1px solid var(--ouro);
+            color: var(--ouro);
+            font-variant: small-caps;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .magia-link {
+            display: inline-block;
+            background: #252525;
+            padding: 10px 15px;
+            margin: 5px;
+            border: 1px solid var(--borda);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .magia-link:hover { border-color: var(--ouro); background: #333; }
+
+        /* Estilo do Modal (Janela de Informação) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+        }
+
+        .modal-content {
+            background-color: #222;
+            margin: 5% auto;
+            padding: 30px;
+            border: 2px solid var(--ouro);
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            color: var(--ouro);
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .modal-header h2 { color: var(--ouro); text-transform: uppercase; margin-top: 0; }
+        .modal-body p { margin: 10px 0; line-height: 1.6; }
+        .modal-body b { color: var(--ouro); }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="btn-home">🏛 Voltar</a>
+
+    <header>
+        <h1>Grimório de Consulta</h1>
+        <p>Conhecimento dividido por círculos de poder.</p>
+    </header>
+
+    <div id="container-niveis" style="width: 100%; max-width: 800px;">
+        </div>
+
+    <div id="magiaModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-detalhes"></div>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('container-niveis');
+        const modal = document.getElementById('magiaModal');
+        const spanClose = document.getElementsByClassName("close")[0];
+
+        function carregarGrimorio() {
+            const magias = JSON.parse(localStorage.getItem('grimorio_atena')) || [];
+            
+            // Agrupar magias por nível
+            const agrupado = magias.reduce((acc, magia) => {
+                const nivel = magia.nivel || "Sem Nível";
+                if (!acc[nivel]) acc[nivel] = [];
+                acc[nivel].push(magia);
+                return acc;
+            }, {});
+
+            container.innerHTML = '';
+
+            // Gerar o HTML para cada nível
+            Object.keys(agrupado).sort().forEach(nivel => {
+                const section = document.createElement('div');
+                section.className = 'nivel-section';
+                section.innerHTML = `<h2 class="nivel-titulo">${nivel}</h2>`;
+                
+                agrupado[nivel].forEach(magia => {
+                    const btn = document.createElement('div');
+                    btn.className = 'magia-link';
+                    btn.innerText = magia.nome;
+                    btn.onclick = () => abrirModal(magia);
+                    section.appendChild(btn);
+                });
+                
+                container.appendChild(section);
+            });
+        }
+
+        function abrirModal(magia) {
+            const detalhes = document.getElementById('modal-detalhes');
+            detalhes.innerHTML = `
+                <div class="modal-header"><h2>${magia.nome}</h2></div>
+                <div class="modal-body">
+                    <p><b>Nível:</b> ${magia.nivel}</p>
+                    <p><b>Escola:</b> ${magia.tipo}</p>
+                    <p><b>Alcance:</b> ${magia.distancia} | <b>Duração:</b> ${magia.duracao}</p>
+                    <p><b>Componentes:</b> ${magia.material}</p>
+                    <hr style="border: 0; border-top: 1px solid #444;">
+                    <p><b>Descrição:</b><br>${magia.descricao}</p>
+                </div>
+            `;
+            modal.style.display = "block";
+        }
+
+        spanClose.onclick = () => modal.style.display = "none";
+        window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; }
+
+        document.addEventListener('DOMContentLoaded', carregarGrimorio);
+    </script>
+</body>
+</html>
