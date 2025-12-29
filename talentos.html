@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Era dos Heróis — Biblioteca de Talentos</title>
+    <style>
+        :root {
+            --ouro: #d4af37;
+            --marmore: #f0ead6;
+            --preto: #0b0b0f;
+            --borda: #3d3d3d;
+        }
+
+        body {
+            background-color: var(--preto);
+            color: var(--marmore);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 1px solid var(--ouro);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 { color: var(--ouro); font-variant: small-caps; letter-spacing: 2px; }
+
+        .btn-home {
+            align-self: flex-start;
+            color: var(--ouro);
+            text-decoration: none;
+            border: 1px solid var(--ouro);
+            padding: 5px 15px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .btn-home:hover { background: var(--ouro); color: black; }
+
+        /* Lista de Talentos */
+        .lista-talentos {
+            width: 100%;
+            max-width: 800px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .talento-item {
+            background: #111;
+            padding: 15px;
+            border: 1px solid var(--borda);
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            font-variant: small-caps;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .talento-item:hover {
+            border-color: var(--ouro);
+            background: #1a1a1a;
+            color: var(--ouro);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+        }
+
+        .modal-content {
+            background-color: #16161a;
+            margin: 10% auto;
+            padding: 30px;
+            border: 1px solid var(--ouro);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            color: var(--ouro);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-header h2 { 
+            color: var(--ouro); 
+            text-transform: uppercase; 
+            margin-top: 0;
+            border-bottom: 1px solid var(--borda);
+            padding-bottom: 10px;
+        }
+
+        .modal-body p { line-height: 1.6; margin: 15px 0; }
+        .modal-body b { color: var(--ouro); }
+        .req-box { font-style: italic; color: #aaa; margin-bottom: 10px; display: block; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="btn-home">🏛 Voltar ao Início</a>
+
+    <header>
+        <h1>Biblioteca de Talentos</h1>
+        <p>Habilidades e bênçãos gravadas nos anais da história.</p>
+    </header>
+
+    <div class="lista-talentos" id="lista-talentos">
+        </div>
+
+    <div id="talentoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-dados"></div>
+        </div>
+    </div>
+
+    <script>
+        const listaDiv = document.getElementById('lista-talentos');
+        const modal = document.getElementById('talentoModal');
+        const spanClose = document.getElementsByClassName("close")[0];
+
+        function carregarLista() {
+            const talentos = JSON.parse(localStorage.getItem('era_herois_talentos')) || [];
+            listaDiv.innerHTML = '';
+
+            if (talentos.length === 0) {
+                listaDiv.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Nenhum talento cadastrado ainda.</p>';
+                return;
+            }
+
+            // Ordenar alfabeticamente
+            talentos.sort((a, b) => a.nome.localeCompare(b.nome));
+
+            talentos.forEach(t => {
+                const item = document.createElement('div');
+                item.className = 'talento-item';
+                item.innerText = t.nome;
+                item.onclick = () => mostrarDetalhes(t);
+                listaDiv.appendChild(item);
+            });
+        }
+
+        function mostrarDetalhes(t) {
+            const container = document.getElementById('modal-dados');
+            container.innerHTML = `
+                <div class="modal-header"><h2>${t.nome}</h2></div>
+                <div class="modal-body">
+                    <span class="req-box"><b>Pré-requisito:</b> ${t.requisito}</span>
+                    <p><b>Descrição:</b><br>${t.descricao}</p>
+                </div>
+            `;
+            modal.style.display = "block";
+        }
+
+        spanClose.onclick = () => modal.style.display = "none";
+        window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; }
+
+        document.addEventListener('DOMContentLoaded', carregarLista);
+    </script>
+</body>
+</html>

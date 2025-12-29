@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grimório de Atena — Cadastro de Magias</title>
+    <style>
+        :root {
+            --ouro: #d4af37;
+            --marmore: #f0ead6;
+            --preto: #1a1a1a;
+            --borda: #3d3d3d;
+            --vinho: #800000;
+        }
+
+        body {
+            background-color: var(--preto);
+            color: var(--marmore);
+            font-family: 'Times New Roman', serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px double var(--ouro);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: var(--ouro);
+            font-variant: small-caps;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .nav-header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .btn-home {
+            color: var(--ouro);
+            text-decoration: none;
+            border: 1px solid var(--ouro);
+            padding: 5px 15px;
+            transition: 0.3s;
+        }
+
+        .btn-home:hover {
+            background: var(--ouro);
+            color: black;
+        }
+
+        .form-magia {
+            background: #252525;
+            padding: 20px;
+            border: 1px solid var(--ouro);
+            border-radius: 4px;
+            width: 100%;
+            max-width: 800px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-magia h2 {
+            grid-column: span 2;
+            color: var(--ouro);
+            font-size: 1.2rem;
+            margin-top: 0;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--ouro);
+        }
+
+        input, textarea {
+            padding: 8px;
+            background: #111;
+            border: 1px solid var(--borda);
+            color: white;
+            border-radius: 3px;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        button#add-btn {
+            grid-column: span 2;
+            padding: 10px;
+            background: var(--ouro);
+            color: black;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-variant: small-caps;
+        }
+
+        .search-section {
+            width: 100%;
+            max-width: 800px;
+            margin: 30px 0;
+        }
+
+        #buscador {
+            width: 100%;
+            padding: 12px;
+            background: #111;
+            border: 1px solid var(--ouro);
+            color: white;
+        }
+
+        .lista-container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .magia-card {
+            background: #222;
+            border-left: 5px solid var(--ouro);
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .magia-card h3 {
+            margin: 0 0 10px 0;
+            color: var(--ouro);
+            text-transform: uppercase;
+        }
+
+        .magia-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #bbb;
+            margin-bottom: 10px;
+        }
+
+        .magia-info span b { color: var(--ouro); }
+
+        .magia-desc {
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            font-style: italic;
+        }
+
+        /* Botões de Ação no Card */
+        .card-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit, .btn-delete {
+            background: none;
+            border: 1px solid var(--ouro);
+            color: var(--ouro);
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            font-variant: small-caps;
+        }
+
+        .btn-delete {
+            border-color: var(--vinho);
+            color: var(--vinho);
+        }
+
+        .btn-edit:hover { background: var(--ouro); color: black; }
+        .btn-delete:hover { background: var(--vinho); color: white; }
+    </style>
+</head>
+<body>
+
+<div class="nav-header">
+    <a href="index.html" class="btn-home">🏛 Voltar ao Olimpo</a>
+</div>
+
+<header>
+    <h1>Cadastre Sua Magia</h1>
+    <p>Crie sua Magia para aplicá-la ao jogo.</p>
+</header>
+
+<section class="form-magia">
+    <h2 id="form-title">Nova Magia</h2>
+    <input type="hidden" id="edit-id">
+    <div class="field">
+        <label>Nome da Magia</label>
+        <input type="text" id="nome">
+    </div>
+    <div class="field">
+        <label>Nível</label>
+        <input type="text" id="nivel">
+    </div>
+    <div class="field">
+        <label>Duração</label>
+        <input type="text" id="duracao">
+    </div>
+    <div class="field">
+        <label>Distância/Alcance</label>
+        <input type="text" id="distancia">
+    </div>
+    <div class="field">
+        <label>Tipo (Escola)</label>
+        <input type="text" id="tipo">
+    </div>
+    <div class="field">
+        <label>Material</label>
+        <input type="text" id="material">
+    </div>
+    <div class="field full-width">
+        <label>Descrição</label>
+        <textarea id="descricao" rows="4"></textarea>
+    </div>
+    <button id="add-btn">Consagrar Magia</button>
+</section>
+
+<section class="search-section">
+    <input type="text" id="buscador" placeholder="Buscar nas profecias...">
+</section>
+
+<div class="lista-container" id="lista"></div>
+
+<script>
+    const btnAdd = document.getElementById('add-btn');
+    const lista = document.getElementById('lista');
+    const buscador = document.getElementById('buscador');
+    const editIdInput = document.getElementById('edit-id');
+    const formTitle = document.getElementById('form-title');
+
+    // Carregar magias do LocalStorage ao iniciar
+    document.addEventListener('DOMContentLoaded', carregarMagias);
+
+    btnAdd.addEventListener('click', () => {
+        const magia = {
+            id: editIdInput.value || Date.now().toString(),
+            nome: document.getElementById('nome').value,
+            nivel: document.getElementById('nivel').value,
+            duracao: document.getElementById('duracao').value,
+            distancia: document.getElementById('distancia').value,
+            tipo: document.getElementById('tipo').value,
+            material: document.getElementById('material').value,
+            descricao: document.getElementById('descricao').value
+        };
+
+        if(!magia.nome || !magia.descricao) {
+            alert("Preencha Nome e Descrição.");
+            return;
+        }
+
+        salvarMagia(magia);
+        limparFormulario();
+        carregarMagias();
+    });
+
+    function salvarMagia(magia) {
+        let magias = JSON.parse(localStorage.getItem('grimorio_atena')) || [];
+        const index = magias.findIndex(m => m.id === magia.id);
+        
+        if (index > -1) magias[index] = magia;
+        else magias.push(magia);
+        
+        localStorage.setItem('grimorio_atena', JSON.stringify(magias));
+    }
+
+    function carregarMagias() {
+        lista.innerHTML = '';
+        const magias = JSON.parse(localStorage.getItem('grimorio_atena')) || [];
+        
+        magias.reverse().forEach(magia => {
+            const card = document.createElement('div');
+            card.className = 'magia-card';
+            card.innerHTML = `
+                <div class="card-actions">
+                    <button class="btn-edit" onclick="editarMagia('${magia.id}')">Editar</button>
+                    <button class="btn-delete" onclick="excluirMagia('${magia.id}')">Excluir</button>
+                </div>
+                <h3>${magia.nome}</h3>
+                <div class="magia-info">
+                    <span><b>Nível:</b> ${magia.nivel}</span>
+                    <span><b>Tipo:</b> ${magia.tipo}</span>
+                    <span><b>Alcance:</b> ${magia.distancia}</span>
+                    <span><b>Duração:</b> ${magia.duracao}</span>
+                    <span><b>Componentes:</b> ${magia.material}</span>
+                </div>
+                <div class="magia-desc">${magia.descricao}</div>
+            `;
+            lista.appendChild(card);
+        });
+    }
+
+    function editarMagia(id) {
+        const magias = JSON.parse(localStorage.getItem('grimorio_atena')) || [];
+        const m = magias.find(magia => magia.id === id);
+        
+        if(m) {
+            document.getElementById('nome').value = m.nome;
+            document.getElementById('nivel').value = m.nivel;
+            document.getElementById('duracao').value = m.duracao;
+            document.getElementById('distancia').value = m.distancia;
+            document.getElementById('tipo').value = m.tipo;
+            document.getElementById('material').value = m.material;
+            document.getElementById('descricao').value = m.descricao;
+            editIdInput.value = m.id;
+            formTitle.innerText = "Editando Magia Divina";
+            btnAdd.innerText = "Atualizar Magia";
+            window.scrollTo(0,0);
+        }
+    }
+
+    function excluirMagia(id) {
+        if(confirm("Deseja apagar esta magia do registro eterno?")) {
+            let magias = JSON.parse(localStorage.getItem('grimorio_atena')) || [];
+            magias = magias.filter(m => m.id !== id);
+            localStorage.setItem('grimorio_atena', JSON.stringify(magias));
+            carregarMagias();
+        }
+    }
+
+    function limparFormulario() {
+        document.querySelectorAll('.form-magia input, .form-magia textarea').forEach(i => i.value = '');
+        editIdInput.value = '';
+        formTitle.innerText = "Nova Magia";
+        btnAdd.innerText = "Consagrar Magia";
+    }
+
+    buscador.addEventListener('keyup', () => {
+        const termo = buscador.value.toLowerCase();
+        document.querySelectorAll('.magia-card').forEach(card => {
+            const txt = card.innerText.toLowerCase();
+            card.style.display = txt.includes(termo) ? 'block' : 'none';
+        });
+    });
+</script>
+
+</body>
+</html>

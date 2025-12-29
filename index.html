@@ -19,7 +19,6 @@
             margin: 0;
             background: var(--bg);
             color: #eee;
-            /* Centralização global do conteúdo */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -61,11 +60,10 @@
             color: #000;
         }
 
-        /* Ajuste do container principal para centralizar o texto */
         main {
             max-width: 800px;
             width: 90%;
-            text-align: center; /* Centraliza títulos e parágrafos curtos */
+            text-align: center;
             padding: 40px 0;
         }
 
@@ -73,9 +71,8 @@
             color: var(--gold);
         }
 
-        /* Alinhamento das listas e secções de texto */
         section {
-            text-align: left; /* Mantém o corpo do texto à esquerda para melhor leitura */
+            text-align: left;
             display: inline-block;
             width: 100%;
             margin-top: 30px;
@@ -90,6 +87,29 @@
         li {
             margin-bottom: 8px;
         }
+
+        /* Estilo para a nova seção de Talentos */
+        .talento-box {
+            background: #16161a;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--gold);
+        }
+        
+        .talento-box h4 {
+            margin-top: 0;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+        
+        .pre-req {
+            font-size: 0.85rem;
+            font-style: italic;
+            color: #aaa;
+            margin-bottom: 10px;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -102,6 +122,10 @@
         <a href="criar.html">Criar Personagem</a>
         <a href="personagens.html">Personagens</a>
         <a href="divindades.html">Divindades</a>
+        <a href="cadmagia.html">Cadastrar Magia</a>
+        <a href="grimorio.html">Grimorio</a>
+        <a href="cadtalentos.html">Adicionar Talentos</a>
+        <a href="talentos.html">Talentos</a>
     </nav>
 
     <main>
@@ -111,8 +135,191 @@
         <section>
             <p>Neste mundo, os mitos não são apenas histórias contadas ao redor da fogueira; eles são a realidade que molda o destino dos mortais. <strong>Era dos Heróis</strong> é um sistema de RPG baseado no conjunto de regras da <strong>5ª Edição (D&D 5e)</strong>, adaptado para mergulhar você em uma jornada épica por uma Grécia Mitológica.</p>
 
+            <h3 class="gold">🏺 Talento Inicial</h3>
+            <p>Ao escolher o deus do qual você descende, ele lhe dará acesso a 4 talentos. Confira o que cada talento faz:</p>
+
+            <div class="talento-box">
+                <h4>Líder Inspirador</h4>
+                <span class="pre-req">Pré-requisito: Nível 4+, 13 ou mais de Carisma ou Sabedoria</span>
+                <p><strong>Aumento no Valor de Habilidade:</strong> Aumente seu valor de Sabedoria ou Carisma em 1, até um máximo de 20.</p>
+                <p><strong>Reforçando o Desempenho:</strong> Ao terminar um descanso curto ou longo, você pode fazer uma performance inspiradora para até seis aliados a até 9 metros. Cada um ganha Pontos de Vida Temporários iguais ao seu nível + modificador da habilidade aumentada.</p>
+            </div>
+
+            <div class="talento-box">
+                <h4>Adepto Elemental (Raio = Trovejante)</h4>
+                <span class="pre-req">Pré-requisito: Nível 4+, capacidade de conjurar pelo menos uma magia</span>
+                <p><strong>Aumento no Valor de Habilidade:</strong> Aumente Inteligência, Sabedoria ou Carisma em 1.</p>
+                <p><strong>Maestria em Energia:</strong> Escolha Ácido, Frio, Fogo, Elétrico ou Trovejante. Suas magias ignoram resistência desse tipo e tratam resultados "1" no dado de dano como "2".</p>
+            </div>
+
+            <div class="talento-box">
+                <h4>Atacante Selvagem</h4>
+                <p>Sempre que você rola um dado de dano para ataques com armas no seu turno, você pode rolar novamente se o resultado for 1 (deve usar a nova rolagem).</p>
+            </div>
+
+            <div class="talento-box">
+                <h4>Sentinela</h4>
+                <span class="pre-req">Pré-requisito: Nível 4+, 13 ou mais de Força ou Destreza</span>
+                <p><strong>Impedir:</strong> Ao atingir uma criatura com Ataque de Oportunidade, o deslocamento dela vira 0.</p>
+                <p><strong>Guardião:</strong> Pode fazer um Ataque de Oportunidade se uma criatura a 1,5m desengajar ou atacar outra pessoa.</p>
+            </div>
+
+            <div class="talento-box">
+                <h4>Alerta</h4>
+                <p><strong>Proficiência em Iniciativa:</strong> Adicione seu Bônus de Proficiência à Iniciativa.</p>
+                <p><strong>Troca de Iniciativa:</strong> Pode trocar sua iniciativa com um aliado disposto.</p>
+                <p><strong>Sempre em Vigia:</strong> Você não pode ser surpreso enquanto consciente.</p>
+            </div>
+
+            <div class="talento-box">
+                <h4>Observador</h4>
+                <span class="pre-req">Pré-requisito: Nível 4+, 13 ou mais de Inteligência ou Sabedoria</span>
+                <p><strong>Leitura de Lábios:</strong> Pode interpretar o que criaturas dizem ao ler lábios.</p>
+                <p><strong>Observador Aguçado:</strong> Ganha proficiência ou especialização em Intuição, Investigação ou Percepção.</p>
+                <p><strong>Busca Rápida:</strong> Ação de Busca como Ação Bônus.</p>
+            </div>
+
+            <div class="talento-box">
+                <h4>Resiliente</h4>
+                <span class="pre-req">Pré-requisito: Nível 4+</span>
+                <p>Escolha um valor de habilidade para aumentar em 1 e ganhe proficiência nos testes de resistência dessa habilidade.</p>
+            </div>
+            <div class="talento-box">
+                <h4>Mestre em Armas de Haste</h4>
+                <span class="pre-req">Pré-requisito: Nível 4+, 13 ou mais de Destreza ou Força</span>
+                <p><strong>Aumento no Valor de Habilidade:</strong> Aumente Destreza ou Força em 1.</p>
+                <p><strong>Golpe do Bastão:</strong> Ao atacar com bordão, lança ou arma Pesada/Alcance, use ação bônus para um ataque de d4 de concussão com a outra extremidade.</p>
+                <p><strong>Golpe Reativo:</strong> Use Reação para atacar criaturas que entrarem no seu alcance enquanto empunha essas armas.</p>
+            </div>
+
+            <div class="talento-box">
+                <h4>Combatente Montado</h4>
+                <span class="pre-req">Pré-requisito: Nível 4+</span>
+                <p><strong>Aumento no Valor de Habilidade:</strong> Aumente Destreza, Constituição, Força ou Sabedoria em 1.</p>
+                <p><strong>Golpe Montado:</strong> Vantagem contra criaturas menores a até 1,5m da montaria.</p>
+                <p><strong>Salto para o Lado:</strong> Montaria não sofre dano se passar em salvaguarda de Destreza, e apenas metade se falhar.</p>
+                <p><strong>Redirecionar:</strong> Pode forçar ataques direcionados à montaria para você.</p>
+            </div>
+
+            <div class="talento-box">
+                <h4>Durão</h4>
+                <p>Uma vez por dia, ao sofrer dano que o levaria a 0 pontos de vida ou menos, você pode ignorar completamente esse dano.</p>
+            </div>
+
+            <div class="talento-box">
+                <h4>Estrategista de Batalha</h4>
+                <span class="pre-req">Pré-requisito: Inteligência ou Sabedoria 13+</span>
+                <p>No início do combate, escolha aliados (até seu modificador de INT/SAB) para ganhar vantagem no primeiro ataque ou teste na primeira rodada.</p>
+           </div>
+
+            <div class="talento-box">
+                <h4>Mestre de Escudos</h4>
+                <span class="pre-req">Pré-requisito: Proficiência com escudos</span>
+                <p>Recebe +1 adicional na CA ao usar escudo (total +3). Pode usar Reação para reduzir dano corpo a corpo recebido pelo seu modificador de FOR ou CON.</p>
+           </div>
+
+           <div class="talento-box">
+                <h4>Mente Astuta</h4>
+                <span class="pre-req">Pré-requisito: Inteligência ou Sabedoria 13+</span>
+                <p>Vantagem em Iniciativa e imune a surpresa enquanto consciente. Pode usar Reação para refazer um teste de salvaguarda (DES, INT, SAB ou CAR) que tenha falhado.</p>
+           </div>
+
+            <div class="talento-box">
+                <h4>Atirador de Elite</h4>
+                <span class="pre-req">Pré-requisito: Nenhum </span>
+                <p>Benefício: Você se tornou um mestre com armas à distância e pode acertar disparos que outros consideram impossíveis, recebendo os seguintes benefícios.
+-Atacar em alcance longo não impõe Desvantagem em seu ataque.
+-Seus ataques à distância ignoram Meia Cobertura e Cobertura (mas não cobertura total).
+-Quando usa uma arma à distância em que seja proficiente, pode receber -5 para o ataque para adicionar dado+DES para o dano.</p>
+           </div>
+
+           <div class="talento-box">
+                <h4>Curandeiro</h4>
+                <span class="pre-req">Pré-requisito: Nenhum</span>
+                <p>Médico de Batalha. Se você tiver um Kit de Curandeiro, você pode gastar um uso dele e tratar de uma criatura a até 1,5 m de você como uma ação Utilizar. Aquela criatura pode gastar um de seus Dados de Vida, e você então rola aquele dado. A criatura recupera um número de Pontos de Vida igual ao resultado + o seu Bônus de Proficiência.
+Rerolagens de Cura. Sempre que você rola um dado para determinar o número de Pontos de Vida que você restaura com uma magia ou com o benefício Médico de Batalha deste talento, você pode rolar novamente o dado se ele rolar 1, e você deve usar a nova rolagem.</p>
+           </div>
+
+                <div class="talento-box">
+                <h4>Ator</h4>
+                <span class="pre-req">Pré-requisito:Nível 4+, 13 ou mais de Carisma</span>
+                <p>Perito em mimica e dramaturgia, você recebe os seguintes benefícios:
+
+Aumento no Valor de Habilidade. Aumente seu valor de Carisma em 1, até o máximo de 20.
+Impersonificação. Você tem vantagem em testes de Carisma (Atuação ou Enganação) quando você estiver tentando se passar por uma pessoa diferente.
+Mimetismo. Você pode imitar a articulação de outra pessoa ou os sons feitos por outras criaturas. Um sucesso num teste de Sabedoria (Intuição) resistido pelo seu teste de Carisma (Enganação) permite que um ouvinte determine que o efeito é falso.</p>
+           </div>
+
+           <div class="talento-box">
+                <h4>Sortudo</h4>
+                <span class="pre-req">Pré-requisito: Nenhum</span>
+                <p>Pontos de Sorte. Você tem um número de Pontos de Sorte igual ao seu Bônus de Proficiência e pode gastar os pontos nos benefícios abaixo. Você recupera seus Pontos de Sorte gastos quando termina um Descanso Longo.
+Vantagem. Quando você rola um d20, você pode gastar 1 Ponto de Sorte para obter Vantagem na jogada.
+Desvantagem. Quando uma criatura rola um d20 para uma jogada de ataque contra você, você pode gastar 1 Ponto de Sorte para impor Desvantagem nessa jogada.</p>
+           </div>
+
+           <div class="talento-box">
+                <h4>Explorador de Masmorra</h4>
+                <span class="pre-req">Pré-requisito: Nivel 4+</span>
+                <p>Alerta às armadilhas escondidas e portas secretas encontradas em muitas masmorras, você ganha os seguintes benefícios:
+
+Aumento no Valor de Habilidade. Aumente um valor de habilidade de sua escolha em 1, até o máximo de 20.
+Olhos Afiados. Você tem vantagem em testes de Sabedoria (Percepção) e de Inteligência (Investigação) feitos para detectar a presença de armadilhas e portas secretas.
+Casca Grossa. Você tem vantagem em testes de resistência feitos para evitar ou resistir a armadilhas e também resistência ao dano causado por armadilhas.
+Multi-tarefas. Você pode procurar armadilhas enquanto viaja a um ritmo normal, ao invés de metade do ritmo.</p>
+           </div>
+
+           <div class="talento-box">
+                <h4>Movel</h4>
+                <span class="pre-req">Pré-requisito: Destreza 13+</span>
+                <p>você recebe +2 na CA sempre que usa uma ação de movimento para deslocar-se.você não provoca ataques de oportunidade por se deslocar.</p>
+           </div>
+
+           <div class="talento-box">
+                <h4>Mestre das Armas Grandes</h4>
+                <span class="pre-req">Pré-requisito: Nivel 4+</span>
+                <p>Aumento no Valor de Habilidade. Aumente o valor de Força ou Constituição em 1, até o máximo de 20.
+Maestria em Arma Pesada. Quando você acerta uma criatura com uma arma que tem a propriedade Pesada com um ataque no seu turno, você pode fazer com que a arma cause dano extra ao alvo. O dano extra é igual ao seu Bônus de Proficiência.
+Golpear e Talhar. No seu turno, quando você atingir um acerto crítico com uma arma corpo-a-corpo ou reduzir os pontos de vida de uma criatura a 0, você pode realizar um ataque corpo-a-corpo com arma, com uma ação bônus.</p>
+           </div>
+
+           <div class="talento-box">
+                <h4>Durão</h4>
+                <span class="pre-req">Pré-requisito: Nenhum</span>
+                <p>quando você sofre dano que poderia levá-lo a 0 ou menos pontos de vida, você pode ignorar completamente esse dano. Você pode usar este talento uma vez por dia.</p>
+           </div>
+
+           <div class="talento-box">
+                <h4>Assustador</h4>
+                <span class="pre-req">Pré-requisito: Força 13+</span>
+                <p>Benefício: você recebe um bônus de +2 em jogadas de dano não-letal e um bônus de +2 em testes de Intimidação.</p>
+           </div>
+
+           <div class="talento-box">
+                <h4>Mestre de Armadura Pesada</h4>
+                <span class="pre-req">Proeficiencia com armadura pesada</span>
+                <p>Benefício: Você é hábil em usar sua armadura para desviar de golpes que matariam outros e recebe os seguintes benefícios.
+-+1 FOR.
+-Reduz dano Cortante, Perfurante e Esmagamento de armas não mágicas em 3.</p>
+           </div>
+
+           <div class="talento-box">
+                <h4>Mãos Rapidas</h4>
+                <span class="pre-req">Pré-requisito: Treino no oficio </span>
+                <p>Benefício:quando você chega a uma comunidade, faça um teste de Ofício (CD 20). Se tiver sucesso, você pode comprar itens nesta comunidade por 75% do preço padrão (arredondado para baixo). Por exemplo, você pode comprar uma armadura completa (que normalmente custa 1.500 TO) por 1.125 TO.
+Se falhar, você pode tentar novamente em um mês (ou quando visitar outra comunidade)</p>
+           </div>
+
+<div class="talento-box">
+                <h4>Especialista em Perícia</h4>
+                <span class="pre-req">Pré-requisito: Nivel 4+ </span>
+                <p>Benefício:Aumento no Valor de Habilidade. Aumente um valor de habilidade de sua escolha em 1, até o máximo de 20.
+Proficiência. Você ganha proficiência com uma perícia de sua escolha.
+Especialização. Escolha uma perícia na qual você tenha proficiência. Você ganha especialização nessa habilidade, o que significa que seu bônus de proficiência é dobrado para qualquer teste de habilidade que você fizer com ela. A habilidade escolhida deve ser aquela que ainda não está se beneficiando de um recurso, como Especialização, que dobra seu bônus de proficiência.</p>
+           </div>
+
             <h3 class="gold">📜 A Essência do Jogo</h3>
-            <p>O jogo utiliza a mecânica clássica do <strong>D20</strong> para determinar o sucesso ou fracasso de suas ações. A lógica fundamental é simples:</p>
+            <p>O jogo utiliza a mecânica clássica do <strong>D20</strong> para determinar o sucesso ou fracasso de suas ações:</p>
             <ul>
                 <li><strong>Rolar o Dado:</strong> Você rola 1d20.</li>
                 <li><strong>Adicionar Modificadores:</strong> Soma-se o bônus do atributo relevante e o Bônus de Proficiência.</li>

@@ -11,6 +11,7 @@
       --gold: #d4af37;
       --primary-color: #e63946;
       --text-main: #eee;
+      --text-muted: #aaa;
       --border-color: #333;
     }
 
@@ -29,18 +30,18 @@
     .container { width: 100%; max-width: 800px; }
 
     header { text-align: center; margin-bottom: 20px; width: 100%; }
-    header img { max-width: 150px; }
+    header h1 { color: var(--gold); margin: 0; }
 
     nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
     nav a { 
       border: 1px solid var(--gold); color: var(--gold); 
       padding: 8px 14px; text-decoration: none; transition: 0.3s;
+      border-radius: 4px;
     }
     nav a:hover { background: var(--gold); color: #000; }
 
     h2 { color: var(--gold); text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
 
-    /* Estilo da Lista */
     .lista-nomes { list-style: none; padding: 0; }
     .item-personagem {
       background: var(--bg-card);
@@ -57,7 +58,6 @@
     .item-personagem:hover { border-color: var(--gold); background: #1f1f2a; }
     .item-personagem strong { color: var(--gold); font-size: 1.1em; }
 
-    /* Ficha Detalhada (Escondida por padrão) */
     #detalhesFicha {
       display: none;
       background: var(--bg-card);
@@ -70,26 +70,40 @@
 
     .btn-fechar {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 15px;
+      right: 15px;
       background: var(--primary-color);
       color: white;
       border: none;
-      padding: 5px 12px;
+      padding: 8px 15px;
       cursor: pointer;
       border-radius: 4px;
+      font-weight: bold;
     }
 
-    /* Layout da Ficha */
     .ficha-header { border-bottom: 1px solid var(--gold); margin-bottom: 15px; padding-bottom: 10px; }
-    .grid-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
-    .stat-box { background: #000; padding: 10px; text-align: center; border-radius: 4px; border: 1px solid #333; }
-    .stat-box small { color: var(--gold); display: block; font-size: 0.7em; }
-    .stat-box b { font-size: 1.2em; }
+    .ficha-subtitle { color: var(--text-muted); font-size: 0.9em; margin-top: 5px; }
 
-    .secao-texto { background: #111; padding: 10px; border-radius: 4px; margin-top: 10px; }
-    .secao-texto strong { color: var(--gold); display: block; margin-bottom: 5px; }
+    .grid-combat { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 15px 0; text-align: center; }
+    @media (max-width: 600px) { .grid-combat { grid-template-columns: repeat(3, 1fr); } }
+
+    .stat-box { background: #0b0b0f; padding: 10px; border-radius: 4px; border: 1px solid #333; }
+    .stat-box small { color: var(--gold); display: block; font-size: 0.7em; text-transform: uppercase; margin-bottom: 4px; }
+    .stat-box b { font-size: 1.3em; display: block; }
+
+    .grid-attr { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 20px; text-align: center; }
+    @media (max-width: 600px) { .grid-attr { grid-template-columns: repeat(3, 1fr); } }
+
+    .attr-box { background: #222; padding: 8px; border-radius: 4px; border: 1px solid #444; }
+    .attr-box span { color: var(--gold); font-weight: bold; font-size: 0.8em; display: block; }
+    .attr-box div { font-size: 1.2em; font-weight: bold; margin: 2px 0; }
+    .attr-box sub { color: #888; font-size: 0.9em; font-weight: normal; }
+
+    .secao-texto { background: #111; padding: 15px; border-radius: 4px; margin-top: 15px; border-left: 4px solid var(--gold); }
+    .secao-texto h4 { color: var(--gold); margin: 0 0 8px 0; font-size: 1em; text-transform: uppercase; letter-spacing: 1px; }
+    .secao-texto p { white-space: pre-wrap; margin: 0; color: #ddd; font-size: 0.95em; line-height: 1.4; font-family: 'Segoe UI', sans-serif; }
     
+    .xp-badge { background: #333; color: var(--gold); padding: 2px 8px; border-radius: 10px; font-size: 0.8em; margin-left: 10px; vertical-align: middle; }
     .vazio { text-align: center; color: #666; margin-top: 40px; }
   </style>
 </head>
@@ -97,14 +111,13 @@
 
 <div class="container">
   <header>
-    <img src="icon-192.png" alt="Logo">
-    <h1 style="color: var(--gold);">Era dos Heróis</h1>
+    <h1>Era dos Heróis</h1>
   </header>
 
   <nav>
     <a href="index.html">Início</a>
     <a href="criar.html">Criar Personagem</a>
-    <a href="personagens.html">Personagens</a>
+    <a href="personagens.html">Ver Personagens</a>
   </nav>
 
   <div id="areaLista">
@@ -113,13 +126,14 @@
   </div>
 
   <div id="detalhesFicha">
-    <button class="btn-fechar" onclick="fecharFicha()">X Fechar</button>
+    <button class="btn-fechar" onclick="fecharFicha()">Sair</button>
     <div id="conteudoFicha"></div>
   </div>
 </div>
 
 <script>
-  const STORAGE_KEY = 'rpg_sheets_v3';
+  // Chave sincronizada com criar.html
+  const STORAGE_KEY = 'rpg_sheets_v4';
   let fichas = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
   function renderizarLista() {
@@ -127,7 +141,7 @@
     lista.innerHTML = '';
 
     if (fichas.length === 0) {
-      lista.innerHTML = '<p class="vazio">Nenhum personagem encontrado. Vá em "Criar Personagem"!</p>';
+      lista.innerHTML = '<p class="vazio">Nenhuma ficha salva. Crie um personagem primeiro!</p>';
       return;
     }
 
@@ -137,9 +151,9 @@
       li.innerHTML = `
         <div>
           <strong>${p.nome}</strong><br>
-          <small style="color:#888">${p.raca} ${p.classe} - Nível ${p.nivel}</small>
+          <small style="color:#888">${p.raca} ${p.classe} - Nvl ${p.nivel}</small>
         </div>
-        <span style="color:var(--gold)">Ver Ficha →</span>
+        <span style="color:var(--gold)">Abrir Ficha →</span>
       `;
       li.onclick = () => verFicha(index);
       lista.appendChild(li);
@@ -152,42 +166,68 @@
     const areaFicha = document.getElementById('detalhesFicha');
     const conteudo = document.getElementById('conteudoFicha');
 
-    // Cálculo de modificador simples
     const mod = (val) => {
       let v = parseInt(val) || 10;
       let m = Math.floor((v - 10) / 2);
       return m >= 0 ? '+' + m : m;
     };
 
+    let divindadesInfo = p.divindade ? `Devoto de: ${p.divindade}` : '';
+    if (p.divindade_menor) divindadesInfo += ` (Menor: ${p.divindade_menor})`;
+
     conteudo.innerHTML = `
       <div class="ficha-header">
-        <h1 style="margin:0; color:var(--gold)">${p.nome}</h1>
-        <span>${p.raca} ${p.classe} | Nível ${p.nivel}</span>
+        <h1 style="margin:0; color:var(--gold); display:inline-block;">${p.nome}</h1>
+        <span class="xp-badge">${p.xp || '0'} XP</span>
+        <div style="font-size: 1.2em; color: white; margin-top:5px;">
+          ${p.raca} ${p.classe} <span style="color:var(--gold)">| Nível ${p.nivel}</span>
+        </div>
+        ${divindadesInfo ? `<div class="ficha-subtitle">${divindadesInfo}</div>` : ''}
       </div>
 
-      <div class="grid-stats" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="stat-box"><small>PV</small><b>${p.hp}</b></div>
+      <div class="grid-combat">
+        <div class="stat-box"><small>PV Máx</small><b>${p.hp}</b></div>
         <div class="stat-box"><small>CA</small><b>${p.ca}</b></div>
-        <div class="stat-box"><small>MOV</small><b>${p.speed}</b></div>
+        <div class="stat-box"><small>Iniciativa</small><b>${p.iniciativa || '+0'}</b></div>
+        <div class="stat-box"><small>Desloc.</small><b>${p.speed || '9m'}</b></div>
+        <div class="stat-box"><small>Percepção</small><b>${p.percepcao || '10'}</b></div>
       </div>
 
-      <div class="grid-stats" style="grid-template-columns: repeat(6, 1fr);">
-        <div class="stat-box"><small>FOR</small>${p.stats.for}<br><sub style="color:var(--gold)">${mod(p.stats.for)}</sub></div>
-        <div class="stat-box"><small>DES</small>${p.stats.des}<br><sub style="color:var(--gold)">${mod(p.stats.des)}</sub></div>
-        <div class="stat-box"><small>CON</small>${p.stats.con}<br><sub style="color:var(--gold)">${mod(p.stats.con)}</sub></div>
-        <div class="stat-box"><small>INT</small>${p.stats.int}<br><sub style="color:var(--gold)">${mod(p.stats.int)}</sub></div>
-        <div class="stat-box"><small>SAB</small>${p.stats.sab}<br><sub style="color:var(--gold)">${mod(p.stats.sab)}</sub></div>
-        <div class="stat-box"><small>CAR</small>${p.stats.car}<br><sub style="color:var(--gold)">${mod(p.stats.car)}</sub></div>
+      <div class="grid-attr">
+        <div class="attr-box"><span>FOR</span><div>${p.stats.for}</div><sub>${mod(p.stats.for)}</sub></div>
+        <div class="attr-box"><span>DES</span><div>${p.stats.des}</div><sub>${mod(p.stats.des)}</sub></div>
+        <div class="attr-box"><span>CON</span><div>${p.stats.con}</div><sub>${mod(p.stats.con)}</sub></div>
+        <div class="attr-box"><span>INT</span><div>${p.stats.int}</div><sub>${mod(p.stats.int)}</sub></div>
+        <div class="attr-box"><span>SAB</span><div>${p.stats.sab}</div><sub>${mod(p.stats.sab)}</sub></div>
+        <div class="attr-box"><span>CAR</span><div>${p.stats.car}</div><sub>${mod(p.stats.car)}</sub></div>
       </div>
+
+      ${p.desc_armadura ? `
+      <div class="secao-texto">
+        <h4>🛡️ Equipamento Defensivo</h4>
+        <p>${p.desc_armadura}</p>
+      </div>` : ''}
+
+      ${p.talentos ? `
+      <div class="secao-texto">
+        <h4>⭐ Talentos e Feitos</h4>
+        <p>${p.talentos}</p>
+      </div>` : ''}
 
       <div class="secao-texto">
-        <strong>Habilidades e Talentos:</strong>
-        <p style="white-space: pre-wrap; margin:0;">${p.habilidades || 'Nenhuma habilidade registrada.'}</p>
+        <h4>📜 Habilidades de Classe/Raça</h4>
+        <p>${p.habilidades || 'Nenhuma habilidade registrada.'}</p>
       </div>
 
+      ${p.magias ? `
       <div class="secao-texto">
-        <strong>Livro de Magias:</strong>
-        <p style="white-space: pre-wrap; margin:0;">${p.magias || 'Não possui magias.'}</p>
+        <h4>🔮 Livro de Magias / Preces</h4>
+        <p>${p.magias}</p>
+      </div>` : ''}
+
+      <div class="secao-texto">
+        <h4>🎒 Inventário e Itens</h4>
+        <p>${p.inventario || 'Nenhum item carregado.'}</p>
       </div>
     `;
 

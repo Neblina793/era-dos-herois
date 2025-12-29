@@ -140,32 +140,38 @@
     const deusesMaiores = [
         { 
             nome: "Zeus", attr: "+2 Carisma", desc: "Soberano do Olimpo e senhor dos céus.", 
-            hab: "Raio de Autoridade: Vantagem em testes de Intimidação e dano de raio adicional.",
+            hab: `<b>"Raio de Autoridade:</b> Vantagem em testes de Intimidação e dano de raio adicional."<br><br>
+            <b>Presença Encatadora:</b> Você ganha o dobro da proeficiência e vantagens em testes de persuasão.`,
             talentos: ["Líder Inspirador", "Adepto Elemental (Raio)", "Atacante Selvagem", "Sentinela"]
         },
         { 
             nome: "Hera", attr: "+2 Carisma", desc: "Rainha do Olimpo e deusa do matrimônio.", 
-            hab: "Vínculo Inquebrável: Pode usar uma reação para proteger um aliado próximo, concedendo +2 na CA dele.",
+            hab:`<b> "Vínculo Inquebrável:</b> Pode usar uma reação para proteger um aliado próximo, concedendo +2 na CA dele.""<br><br>
+            <b>Intuição Apurada:</b> Você ganha o dobro da proeficiência e vantagens em testes de Intuição.`,
             talentos: ["Líder Inspirador", "Alerta", "Observador", "Resiliente"]
         },
         { 
             nome: "Poseidon", attr: "+2 Força", desc: "Senhor dos Mares e Terremotos.", 
-            hab: "Fúria Abissal: Deslocamento de natação e capacidade de empurrar inimigos com ataques de água.",
+            hab:`</b> "Fúria Abissal:</b> Deslocamento de natação e capacidade de empurrar inimigos com ataques de água."<br><br>
+            <b>Giria das Aguas:</b> Você pode se comunicar com animais marinhos.`,
             talentos: ["Mestre de Armas de Haste", "Combatente Montado", "Atleta", "Durão"]
         },
         { 
             nome: "Atena", attr: "+2 Inteligência", desc: "Deusa da estratégia, sabedoria e guerra justa.", 
-            hab: "Mente Tática: Adicione seu modificador de INT à sua Iniciativa.",
+            hab:`</b> "Mente Tática:</b> Adicione seu modificador de INT à sua Iniciativa."<br><br>
+            <b>Golpe Calculado::</b> Uma vez por turno, quando você atingir uma criatura com um ataque de arma, você pode renunciar ao dano extra de um acerto crítico ou de uma habilidade (como Punição Divina ou Ataque Furtivo) para, em vez disso, permitir que um aliado a até 9 metros use a Reação dele para realizar um ataque imediato contra o mesmo alvo..`,
             talentos: ["Estrategista de Batalha", "Mestre de Escudos", "Observador", "Mente Astuta"]
         },
         { 
             nome: "Apolo", attr: "+2 Destreza", desc: "Deus do sol, artes, cura e profecia.", 
-            hab: "Precisão Solar: Seus ataques à distância ignoram cobertura parcial e meia cobertura.",
+            hab:`</b> "Marca Solar:</b> Marca o inimigo com essa marca na ação bonus. Durante o combate seus ataque de dano adicionam 1d6 de dano radiante. essa marca dura 1 minuto e pode ser usada uma quantidade de vezes igual seu modificador de destreza por descanço longo."<br><br>
+            <b>Deslumbre do futuro:</b> uma vez por descanço longo você pode refazer todo o dialogo ou ato em que você não se agradou com resultado. isso não funciona em combate pois demanda concentração algo que no campo de batalha e impossivel de acontecer.`,
             talentos: ["Atirador de Elite", "Curandeiro", "Ator", "Sortudo"]
         },
         { 
             nome: "Ártemis", attr: "+2 Sabedoria", desc: "Deusa da caça, da lua e dos animais selvagens.", 
-            hab: "Passo do Caçador: Você não deixa rastros físicos e ganha +2 em testes de Sobrevivência.",
+            hab:`</b> "Passo do Caçador:</b> Você não deixa rastros físicos e ganha +2 em testes de Sobrevivência."<br><br>
+            <b>Passo da Ninfa::</b> Como uma ação bônus, você pode se mover até metade do seu deslocamento sem provocar ataques de oportunidade. Se terminar esse movimento escondido atrás de cobertura natural (como árvores ou folhagens), você tem vantagem no seu próximo teste de Furtividade.`,
             talentos: ["Atirador de Elite", "Explorador de Masmorras", "Observador", "Móvel"]
         },
         { 
@@ -194,9 +200,10 @@
             talentos: ["Durão", "Resiliente (Constituição)", "Ator", "Taberneiro de Aluguel"]
         },
         { 
-            nome: "Deméter", attr: "+2 Constituição", desc: "Deusa da agricultura e dos ciclos da vida.", 
-            hab: "Resiliência da Terra: Você recupera o dobro de vida ao gastar Dados de Vida em descansos.",
-            talentos: ["Resiliente", "Curandeiro", "Iniciado em Magia (Druida)", "Duro de Matar"]
+            nome: "Hades", attr: "+2 Constituição", desc: "Deus do Submundo dos Mortos e das Riquesas", 
+            hab: `<b>Falar com os Mortos:</b> É um feitiço de clérigo de 3º nível que permite que você reanime um cadáver com o conhecimento que ele tinha em vida e faça 5 perguntas. As respostas geralmente são breves e/ou crípticas, e se ele reconhecer você como um inimigo, ele pode mentir ou enganá-lo.<br><br>
+              <b>Aura do Submundo:</b> Devido a sua descendência e ligação com os Mortos, você pode adicionar <span style="color:var(--gold)">1d4 de dano Necrótico</span> aos seus golpes de magia ou físicos em combate.`,
+            talentos: ["Constituição Infernal", "Analítico", "Adepto Místico", "Alerta"]
         }
     ];
 

@@ -18,6 +18,14 @@
     }
     body { font-family: 'Segoe UI', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding: 20px; }
     
+    /* Estilo do Botão Voltar */
+    .nav-top { display: flex; justify-content: flex-start; margin-bottom: 20px; max-width: 1000px; margin-inline: auto; }
+    .btn-voltar { 
+      text-decoration: none; color: var(--accent-gold); border: 1px solid var(--accent-gold); 
+      padding: 8px 15px; border-radius: 4px; font-size: 0.9em; transition: 0.3s;
+    }
+    .btn-voltar:hover { background: var(--accent-gold); color: #000; }
+
     h1, h2 { text-align: center; color: var(--primary-color); }
     h2 { font-size: 1.2rem; color: var(--accent-gold); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
@@ -62,6 +70,7 @@
 
     .list-section { margin-top: 10px; padding: 8px; background: #1a1a24; border-radius: 4px; font-size: 0.85em; }
     .list-section strong { color: var(--accent-gold); display: block; margin-bottom: 3px; }
+    .inventory-box { white-space: pre-wrap; font-family: monospace; color: #ccc; }
 
     .actions { display: flex; gap: 5px; margin-top: 10px; }
     .actions button { padding: 8px; font-size: 0.8em; margin-top: 0; background: #445566; }
@@ -69,6 +78,10 @@
   </style>
 </head>
 <body>
+
+<div class="nav-top">
+  <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
+</div>
 
 <div class="container">
   <header><h1>⚔️ Criador de Fichas D&D</h1></header>
@@ -82,6 +95,7 @@
     <div class="row">
       <div class="col"><label>Classe</label><input type="text" id="classe" required></div>
       <div class="col"><label>Nível</label><input type="number" id="nivel" value="1" required></div>
+      <div class="col"><label>Experiência</label><input type="text" id="xp" placeholder="0/300"></div>
     </div>
 
     <div class="row">
@@ -105,8 +119,15 @@
 
     <div class="row" style="margin-top:15px;">
       <div class="col"><label>PV Máximo</label><input type="number" id="hp" required></div>
-      <div class="col"><label>CA</label><input type="number" id="ca" required></div>
+      <div class="col"><label>CA (Valor)</label><input type="number" id="ca" required></div>
       <div class="col"><label>Deslocamento</label><input type="text" id="speed" placeholder="9m"></div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <label>Armadura/Escudo Equipado (Descrição)</label>
+            <input type="text" id="desc_armadura" placeholder="Ex: Cota de Malha, Escudo de Madeira">
+        </div>
     </div>
 
     <div class="row">
@@ -127,6 +148,13 @@
       </div>
     </div>
 
+    <div class="row">
+        <div class="col">
+            <label>Inventário</label>
+            <textarea id="inventario" rows="4" placeholder="Ex: Mochila, Corda (15m), Rações (5)..."></textarea>
+        </div>
+    </div>
+
     <button type="submit" id="btnSalvar">Salvar Ficha</button>
   </form>
 
@@ -140,7 +168,7 @@
 </div>
 
 <script>
-  const STORAGE_KEY = 'rpg_sheets_v3'; 
+  const STORAGE_KEY = 'rpg_sheets_v4'; 
   let fichas = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
   let editIndex = null;
 
@@ -161,7 +189,7 @@
         <div class="card-header">
           <div>
             <div class="card-title">${f.nome}</div>
-            <div style="color:var(--accent-gold); font-size:0.8em;">Nvl ${f.nivel} - ${f.raca} ${f.classe}</div>
+            <div style="color:var(--accent-gold); font-size:0.8em;">Nvl ${f.nivel} (${f.xp || '0'} XP) - ${f.raca} ${f.classe}</div>
             <div style="color:var(--text-muted); font-size:0.7em;">${f.divindade || 'Sem Divindade'}</div>
           </div>
         </div>
@@ -179,9 +207,12 @@
           <div class="stat">SAB<br><b>${f.stats.sab}</b><sub>${calcMod(f.stats.sab)}</sub></div>
           <div class="stat">CAR<br><b>${f.stats.car}</b><sub>${calcMod(f.stats.car)}</sub></div>
         </div>
+        ${f.desc_armadura ? `<div class="list-section"><strong>Armadura:</strong> ${f.desc_armadura}</div>` : ''}
         ${f.talentos ? `<div class="list-section"><strong>Talentos:</strong> ${f.talentos}</div>` : ''}
         <div class="list-section"><strong>Habilidades:</strong> ${f.habilidades || '---'}</div>
         <div class="list-section"><strong>Magias:</strong> ${f.magias || '---'}</div>
+        <div class="list-section"><strong>Inventário:</strong><div class="inventory-box">${f.inventario || 'Vazio'}</div></div>
+        
         <div class="actions">
           <button onclick="editar(${index})">Editar</button>
           <button class="btn-del" onclick="excluir(${index})">Excluir</button>
@@ -199,6 +230,7 @@
       raca: document.getElementById('raca').value,
       classe: document.getElementById('classe').value,
       nivel: document.getElementById('nivel').value,
+      xp: document.getElementById('xp').value,
       iniciativa: document.getElementById('iniciativa').value,
       percepcao: document.getElementById('percepcao').value,
       divindade: document.getElementById('divindade').value,
@@ -206,9 +238,11 @@
       hp: document.getElementById('hp').value,
       ca: document.getElementById('ca').value,
       speed: document.getElementById('speed').value,
+      desc_armadura: document.getElementById('desc_armadura').value,
       talentos: document.getElementById('talentos').value,
       habilidades: document.getElementById('habilidades').value,
       magias: document.getElementById('magias').value,
+      inventario: document.getElementById('inventario').value,
       stats: {
         for: document.getElementById('for').value,
         des: document.getElementById('des').value,
@@ -238,6 +272,7 @@
     document.getElementById('raca').value = f.raca;
     document.getElementById('classe').value = f.classe;
     document.getElementById('nivel').value = f.nivel;
+    document.getElementById('xp').value = f.xp || "";
     document.getElementById('iniciativa').value = f.iniciativa || "";
     document.getElementById('percepcao').value = f.percepcao || "";
     document.getElementById('divindade').value = f.divindade || "";
@@ -245,9 +280,11 @@
     document.getElementById('hp').value = f.hp;
     document.getElementById('ca').value = f.ca;
     document.getElementById('speed').value = f.speed;
+    document.getElementById('desc_armadura').value = f.desc_armadura || "";
     document.getElementById('talentos').value = f.talentos || "";
     document.getElementById('habilidades').value = f.habilidades || "";
     document.getElementById('magias').value = f.magias || "";
+    document.getElementById('inventario').value = f.inventario || "";
     
     document.getElementById('for').value = f.stats.for;
     document.getElementById('des').value = f.stats.des;

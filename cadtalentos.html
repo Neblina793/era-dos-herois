@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Era dos Heróis — Cadastro de Talentos</title>
+    <style>
+        :root {
+            --ouro: #d4af37;
+            --marmore: #f0ead6;
+            --preto: #0b0b0f;
+            --borda: #3d3d3d;
+            --vinho: #800000;
+        }
+
+        body {
+            background-color: var(--preto);
+            color: var(--marmore);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 1px solid var(--ouro);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 { color: var(--ouro); font-variant: small-caps; letter-spacing: 2px; }
+
+        .nav-header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .btn-home {
+            color: var(--ouro);
+            text-decoration: none;
+            border: 1px solid var(--ouro);
+            padding: 5px 15px;
+            transition: 0.3s;
+        }
+
+        .btn-home:hover { background: var(--ouro); color: black; }
+
+        /* Formulário */
+        .form-talento {
+            background: #111;
+            padding: 20px;
+            border: 1px solid var(--ouro);
+            border-radius: 4px;
+            width: 100%;
+            max-width: 800px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-talento h2 { grid-column: span 2; color: var(--ouro); margin-top: 0; }
+
+        .field { display: flex; flex-direction: column; }
+        label { font-size: 0.9rem; margin-bottom: 5px; color: var(--ouro); }
+        input, textarea { padding: 10px; background: #000; border: 1px solid var(--borda); color: white; border-radius: 3px; }
+        .full-width { grid-column: span 2; }
+
+        button#add-btn {
+            grid-column: span 2;
+            padding: 12px;
+            background: var(--ouro);
+            color: black;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* Lista de Talentos */
+        .lista-container { width: 100%; max-width: 800px; margin-top: 30px; }
+
+        .talento-card {
+            background: #16161a;
+            border-left: 4px solid var(--ouro);
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .talento-card h3 { margin: 0; color: var(--ouro); text-transform: uppercase; }
+        .talento-req { font-size: 0.85rem; color: #aaa; margin: 5px 0 10px 0; font-style: italic; }
+        .talento-desc { border-top: 1px solid #333; padding-top: 10px; line-height: 1.5; }
+
+        .card-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; }
+        .btn-action { background: none; border: 1px solid var(--ouro); color: var(--ouro); cursor: pointer; padding: 2px 8px; font-size: 0.7rem; }
+        .btn-delete { border-color: var(--vinho); color: var(--vinho); }
+    </style>
+</head>
+<body>
+
+<div class="nav-header">
+    <a href="index.html" class="btn-home">🏛 Voltar ao Início</a>
+</div>
+
+<header>
+    <h1>Forja de Talentos</h1>
+    <p>Registre as linhagens heroicas e habilidades especiais dos mortais.</p>
+</header>
+
+<section class="form-talento">
+    <h2 id="form-title">Novo Talento</h2>
+    <input type="hidden" id="edit-id">
+    
+    <div class="field">
+        <label>Nome do Talento</label>
+        <input type="text" id="nome" placeholder="Ex: Iniciativa de Hermes">
+    </div>
+    
+    <div class="field">
+        <label>Pré-requisito (se houver)</label>
+        <input type="text" id="requisito" placeholder="Ex: Destreza 13+">
+    </div>
+
+    <div class="field full-width">
+        <label>Descrição do Poder</label>
+        <textarea id="descricao" rows="5" placeholder="Descreva os efeitos mecânicos e interpretativos..."></textarea>
+    </div>
+
+    <button id="add-btn">Gravar Talento no Destino</button>
+</section>
+
+<div class="lista-container" id="lista"></div>
+
+<script>
+    const btnAdd = document.getElementById('add-btn');
+    const lista = document.getElementById('lista');
+    const editIdInput = document.getElementById('edit-id');
+    const formTitle = document.getElementById('form-title');
+
+    document.addEventListener('DOMContentLoaded', carregarTalentos);
+
+    btnAdd.addEventListener('click', () => {
+        const talento = {
+            id: editIdInput.value || Date.now().toString(),
+            nome: document.getElementById('nome').value,
+            requisito: document.getElementById('requisito').value || "Nenhum",
+            descricao: document.getElementById('descricao').value
+        };
+
+        if(!talento.nome || !talento.descricao) {
+            alert("Nome e Descrição são obrigatórios.");
+            return;
+        }
+
+        salvarTalento(talento);
+        limparForm();
+        carregarTalentos();
+    });
+
+    function salvarTalento(t) {
+        let talentos = JSON.parse(localStorage.getItem('era_herois_talentos')) || [];
+        const idx = talentos.findIndex(item => item.id === t.id);
+        if(idx > -1) talentos[idx] = t;
+        else talentos.push(t);
+        localStorage.setItem('era_herois_talentos', JSON.stringify(talentos));
+    }
+
+    function carregarTalentos() {
+        lista.innerHTML = '';
+        const talentos = JSON.parse(localStorage.getItem('era_herois_talentos')) || [];
+        
+        talentos.reverse().forEach(t => {
+            const card = document.createElement('div');
+            card.className = 'talento-card';
+            card.innerHTML = `
+                <div class="card-actions">
+                    <button class="btn-action" onclick="editarTalento('${t.id}')">Editar</button>
+                    <button class="btn-action btn-delete" onclick="excluirTalento('${t.id}')">Excluir</button>
+                </div>
+                <h3>${t.nome}</h3>
+                <div class="talento-req"><b>Pré-requisito:</b> ${t.requisito}</div>
+                <div class="talento-desc">${t.descricao}</div>
+            `;
+            lista.appendChild(card);
+        });
+    }
+
+    function editarTalento(id) {
+        const talentos = JSON.parse(localStorage.getItem('era_herois_talentos')) || [];
+        const t = talentos.find(item => item.id === id);
+        if(t) {
+            document.getElementById('nome').value = t.nome;
+            document.getElementById('requisito').value = t.requisito;
+            document.getElementById('descricao').value = t.descricao;
+            editIdInput.value = t.id;
+            formTitle.innerText = "Editando Talento";
+            btnAdd.innerText = "Atualizar Registro";
+            window.scrollTo(0,0);
+        }
+    }
+
+    function excluirTalento(id) {
+        if(confirm("Deseja remover este talento permanentemente?")) {
+            let talentos = JSON.parse(localStorage.getItem('era_herois_talentos')) || [];
+            talentos = talentos.filter(item => item.id !== id);
+            localStorage.setItem('era_herois_talentos', JSON.stringify(talentos));
+            carregarTalentos();
+        }
+    }
+
+    function limparForm() {
+        document.getElementById('nome').value = '';
+        document.getElementById('requisito').value = '';
+        document.getElementById('descricao').value = '';
+        editIdInput.value = '';
+        formTitle.innerText = "Novo Talento";
+        btnAdd.innerText = "Gravar Talento no Destino";
+    }
+</script>
+
+</body>
+</html>
