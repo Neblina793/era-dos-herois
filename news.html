@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Notícias - Era dos Heróis</title>
+    <style>
+        :root {
+            --bg: #0b0b0f;
+            --gold: #d4af37;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid #222;
+        }
+
+        header img {
+            max-width: 420px;
+            width: 100%;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            background: #111;
+            padding: 10px;
+            width: 100%;
+        }
+
+        nav a {
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 14px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            background: var(--gold);
+            color: #000;
+        }
+
+        main {
+            max-width: 800px;
+            width: 90%;
+            padding: 40px 0;
+        }
+
+        .gold {
+            color: var(--gold);
+        }
+
+        .news-article {
+            background: #16161a;
+            border: 1px solid #333;
+            padding: 30px;
+            border-top: 4px solid var(--gold);
+            line-height: 1.6;
+        }
+
+        .news-image {
+            width: 100%;
+            border: 2px solid var(--gold);
+            margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        h2 { text-align: center; }
+        h3 { margin-top: 25px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        
+        .intro-text {
+            font-style: italic;
+            font-size: 1.1rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        blockquote {
+            border-left: 3px solid var(--gold);
+            margin: 20px 0;
+            padding-left: 20px;
+            color: #bbb;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="icon-192.png" alt="Era dos Heróis">
+    </header>
+    
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="news.html">Noticias</a>
+        <a href="criar.html">Criar Personagem</a>
+        <a href="personagens.html">Personagens</a>
+        <a href="divindades.html">Divindades</a>
+        <a href="cadmagia.html">Cadastrar Magia</a>
+        <a href="grimorio.html">Grimorio</a>
+        <a href="cadtalentos.html">Adicionar Talentos</a>
+        <a href="talentos.html">Talentos</a>
+    </nav>
+
+    <main>
+        <article class="news-article">
+            <h2 class="gold">O Chamado do Trovão: A Reunião no Templo de Zeus</h2>
+            
+            <img src="001.png" alt="Heróis no Templo de Zeus - Estilo Anime" class="news-image">
+
+<div style="text-align: center; margin-bottom: 25px;">
+    <video width="100%" controls style="border: 2px solid var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);">
+        <source src="002.mp4" type="video/mp4">
+        Seu navegador não suporta a execução de vídeos.
+    </video>
+    <p style="font-size: 0.8rem; color: var(--gold); margin-top: 5px;">A Visão da Sacerdotisa - Registro Profético</p>
+</div>
+
+            <p class="intro-text">O verão grego nunca foi tão opressor. Em Atenas, o céu está tingido por um cinza metálico e as ondas do mar fustigam a costa com uma fúria desconhecida.</p>
+
+            <p>Os rumores correm pelas ágoras: as Pitonisas enlouqueceram e os fogos de Hefesto rugem com fúria. Um desequilíbrio divino começou, e o mundo mortal é o primeiro a sentir as rachaduras.</p>
+
+            <h3 class="gold">A Visão da Sacerdotisa</h3>
+            <p>Diferente do que muitos acreditavam, não foi o acaso que os trouxe. Uma Sacerdotisa anciã, habitante do templo, teve uma visão clara de cada um dos heróis. Ela os esperava nos degraus de mármore, sabendo que somente este grupo específico poderia evitar a calamidade que se aproxima.</p>
+            <ul>
+
+            <h3 class="gold">O Encontro na Acrópole</h3>
+            <p>A subida até o Partenon foi silenciosa. Diante da estátua colossal de ouro e marfim do Senhor do Olimpo, heróis desconhecidos se reconheceram pelo brilho sobrenatural em seus olhos. Um sacerdote idoso apontou para o altar:</p>
+
+            <blockquote>
+                "Os deuses estão em silêncio... mas seus servos chegaram. Deixem suas oferendas. O Pai dos Deuses exige prova de que os mortais ainda têm coragem para enfrentar o que está por vir."
+            </blockquote>
+
+            <p>No momento em que o último tributo tocou o altar, um raio branco irrompeu do interior do templo, revelando um abismo estrelado sob o mármore. A jornada épica começou.</p>
+        </article>
+    </main>
+</body>
+</html>
