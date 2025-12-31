@@ -69,12 +69,59 @@
             color: var(--gold);
         }
 
+        /* Estilos da Notícia Expansível */
         .news-article {
             background: #16161a;
             border: 1px solid #333;
-            padding: 30px;
+            margin-bottom: 20px;
             border-top: 4px solid var(--gold);
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .news-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1a1a20;
+            user-select: none;
+        }
+
+        .news-header:hover {
+            background: #202025;
+        }
+
+        .news-header h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            pointer-events: none;
+        }
+
+        .toggle-icon {
+            color: var(--gold);
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .news-content {
+            padding: 0 30px;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s ease-out;
             line-height: 1.6;
+        }
+
+        .news-article.active .news-content {
+            max-height: 5000px;
+            opacity: 1;
+            padding: 30px;
+        }
+
+        .news-article.active .toggle-icon {
+            transform: rotate(180deg);
         }
 
         .news-image {
@@ -84,7 +131,6 @@
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
         }
 
-        h2 { text-align: center; }
         h3 { margin-top: 25px; border-bottom: 1px solid #333; padding-bottom: 5px; }
         
         .intro-text {
@@ -122,35 +168,69 @@
 
     <main>
         <article class="news-article">
-            <h2 class="gold">O Chamado do Trovão: A Reunião no Templo de Zeus</h2>
+            <div class="news-header" onclick="toggleNews(this)">
+                <h2 class="gold">O Chamado do Trovão: A Reunião no Templo de Zeus</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
             
-            <img src="001.png" alt="Heróis no Templo de Zeus - Estilo Anime" class="news-image">
+            <div class="news-content">
+                <img src="001.png" alt="Heróis no Templo de Zeus" class="news-image">
 
-<div style="text-align: center; margin-bottom: 25px;">
-    <video width="100%" controls style="border: 2px solid var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);">
-        <source src="002.mp4" type="video/mp4">
-        Seu navegador não suporta a execução de vídeos.
-    </video>
-    <p style="font-size: 0.8rem; color: var(--gold); margin-top: 5px;">A Visão da Sacerdotisa - Registro Profético</p>
-</div>
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <video width="100%" controls style="border: 2px solid var(--gold);">
+                        <source src="002.mp4" type="video/mp4">
+                    </video>
+                    <p style="font-size: 0.8rem; color: var(--gold); margin-top: 5px;">A Visão da Sacerdotisa - Registro Profético</p>
+                </div>
 
-            <p class="intro-text">O verão grego nunca foi tão opressor. Em Atenas, o céu está tingido por um cinza metálico e as ondas do mar fustigam a costa com uma fúria desconhecida.</p>
+                <p class="intro-text">O verão grego nunca foi tão opressor. Em Atenas, o céu está tingido por um cinza metálico e as ondas do mar fustigam a costa com uma fúria desconhecida.</p>
+                <p>O desequilíbrio divino começou, e o mundo mortal é o primeiro a sentir as primeiras rachaduras.</p>
 
-            <p>Os rumores correm pelas ágoras: as Pitonisas enlouqueceram e os fogos de Hefesto rugem com fúria. Um desequilíbrio divino começou, e o mundo mortal é o primeiro a sentir as rachaduras.</p>
+                <h3 class="gold">A Visão da Sacerdotisa</h3>
+                <p>Diferente do que muitos acreditavam, não foi o acaso que os trouxe. Uma Sacerdotisa anciã teve uma visão clara de cada um dos heróis.</p>
 
-            <h3 class="gold">A Visão da Sacerdotisa</h3>
-            <p>Diferente do que muitos acreditavam, não foi o acaso que os trouxe. Uma Sacerdotisa anciã, habitante do templo, teve uma visão clara de cada um dos heróis. Ela os esperava nos degraus de mármore, sabendo que somente este grupo específico poderia evitar a calamidade que se aproxima.</p>
-            <ul>
+                <h3 class="gold">O Encontro na Acrópole</h3>
+                <blockquote>
+                    "Os deuses estão em silêncio... mas seus servos chegaram. Deixem suas oferendas. O Pai dos Deuses exige prova de que os mortais ainda têm coragem para enfrentar o que está por vir."
+                </blockquote>
+            </div>
+        </article>
 
-            <h3 class="gold">O Encontro na Acrópole</h3>
-            <p>A subida até o Partenon foi silenciosa. Diante da estátua colossal de ouro e marfim do Senhor do Olimpo, heróis desconhecidos se reconheceram pelo brilho sobrenatural em seus olhos. Um sacerdote idoso apontou para o altar:</p>
+        <article class="news-article">
+            <div class="news-header" onclick="toggleNews(this)">
+                <h2 class="gold">Preságio de Troia: O Destino de um Príncipe</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            
+            <div class="news-content">
+                <img src="002.png" alt="O Rei Príamo e o destino de Troia" class="news-image">
 
-            <blockquote>
-                "Os deuses estão em silêncio... mas seus servos chegaram. Deixem suas oferendas. O Pai dos Deuses exige prova de que os mortais ainda têm coragem para enfrentar o que está por vir."
-            </blockquote>
+                <p class="intro-text">Na distante Ásia Menor, onde hoje fica a Turquia, uma esplêndida cidade reluzia: seu nome era Troia.</p>
 
-            <p>No momento em que o último tributo tocou o altar, um raio branco irrompeu do interior do templo, revelando um abismo estrelado sob o mármore. A jornada épica começou.</p>
+                <p>Sua riqueza e esplendor eclipsavam todas as cidades vizinhas. Mas as Deusas fiandeiras do destino sabiam que a única semelhança entre Troia e Atlantis era seu trágico fim.</p>
+
+                <h3 class="gold">A Profecia de Delfos</h3>
+                <p>O Rei Príamo decidiu consultar o Oráculo de Delfos. A profecia diz que o nascimento da criança trará a ruína total de Troia.</p>
+
+                <blockquote>
+                    "O nascimento da criança que a Rainha está esperando trará a ruína total de Troia."
+                </blockquote>
+
+                <p>Incapaz de cumprir a ordem fatal, o servo Agelau abandonou o pequeno príncipe aos pés do monte Ida, deixando o futuro de Troia à mercê da própria sorte.</p>
+            </div>
         </article>
     </main>
+
+    <script>
+        function toggleNews(header) {
+            const article = header.parentElement;
+            article.classList.toggle('active');
+            
+            // Opcional: Fecha outras notícias ao abrir uma nova
+            document.querySelectorAll('.news-article').forEach(item => {
+                if (item !== article) item.classList.remove('active');
+            });
+        }
+    </script>
 </body>
 </html>
