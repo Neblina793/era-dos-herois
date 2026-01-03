@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bestiário Grego - Era dos Heróis</title>
+  <style>
+    :root {
+      --bg-body: #0b0b0f;
+      --bg-card: #16161e;
+      --gold: #d4af37;
+      --primary-color: #e63946;
+      --text-main: #eee;
+      --text-muted: #aaa;
+      --border-color: #333;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--bg-body);
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container { max-width: 900px; margin: auto; }
+    
+    header { text-align: center; margin-bottom: 30px; }
+    header h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid var(--gold); display: inline-block; padding-bottom: 10px; }
+
+    nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+    nav a { border: 1px solid var(--gold); color: var(--gold); padding: 8px 14px; text-decoration: none; border-radius: 4px; font-family: sans-serif; font-size: 0.9em; transition: 0.3s; }
+    nav a:hover { background: var(--gold); color: black; }
+
+    .gerador-box {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      align-items: flex-end;
+      margin-bottom: 30px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { color: var(--gold); font-size: 0.8em; font-weight: bold; text-transform: uppercase; }
+    
+    select, input, button {
+      background: #0b0b0f;
+      border: 1px solid var(--border-color);
+      color: white;
+      padding: 10px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .btn-principal { background: var(--gold); color: black; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; }
+    .btn-principal:hover { background: #fff; transform: scale(1.05); }
+
+    .btn-save { background: #2a9d8f; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; margin-top: 15px; font-weight: bold; }
+    .btn-excluir { background: var(--primary-color); color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.8em; margin-top: 10px; }
+
+    /* Estilo Ficha D&D */
+    .ficha-monstro {
+      background: #fdf1dc;
+      color: #704214;
+      padding: 20px;
+      border-radius: 2px;
+      border-top: 5px solid #704214;
+      border-bottom: 5px solid #704214;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      margin-top: 20px;
+    }
+
+    .preview-section { display: none; margin-bottom: 40px; }
+
+    .ficha-header h2 { margin: 0; font-size: 1.8em; color: #922610; }
+    .ficha-header p { margin: 0; font-style: italic; font-size: 0.9em; border-bottom: 1px solid #922610; padding-bottom: 5px; }
+
+    .stats-vermelhos { color: #922610; font-weight: bold; margin: 10px 0; line-height: 1.4; }
+    
+    .grid-atributos {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      text-align: center;
+      color: #922610;
+      border-bottom: 1px solid #922610;
+      padding: 10px 0;
+      margin: 10px 0;
+    }
+    .attr-item b { display: block; font-size: 0.8em; }
+
+    .secao-ficha { margin-top: 10px; border-bottom: 1px solid #922610; padding-bottom: 5px; }
+    .secao-ficha h3 { border-bottom: 1px solid #704214; font-size: 1.1em; margin-bottom: 5px; text-transform: uppercase; }
+
+    /* Lista de Salvos */
+    #listaSalvos { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; margin-top: 20px; }
+    .saved-card { transform: scale(0.95); margin-top: 0; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Bestiário Grego</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="criar.html">Criar Personagem</a>
+    <a href="magias.html">Magias</a>
+  </nav>
+
+  <div class="gerador-box">
+    <div class="field">
+      <label>Nome Personalizado</label>
+      <input type="text" id="nomeCustom" placeholder="Ex: Matador de Heróis">
+    </div>
+    <div class="field">
+      <label>Tipo de Criatura</label>
+      <select id="tipo">
+        <option value="humanoide">Guerreiro Grego</option>
+        <option value="monstro">Monstruosidade (Hidra/Quimera)</option>
+        <option value="morto">Morto-Vivo (Tártaro)</option>
+        <option value="fera">Fera Mítica (Leão/Cão)</option>
+        <option value="gigante">Gigante / Ciclope</option>
+        <option value="harpia">Harpia</option>
+        <option value="minotauro">Minotauro</option>
+        <option value="satiro">Sátiro</option>
+        <option value="manticora">Mantícora</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Nível de Desafio (CR)</label>
+      <select id="cr">
+        <option value="0.5">CR 1/2</option>
+        <option value="1">CR 1</option>
+        <option value="3">CR 3</option>
+        <option value="5">CR 5</option>
+        <option value="10">CR 10</option>
+        <option value="20">CR 20</option>
+      </select>
+    </div>
+    <button class="btn-principal" onclick="gerarMonstro()">INVOCAR CRIATURA</button>
+  </div>
+
+  <div id="previewArea" class="preview-section">
+    <h2 style="color: var(--gold); text-align: center;">Nova Criatura Avistada!</h2>
+    <div id="fichaPreview"></div>
+    <div style="text-align: center;">
+        <button class="btn-save" onclick="salvarCriatura()">💾 SALVAR NO BESTIÁRIO</button>
+    </div>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 40px 0;">
+  
+  <h2 style="color: var(--gold); text-align: center;">📜 Criaturas Salvas</h2>
+  <div id="listaSalvos"></div>
+</div>
+
+<script>
+let criaturaAtual = null;
+const baseMonstros = {
+  humanoide: { nome: "Guerreiro de ", habilidade: "FALANGE: Vantagem em ataques se houver um aliado a 1,5m.", speed: "9m" },
+  monstro: { nome: "Criatura de ", habilidade: "TERROR MÍTICO: Medo em área (SAB CD 12).", speed: "12m" },
+  morto: { nome: "Soldado do Tártaro de ", habilidade: "RESISTÊNCIA AO TÁRTARO: Pode voltar com 1 HP ao cair.", speed: "9m" },
+  fera: { nome: "Fera Selvagem de ", habilidade: "BOTE: Derruba o alvo se mover 6m.", speed: "15m" },
+  gigante: { nome: "Ciclope de ", habilidade: "FORÇA BRUTA: Dano extra em ataques corpo-a-corpo.", speed: "12m" },
+  harpia: { nome: "Harpia de ", habilidade: "CANTO SEDUTOR: Puxa o alvo em sua direção (SAB CD 13).", speed: "6m, voo 18m" },
+  minotauro: { nome: "Minotauro de ", habilidade: "INVESTIDA: Dano extra e empurra o alvo ao atingir.", speed: "12m" },
+  satiro: { nome: "Sátiro de ", habilidade: "FLAUTA PAN: Encanta ou coloca em sono (SAB CD 13).", speed: "12m" },
+  manticora: { nome: "Mantícora de ", habilidade: "ESPINHOS: 3 ataques à distância com espinhos.", speed: "9m, voo 15m" }
+};
+
+function gerarMonstro() {
+  const tipo = document.getElementById('tipo').value;
+  const cr = parseFloat(document.getElementById('cr').value);
+  const nomeCustom = document.getElementById('nomeCustom').value;
+  const mBase = baseMonstros[tipo];
+
+  const stats = {
+    nome: nomeCustom || (mBase.nome + "Hades"),
+    tipoDesc: `${tipo.toUpperCase()}, Alinhamento Variado`,
+    ca: 12 + Math.floor(cr/2),
+    hp: Math.floor(cr * 22) + 12,
+    speed: mBase.speed,
+    cr: cr,
+    perc: 10 + Math.floor(cr/2),
+    atk: Math.floor(cr/3) + 4,
+    dano: Math.floor(cr * 6) + 3,
+    for: 14 + Math.floor(cr),
+    des: 10 + Math.floor(cr/3),
+    con: 14 + Math.floor(cr),
+    habNome: mBase.habilidade.split(':')[0],
+    habDesc: mBase.habilidade.split(':')[1]
+  };
+
+  criaturaAtual = stats;
+  document.getElementById('fichaPreview').innerHTML = criarHtmlFicha(stats);
+  document.getElementById('previewArea').style.display = 'block';
+  window.scrollTo({ top: document.getElementById('previewArea').offsetTop - 50, behavior: 'smooth' });
+}
+
+function criarHtmlFicha(s, index = -1) {
+  return `
+    <div class="ficha-monstro ${index !== -1 ? 'saved-card' : ''}">
+      <div class="ficha-header">
+        <h2>${s.nome}</h2>
+        <p>${s.tipoDesc}</p>
+      </div>
+      <div class="stats-vermelhos">
+        Classe de Armadura: <span style="color:black">${s.ca}</span><br>
+        Pontos de Vida: <span style="color:black">${s.hp} (CR ${s.cr})</span><br>
+        Deslocamento: <span style="color:black">${s.speed}</span>
+      </div>
+      <div class="grid-atributos">
+        <div class="attr-item"><b>FOR</b>${s.for}</div>
+        <div class="attr-item"><b>DES</b>${s.des}</div>
+        <div class="attr-item"><b>CON</b>${s.con}</div>
+        <div class="attr-item"><b>INT</b>8</div>
+        <div class="attr-item"><b>SAB</b>12</div>
+        <div class="attr-item"><b>CAR</b>10</div>
+      </div>
+      <div style="font-size:0.9em"><b>Sentidos:</b> Percepção Passiva ${s.perc}</div>
+      <div style="font-size:0.9em"><b>Desafio:</b> ${s.cr}</div>
+      <div class="secao-ficha">
+        <h3>Habilidades</h3>
+        <p><b>${s.habNome}:</b> ${s.habDesc}</p>
+      </div>
+      <div class="secao-ficha">
+        <h3>Ações</h3>
+        <p><b>Ataque Mítico:</b> +${s.atk} para atingir. Acerto: ${s.dano} de dano físico.</p>
+      </div>
+      ${index !== -1 ? `<button class="btn-excluir" onclick="excluirCriatura(${index})">🗑️ Excluir do Bestiário</button>` : ''}
+    </div>
+  `;
+}
+
+function salvarCriatura() {
+  if (!criaturaAtual) return;
+  let salvos = JSON.parse(localStorage.getItem('bestiario_grego') || '[]');
+  salvos.push(criaturaAtual);
+  localStorage.setItem('bestiario_grego', JSON.stringify(salvos));
+  
+  document.getElementById('previewArea').style.display = 'none';
+  document.getElementById('nomeCustom').value = '';
+  renderizarSalvos();
+}
+
+function renderizarSalvos() {
+  let salvos = JSON.parse(localStorage.getItem('bestiario_grego') || '[]');
+  const container = document.getElementById('listaSalvos');
+  container.innerHTML = salvos.length === 0 ? '<p style="color:var(--text-muted); text-align:center; grid-column: 1/-1;">Nenhuma criatura salva ainda.</p>' : '';
+  
+  salvos.forEach((s, i) => {
+    container.innerHTML += criarHtmlFicha(s, i);
+  });
+}
+
+function excluirCriatura(index) {
+  if (confirm('Deseja remover esta criatura do seu bestiário?')) {
+    let salvos = JSON.parse(localStorage.getItem('bestiario_grego') || '[]');
+    salvos.splice(index, 1);
+    localStorage.setItem('bestiario_grego', JSON.stringify(salvos));
+    renderizarSalvos();
+  }
+}
+
+// Carregar ao abrir
+window.onload = renderizarSalvos;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Mestre - Era dos Heróis</title>
+    <style>
+        :root {
+            --bg-body: #0b0b0f;
+            --bg-card: #16161e;
+            --gold: #d4af37;
+            --primary-color: #e63946;
+            --text-main: #eee;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Estilo do Login */
+        #login-screen {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--gold);
+            text-align: center;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        #login-screen h2 { color: var(--gold); margin-bottom: 20px; text-transform: uppercase; }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0b0b0f;
+            border: 1px solid var(--border-color);
+            color: white;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .btn-login {
+            background: var(--gold);
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover { background: white; }
+
+        /* Estilo do Painel (Escondido inicialmente) */
+        #master-panel {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .dashboard {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-tool {
+            display: inline-block;
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 20px 40px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: 0.3s;
+            margin: 20px;
+        }
+
+        .btn-tool:hover {
+            background: var(--gold);
+            color: black;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .logout {
+            margin-top: 30px;
+            color: var(--primary-color);
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.9em;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <h2>Acesso do Olimpo</h2>
+        <p style="color: var(--text-muted); font-size: 0.8em; margin-bottom: 20px;">Somente Mestres de Jogo</p>
+        <input type="text" id="username" placeholder="Usuário">
+        <input type="password" id="password" placeholder="Senha">
+        <button class="btn-login" onclick="checkLogin()">Entrar</button>
+        <p id="error-msg" style="color: var(--primary-color); font-size: 0.8em; margin-top: 10px; display: none;">Credenciais Inválidas!</p>
+    </div>
+
+    <div id="master-panel">
+        <h1 style="color: var(--gold);">Área do Mestre</h1>
+        <div class="dashboard">
+            <p>Bem-vindo, Grande Mestre. Quais ferramentas deseja utilizar hoje?</p>
+            
+            <a href="gerador.html" class="btn-tool">
+                👹 GERADOR DE MONSTROS
+            </a>
+            
+            <div style="margin-top: 20px;">
+                <a href="index.html" style="color: var(--text-muted); text-decoration: none;">← Voltar ao Início</a>
+            </div>
+        </div>
+        <p class="logout" onclick="logout()">Encerrar Sessão</p>
+    </div>
+
+    <script>
+        function checkLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const error = document.getElementById('error-msg');
+
+            // Validação solicitada
+            if (user === "admin" && pass === "292827") {
+                // Salva a sessão no navegador para não precisar logar toda vez que voltar da outra página
+                sessionStorage.setItem('mestreLogado', 'true');
+                showPanel();
+            } else {
+                error.style.display = 'block';
+                // Efeito de tremer no erro
+                document.getElementById('login-screen').animate([
+                    { transform: 'translateX(-5px)' },
+                    { transform: 'translateX(5px)' }
+                ], { duration: 100, iterations: 3 });
+            }
+        }
+
+        function showPanel() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('master-panel').style.display = 'block';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('mestreLogado');
+            location.reload();
+        }
+
+        // Verifica se já estava logado ao abrir a página
+        window.onload = function() {
+            if (sessionStorage.getItem('mestreLogado') === 'true') {
+                showPanel();
+            }
+        }
+    </script>
+</body>
+</html>
