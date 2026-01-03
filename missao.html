@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oráculo de Delfos - Missões</title>
+  <style>
+    :root {
+      --bg-body: #0b0b0f;
+      --bg-card: #16161e;
+      --gold: #d4af37;
+      --primary-color: #e63946;
+      --text-main: #eee;
+      --text-muted: #aaa;
+      --border-color: #333;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--bg-body);
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container { max-width: 900px; margin: auto; }
+    
+    header { text-align: center; margin-bottom: 30px; }
+    header h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid var(--gold); display: inline-block; padding-bottom: 10px; }
+
+    nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+    nav a { border: 1px solid var(--gold); color: var(--gold); padding: 8px 14px; text-decoration: none; border-radius: 4px; font-family: sans-serif; font-size: 0.9em; transition: 0.3s; }
+    nav a:hover { background: var(--gold); color: black; }
+
+    .gerador-box {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      align-items: flex-end;
+      margin-bottom: 30px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { color: var(--gold); font-size: 0.8em; font-weight: bold; text-transform: uppercase; }
+    
+    input, button {
+      background: #0b0b0f;
+      border: 1px solid var(--border-color);
+      color: white;
+      padding: 12px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .btn-principal { background: var(--gold); color: black; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; padding: 12px 30px; }
+    .btn-principal:hover { background: #fff; transform: scale(1.05); }
+
+    .btn-save { background: #2a9d8f; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; margin-top: 15px; font-weight: bold; }
+    .btn-excluir { background: var(--primary-color); color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.8em; margin-top: 10px; }
+    .btn-editar { background: #3a86ff; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.8em; margin-top: 10px; margin-right: 5px; }
+
+    /* Estilo Pergaminho de Missão */
+    .ficha-missao {
+      background: #fdf1dc;
+      color: #2c1e11;
+      padding: 25px;
+      border-radius: 2px;
+      border: 2px solid #704214;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      margin-top: 20px;
+      position: relative;
+    }
+
+    .preview-section { display: none; margin-bottom: 40px; text-align: center; }
+
+    .missao-header h2 { margin: 0; font-size: 1.6em; color: #922610; border-bottom: 2px solid #922610; padding-bottom: 5px; margin-bottom: 15px; }
+    
+    .missao-corpo p { margin: 10px 0; line-height: 1.4; font-size: 1.1em; }
+    .missao-corpo b { color: #922610; }
+
+    #listaSalvos { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Oráculo de Delfos</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="mestre.html">Área do Mestre</a>
+    <a href="Gerador de Monstro.html">Monstros</a>
+    <a href="item.html">Itens</a>
+  </nav>
+
+  <div class="gerador-box">
+    <div class="field">
+      <label>Título da Missão (Opcional)</label>
+      <input type="text" id="tituloMissao" placeholder="Ex: O Resgate de Perséfone">
+    </div>
+    <button class="btn-principal" onclick="gerarMissao()">CONSULTAR ORÁCULO</button>
+  </div>
+
+  <div id="previewArea" class="preview-section">
+    <div id="missaoPreview"></div>
+    <button class="btn-save" onclick="salvarMissao()">💾 REGISTRAR NAS CRÔNICAS</button>
+  </div>
+
+  <h2 style="color: var(--gold); text-align: center;">📜 Registro de Aventuras</h2>
+  <div id="listaSalvos"></div>
+</div>
+
+<script>
+let missaoAtual = null;
+
+const tramas = [
+    "Recuperar um artefato roubado de",
+    "Escoltar um herói ferido até",
+    "Investigar rumores de cultos secretos em",
+    "Derrotar uma criatura que aterroriza",
+    "Entregar uma mensagem divina para"
+];
+
+const locais = ["o Templo de Zeus", "as profundezas do Tártaro", "as florestas de Creta", "o Monte Olimpo", "as ruas de Esparta", "o Mar Egeu"];
+const antagonistas = ["um traidor infiltrado", "uma Hidra enfurecida", "soldados renegados", "um Ciclope faminto", "espectros vingativos"];
+const recompensas = ["o Favor de um Deus", "1.000 Dracmas de Ouro", "um Item Mágico Raro", "informações sobre o destino do grupo"];
+
+function gerarMissao() {
+  const titulo = document.getElementById('tituloMissao').value || "Uma Nova Profecia";
+  
+  const trama = tramas[Math.floor(Math.random() * tramas.length)];
+  const local = locais[Math.floor(Math.random() * locais.length)];
+  const vilao = antagonistas[Math.floor(Math.random() * antagonistas.length)];
+  const premio = recompensas[Math.floor(Math.random() * recompensas.length)];
+
+  missaoAtual = { 
+    titulo, 
+    objetivo: `${trama} ${local}.`,
+    perigo: vilao,
+    recompensa: premio 
+  };
+
+  document.getElementById('missaoPreview').innerHTML = criarHtmlMissao(missaoAtual);
+  document.getElementById('previewArea').style.display = 'block';
+  window.scrollTo({ top: document.getElementById('previewArea').offsetTop - 20, behavior: 'smooth' });
+}
+
+function criarHtmlMissao(m, index = -1) {
+  return `
+    <div class="ficha-missao">
+      <div class="missao-header">
+        <h2>${m.titulo}</h2>
+      </div>
+      <div class="missao-corpo">
+        <p><b>Objetivo:</b> ${m.objetivo}</p>
+        <p><b>O Perigo:</b> ${m.perigo}</p>
+        <p><b>Recompensa:</b> ${m.recompensa}</p>
+      </div>
+      ${index !== -1 ? `
+        <button class="btn-editar" onclick="editarTitulo(${index})">📝 Editar Título</button>
+        <button class="btn-excluir" onclick="excluirMissao(${index})">🗑️ Excluir</button>
+      ` : ''}
+    </div>
+  `;
+}
+
+function editarTitulo(index) {
+  let salvos = JSON.parse(localStorage.getItem('missoes_gregas') || '[]');
+  const novoTitulo = prompt("Digite o novo título da missão:", salvos[index].titulo);
+  if (novoTitulo) {
+    salvos[index].titulo = novoTitulo;
+    localStorage.setItem('missoes_gregas', JSON.stringify(salvos));
+    renderizarMissoes();
+  }
+}
+
+function salvarMissao() {
+  if (!missaoAtual) return;
+  let salvos = JSON.parse(localStorage.getItem('missoes_gregas') || '[]');
+  salvos.push(missaoAtual);
+  localStorage.setItem('missoes_gregas', JSON.stringify(salvos));
+  document.getElementById('previewArea').style.display = 'none';
+  document.getElementById('tituloMissao').value = '';
+  renderizarMissoes();
+}
+
+function renderizarMissoes() {
+  let salvos = JSON.parse(localStorage.getItem('missoes_gregas') || '[]');
+  const container = document.getElementById('listaSalvos');
+  container.innerHTML = salvos.length === 0 ? '<p style="color:var(--text-muted); text-align:center; grid-column:1/-1;">Nenhuma missão ativa no momento.</p>' : '';
+  salvos.forEach((m, i) => { container.innerHTML += criarHtmlMissao(m, i); });
+}
+
+function excluirMissao(index) {
+  if (confirm('Deseja apagar este registro de missão?')) {
+    let salvos = JSON.parse(localStorage.getItem('missoes_gregas') || '[]');
+    salvos.splice(index, 1);
+    localStorage.setItem('missoes_gregas', JSON.stringify(salvos));
+    renderizarMissoes();
+  }
+}
+
+window.onload = renderizarMissoes;
+</script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relíquias do Olimpo - Gerador de Itens</title>
+  <style>
+    :root {
+      --bg-body: #0b0b0f;
+      --bg-card: #16161e;
+      --gold: #d4af37;
+      --primary-color: #e63946;
+      --text-main: #eee;
+      --text-muted: #aaa;
+      --border-color: #333;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--bg-body);
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container { max-width: 900px; margin: auto; }
+    
+    header { text-align: center; margin-bottom: 30px; }
+    header h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid var(--gold); display: inline-block; padding-bottom: 10px; }
+
+    nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+    nav a { border: 1px solid var(--gold); color: var(--gold); padding: 8px 14px; text-decoration: none; border-radius: 4px; font-family: sans-serif; font-size: 0.9em; transition: 0.3s; }
+    nav a:hover { background: var(--gold); color: black; }
+
+    .gerador-box {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      align-items: flex-end;
+      margin-bottom: 30px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { color: var(--gold); font-size: 0.8em; font-weight: bold; text-transform: uppercase; }
+    
+    select, input, button {
+      background: #0b0b0f;
+      border: 1px solid var(--border-color);
+      color: white;
+      padding: 10px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .btn-principal { background: var(--gold); color: black; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; padding: 12px 25px; }
+    .btn-principal:hover { background: #fff; transform: scale(1.05); }
+
+    .btn-save { background: #2a9d8f; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; margin-top: 15px; font-weight: bold; }
+    
+    .btn-excluir { background: var(--primary-color); color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.8em; margin-top: 10px; }
+    .btn-editar { background: #3a86ff; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.8em; margin-top: 10px; margin-right: 5px; }
+
+    .ficha-item {
+      background: #fdf1dc;
+      color: #2c1e11;
+      padding: 20px;
+      border-radius: 2px;
+      border-left: 8px solid #704214;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .preview-section { display: none; margin-bottom: 40px; text-align: center; }
+
+    .item-header h2 { margin: 0; font-size: 1.6em; color: #922610; font-variant: small-caps; }
+    .item-header p { margin: 0; font-style: italic; font-size: 0.9em; border-bottom: 1px solid #704214; padding-bottom: 5px; margin-bottom: 10px; }
+
+    .item-prop { font-size: 0.95em; line-height: 1.5; }
+    .item-prop b { color: #922610; }
+
+    #listaSalvos { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Relíquias do Olimpo</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="mestre.html">Área do Mestre</a>
+    <a href="Gerador de Monstro.html">Gerador de Monstros</a>
+  </nav>
+
+  <div class="gerador-box">
+    <div class="field">
+      <label>Nome do Item</label>
+      <input type="text" id="nomeItem" placeholder="Ex: Lança de Aquiles">
+    </div>
+    <div class="field">
+      <label>Tipo de Item</label>
+      <select id="tipoItem">
+        <option value="arma">Arma</option>
+        <option value="armadura">Armadura / Escudo</option>
+        <option value="acessorio">Acessório</option>
+        <option value="consumivel">Consumível</option>
+      </select>
+    </div>
+    <div class="field">
+        <label>Raridade</label>
+        <select id="raridade">
+          <option value="Comum">Comum</option>
+          <option value="Incomum">Incomum</option>
+          <option value="Raro">Raro</option>
+          <option value="Muito Raro">Muito Raro</option>
+          <option value="Lendário">Lendário</option>
+        </select>
+      </div>
+    <button class="btn-principal" onclick="gerarItem()">FORJAR ITEM</button>
+  </div>
+
+  <div id="previewArea" class="preview-section">
+    <h2 style="color: var(--gold);">Item Recém Forjado!</h2>
+    <div id="itemPreview"></div>
+    <button class="btn-save" onclick="salvarItem()">💾 GUARDAR NO INVENTÁRIO</button>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 40px 0;">
+  
+  <h2 style="color: var(--gold); text-align: center;">🎒 Inventário de Itens Salvos</h2>
+  <div id="listaSalvos"></div>
+</div>
+
+<script>
+let itemAtual = null;
+
+const efeitos = {
+  arma: ["Causa +1d6 de dano de fogo.", "Vantagem contra mortos-vivos.", "+1 de bônus no ataque.", "Dano necrótico extra.", "Ignora armadura mundana."],
+  armadura: ["+1 na Classe de Armadura.", "Resistência a veneno.", "Vantagem contra medo.", "Reflete 1d4 de dano.", "Aumenta vida em +5."],
+  acessorio: ["Visão no escuro (18m).", "Respirar debaixo d'água.", "+1 em Intuição.", "Aumenta velocidade em 3m.", "Teletransporte (1/dia)"],
+  consumivel: ["Recupera 2d4+2 de Vida.", "Invisibilidade (1 min).", "Cura Envenenamento.", "Força aumentada por 1 hora.", "Voo por 10 minutos."]
+};
+
+function gerarItem() {
+  const nome = document.getElementById('nomeItem').value || "Relíquia Sem Nome";
+  const tipo = document.getElementById('tipoItem').value;
+  const raridade = document.getElementById('raridade').value;
+  
+  const lista = efeitos[tipo];
+  const efeito = lista[Math.floor(Math.random() * lista.length)];
+
+  itemAtual = { nome, tipo, raridade, efeito };
+
+  // Gera o HTML na área de prévia
+  document.getElementById('itemPreview').innerHTML = criarHtmlItem(itemAtual);
+  // Mostra a área escondida
+  document.getElementById('previewArea').style.display = 'block';
+  
+  // Rola até o item novo
+  window.scrollTo({ top: document.getElementById('previewArea').offsetTop - 20, behavior: 'smooth' });
+}
+
+function criarHtmlItem(it, index = -1) {
+  return `
+    <div class="ficha-item">
+      <div class="item-header">
+        <span style="color:#d4af37; font-weight:bold; text-transform:uppercase; font-size:0.8em;">${it.raridade}</span>
+        <h2>${it.nome}</h2>
+        <p>${it.tipo.toUpperCase()}</p>
+      </div>
+      <div class="item-prop">
+        <b>Propriedade Mágica:</b> ${it.efeito}
+      </div>
+      ${index !== -1 ? `
+        <button class="btn-editar" onclick="editarNome(${index})">📝 Editar Nome</button>
+        <button class="btn-excluir" onclick="excluirItem(${index})">🗑️ Excluir</button>
+      ` : ''}
+    </div>
+  `;
+}
+
+function editarNome(index) {
+  let salvos = JSON.parse(localStorage.getItem('itens_gregos') || '[]');
+  const novoNome = prompt("Digite o novo nome para este item:", salvos[index].nome);
+  
+  if (novoNome !== null && novoNome.trim() !== "") {
+    salvos[index].nome = novoNome.trim();
+    localStorage.setItem('itens_gregos', JSON.stringify(salvos));
+    renderizarItens();
+  }
+}
+
+function salvarItem() {
+  if (!itemAtual) return;
+  let salvos = JSON.parse(localStorage.getItem('itens_gregos') || '[]');
+  salvos.push(itemAtual);
+  localStorage.setItem('itens_gregos', JSON.stringify(salvos));
+  
+  // Esconde a prévia e limpa o campo
+  document.getElementById('previewArea').style.display = 'none';
+  document.getElementById('nomeItem').value = '';
+  renderizarItens();
+}
+
+function renderizarItens() {
+  let salvos = JSON.parse(localStorage.getItem('itens_gregos') || '[]');
+  const container = document.getElementById('listaSalvos');
+  container.innerHTML = salvos.length === 0 ? '<p style="color:var(--text-muted); text-align:center; grid-column:1/-1;">O inventário está vazio.</p>' : '';
+  
+  salvos.forEach((it, i) => {
+    container.innerHTML += criarHtmlItem(it, i);
+  });
+}
+
+function excluirItem(index) {
+  if (confirm('Deseja destruir este item permanentemente?')) {
+    let salvos = JSON.parse(localStorage.getItem('itens_gregos') || '[]');
+    salvos.splice(index, 1);
+    localStorage.setItem('itens_gregos', JSON.stringify(salvos));
+    renderizarItens();
+  }
+}
+
+// Carregar itens ao abrir a página
+window.onload = renderizarItens;
+</script>
+</body>
+</html>
