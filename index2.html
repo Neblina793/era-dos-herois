@@ -56,7 +56,6 @@
             display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 1.1rem;
         }
 
-        /* SUB-LISTAS */
         .expand-content { display: none; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 0 0 8px 8px; margin-top: -5px; }
         .card-item { background: #1c1c1e; padding: 12px; border-radius: 6px; border-left: 4px solid var(--primary-gold); margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; text-align: left;}
         
@@ -76,7 +75,7 @@
 
     <div class="main-container">
         <div class="logo-container">
-            <img src="img/logo.png" class="logo-img" onerror="this.src='logo.png'">
+            <img src="logo.png" class="logo-img" onerror="this.src='icon-192.png'">
         </div>
 
         <div class="nav-top">
@@ -99,27 +98,7 @@
                 <button class="btn-raca" onclick="toggle('desc-monstro')">Meio Monstro <i class="fa fa-paw"></i></button>
                 <div id="desc-monstro" class="desc-raca">Seres com sangue de criaturas selvagens. Força física brutal e instintos aguçados.</div>
             </div>
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-deus')">Semi-Deus <i class="fa fa-bolt"></i></button>
-                <div id="desc-deus" class="desc-raca">Filhos de deuses. Possuem dons que desafiam a mortalidade e o destino.</div>
             </div>
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-demonio')">Semi-Demonio <i class="fa fa-fire"></i></button>
-                <div id="desc-demonio" class="desc-raca">Linhagem infernal. Resistência a condições extremas e magia sombria.</div>
-            </div>
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-anjo')">Semi-Anjo <i class="fa fa-feather"></i></button>
-                <div id="desc-anjo" class="desc-raca">Descendência celestial. Aptidão para cura, proteção e emanação de luz.</div>
-            </div>
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-entidade')">Semi-Entidade <i class="fa fa-eye"></i></button>
-                <div id="desc-entidade" class="desc-raca">Ligados a conceitos universais como tempo ou vazio. Podem distorcer a realidade.</div>
-            </div>
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-santo')">Semi-Santo <i class="fa fa-cross"></i></button>
-                <div id="desc-santo" class="desc-raca">Mortais abençoados. A sua fé inabalável manifesta-se em proteções divinas.</div>
-            </div>
-        </div>
     </div>
 
     <div id="modal-ficha">
@@ -132,6 +111,28 @@
             const el = document.getElementById(id);
             el.style.display = (el.style.display === "block") ? "none" : "block";
         }
+
+        // Animação de Dados PNG - Caminho alterado para carregar da raiz
+        function createDice() {
+            const dice = document.createElement('div');
+            dice.className = 'rpg-dice';
+            const img = document.createElement('img');
+            const diceFiles = ['D4.png', 'D6.png', 'D8.png', 'D10.png', 'D12.png', 'D20.png'];
+            
+            // Alterado: removido o 'img/' para carregar o arquivo diretamente pelo nome
+            img.src = diceFiles[Math.floor(Math.random() * diceFiles.length)];
+            
+            dice.appendChild(img);
+            dice.style.setProperty('--x-start', Math.random() * window.innerWidth + 'px');
+            dice.style.setProperty('--y-start', Math.random() * window.innerHeight + 'px');
+            dice.style.setProperty('--x-end', Math.random() * window.innerWidth + 'px');
+            dice.style.setProperty('--y-end', Math.random() * window.innerHeight + 'px');
+            
+            document.getElementById('dice-animation-container').appendChild(dice);
+            setTimeout(() => dice.remove(), 10000);
+        }
+
+        setInterval(createDice, 2000);
 
         function getMod(val) {
             let m = Math.floor((val - 10) / 2);
@@ -152,9 +153,6 @@
                     `).join('')}
                 </div>
                 <p><strong>PV:</strong> ${p.pv} | <strong>CA:</strong> ${p.ca}</p>
-                <p><strong>Habilidades:</strong> ${(p.habilidades || []).map(h => h.nome).join(', ') || 'Nenhuma'}</p>
-                <p><strong>Magias:</strong> ${(p.grimorio || []).map(m => m.nome).join(', ') || 'Nenhuma'}</p>
-                <p><strong>Inventário:</strong> ${p.inventario || 'Vazio'}</p>
             `;
             document.getElementById('modal-ficha').style.display = 'block';
         }
@@ -171,25 +169,6 @@
             `).join('');
         }
 
-        // Animação de Dados PNG
-        function createDice() {
-            const dice = document.createElement('div');
-            dice.className = 'rpg-dice';
-            const img = document.createElement('img');
-            const diceFiles = ['D4.png', 'D6.png', 'D8.png', 'D10.png', 'D12.png', 'D20.png'];
-            img.src = 'img/' + diceFiles[Math.floor(Math.random() * diceFiles.length)];
-            
-            dice.appendChild(img);
-            dice.style.setProperty('--x-start', Math.random() * window.innerWidth + 'px');
-            dice.style.setProperty('--y-start', Math.random() * window.innerHeight + 'px');
-            dice.style.setProperty('--x-end', Math.random() * window.innerWidth + 'px');
-            dice.style.setProperty('--y-end', Math.random() * window.innerHeight + 'px');
-            
-            document.getElementById('dice-animation-container').appendChild(dice);
-            setTimeout(() => dice.remove(), 10000);
-        }
-
-        setInterval(createDice, 2000);
         window.onload = carregarLista;
     </script>
 </body>
