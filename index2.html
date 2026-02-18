@@ -36,15 +36,16 @@
 
         .main-container { width: 100%; max-width: 550px; text-align: center; z-index: 1; position: relative; }
         
-        /* LOGO CENTRALIZADA */
         .logo-container { display: flex; justify-content: center; margin-bottom: 20px; }
         .logo-img { max-width: 250px; height: auto; filter: drop-shadow(0 0 10px var(--primary-gold)); }
 
-        .nav-top { display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; }
+        /* MENU SUPERIOR */
+        .nav-top { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; justify-content: center; }
         .btn-nav { 
             background: none; border: 1px solid var(--primary-gold); color: var(--primary-gold); 
             padding: 10px 15px; border-radius: 5px; cursor: pointer; text-decoration: none; 
             font-size: 12px; font-weight: bold; font-family: 'Cinzel';
+            transition: 0.3s;
         }
         .btn-nav:hover { background: var(--primary-gold); color: #000; }
 
@@ -57,7 +58,6 @@
 
         .expand-content { display: none; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 0 0 8px 8px; margin-top: -5px; }
         
-        /* ESTILO DAS RAÇAS */
         .raca-item { margin-bottom: 5px; }
         .btn-raca { 
             background: #252529; color: #fff; border: 1px solid #444; padding: 12px; 
@@ -71,7 +71,6 @@
             text-align: left; margin-top: 2px;
         }
 
-        /* MODAL */
         #modal-ficha { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; overflow-y: auto; padding: 20px; }
         .dnd-sheet { background: #fff; color: #000; max-width: 600px; margin: 20px auto; padding: 25px; border-radius: 5px; text-align: left; }
     </style>
@@ -86,8 +85,11 @@
         </div>
 
         <div class="nav-top">
-            <a href="index.html" class="btn-nav"><i class="fa fa-home"></i> Voltar Temporada 1</a>
+            <a href="index.html" class="btn-nav"><i class="fa fa-home"></i> Início</a>
             <a href="ficha_personagem.html" class="btn-nav"><i class="fa fa-user-plus"></i> Novo Herói</a>
+            <a href="https://drive.google.com/drive/folders/1Y0BOCDEveI9aywgea5P9Jymb3WMGVYUT" target="_blank" class="btn-nav">
+                <i class="fa fa-book"></i> BIBLIOTECA
+            </a>
         </div>
 
         <button class="btn-main-expande" onclick="toggle('sec-personagens')">
@@ -102,37 +104,35 @@
         </button>
         
         <div id="guia-racas-lista" class="expand-content">
-            
             <div class="raca-item">
                 <button class="btn-raca" onclick="toggle('desc-monstro')">Meio Monstro <i class="fa fa-paw"></i></button>
-                <div id="desc-monstro" class="desc-raca">Seres que carregam sangue de criaturas selvagens. Possuem força física brutal, instintos aguçados e uma conexão profunda com a natureza indomada.</div>
+                <div id="desc-monstro" class="desc-raca">Seres que carregam sangue de criaturas selvagens. Possuem força física brutal e instintos aguçados.</div>
             </div>
 
             <div class="raca-item">
                 <button class="btn-raca" onclick="toggle('desc-deus')">Semi-Deus <i class="fa fa-bolt"></i></button>
-                <div id="desc-deus" class="desc-raca">Filhos de divindades com mortais. Carregam dons extraordinários e uma aura de autoridade, destinados a realizar feitos que ecoarão pela eternidade.</div>
+                <div id="desc-deus" class="desc-raca">Filhos de divindades com mortais. Carregam dons extraordinários e aura de autoridade.</div>
             </div>
 
             <div class="raca-item">
                 <button class="btn-raca" onclick="toggle('desc-demonio')">Semi-Demonio <i class="fa fa-fire"></i></button>
-                <div id="desc-demonio" class="desc-raca">Indivíduos tocados pelas energias abissais. Possuem resistência natural ao fogo e habilidades de manipulação sombria, muitas vezes incompreendidos pela sociedade.</div>
+                <div id="desc-demonio" class="desc-raca">Indivíduos tocados pelas energias abissais. Possuem resistência ao fogo e habilidades sombrias.</div>
             </div>
 
             <div class="raca-item">
                 <button class="btn-raca" onclick="toggle('desc-anjo')">Semi-Anjo <i class="fa fa-feather"></i></button>
-                <div id="desc-anjo" class="desc-raca">Descendentes de linhagens celestiais. Irradiam luz e possuem uma aptidão inata para a cura e proteção, agindo como guardiões da ordem.</div>
+                <div id="desc-anjo" class="desc-raca">Descendentes de linhagens celestiais. Irradiam luz e aptidão inata para cura e proteção.</div>
             </div>
 
             <div class="raca-item">
                 <button class="btn-raca" onclick="toggle('desc-entidade')">Semi-Entidade <i class="fa fa-eye"></i></button>
-                <div id="desc-entidade" class="desc-raca">Originados de forças primordiais ou conceitos universais. Sua existência desafia a lógica, permitindo-lhes distorcer levemente a percepção da realidade.</div>
+                <div id="desc-entidade" class="desc-raca">Originados de forças primordiais. Podem distorcer levemente a percepção da realidade.</div>
             </div>
 
             <div class="raca-item">
                 <button class="btn-raca" onclick="toggle('desc-santo')">Semi-Santo <i class="fa fa-cross"></i></button>
-                <div id="desc-santo" class="desc-raca">Mortais que alcançaram uma pureza espiritual elevada ou foram abençoados. Sua fé manifesta milagres e barreiras impenetráveis contra a corrupção.</div>
+                <div id="desc-santo" class="desc-raca">Mortais que alcançaram pureza espiritual elevada. Sua fé manifesta milagres.</div>
             </div>
-
         </div>
     </div>
 
@@ -147,7 +147,6 @@
             el.style.display = (el.style.display === "block") ? "none" : "block";
         }
 
-        // Animação de Dados (Lendo da raiz)
         function createDice() {
             const dice = document.createElement('div');
             dice.className = 'rpg-dice';
@@ -166,7 +165,6 @@
         }
         setInterval(createDice, 2000);
 
-        // Carregar Personagens
         function carregarLista() {
             const personagens = JSON.parse(localStorage.getItem('rpg_v6_total')) || [];
             const container = document.getElementById('container-lista-pers');
