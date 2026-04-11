@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tabuleiro RPG — Pro Final</title>
+  <style>
+    :root {
+      --bg: #05070a; --panel: #101425; --accent: #6ea8fe;
+      --bad: linear-gradient(180deg, #ff4d4d 0%, #b30000 100%); 
+      --good: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%); 
+      --temp: linear-gradient(180deg, #f1c40f 0%, #f39c12 100%);
+      --cell: 48;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: #e8edff; font-family: sans-serif; overflow: hidden; }
+    
+    .app { display: flex; height: 100%; }
+    
+    /* Sidebar */
+    .sidebar { width: 300px; background: var(--panel); padding: 15px; border-right: 1px solid #1b2550; overflow-y: auto; transition: 0.3s; z-index: 500; }
+    .sidebar.collapsed { margin-left: -300px; }
+    .toggle-btn { position: fixed; left: 10px; bottom: 10px; z-index: 510; background: var(--accent); border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; font-size: 20px; box-shadow: 0 0 10px #000; }
+
+    .layer-group { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #1b2550; }
+    input, button { background: #0a0e1a; color: white; border: 1px solid #1b2550; padding: 7px; border-radius: 4px; font-size: 12px; width: 100%; margin-bottom: 5px; }
+    button { cursor: pointer; font-weight: bold; transition: 0.2s; }
+    button:hover { background: var(--accent); color: #000; }
+    .btn-active { background: var(--accent) !important; color: #000 !important; }
+
+    /* Tabuleiro */
+    .board-wrap { flex: 1; position: relative; overflow: hidden; background: #000; cursor: grab; }
+    .world { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+
+    /* Camadas */
+    .map-layer { position: absolute; left: 0; top: 0; line-height: 0; }
+    #layer0 { z-index: 1; } #layer1 { z-index: 2; } #layer2 { z-index: 3; }
+    .map-layer img { width: 100%; height: 100%; display: block; pointer-events: none; }
+    
+    #objectsContainer { position: absolute; top: 0; left: 0; z-index: 10; }
+    
+    /* NÉVOA (Acima de mapas e objetos, abaixo dos nomes/barras dos tokens) */
+    #fogCanvas { position: absolute; top: -5000px; left: -5000px; z-index: 40; pointer-events: none; opacity: 1; }
+
+    #tokensContainer { position: absolute; top: 0; left: 0; z-index: 100; }
+    #grid-svg { position: absolute; top: -10000px; left: -10000px; width: 20000px; height: 20000px; pointer-events: none; z-index: 30; }
+
+    /* Redimensionar */
+    .resizable { border: 2px dashed var(--accent); }
+    .resizer-handle { position: absolute; width: 24px; height: 24px; background: var(--accent); bottom: -12px; right: -12px; cursor: nwse-resize; border-radius: 50%; display: none; z-index: 110; border: 3px solid #000; }
+    .resizable .resizer-handle { display: block; }
+
+    /* Tokens e Estilos Originais */
+    .token { position: absolute; cursor: move; user-select: none; display: flex; flex-direction: column; align-items: center; }
+    .token-img-wrap { position: relative; width: 100%; height: 100%; transition: transform 0.3s ease; }
+    .token-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .token-flipped .token-img-wrap { transform: scaleX(-1); }
+
+    .aura { position: absolute; inset: -15%; border-radius: 50%; z-index: -1; filter: blur(10px); opacity: 0; transition: 0.5s; animation: pulse 2s infinite ease-in-out; }
+    .aura.active { opacity: 0.8; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    
+    .token-name { font-weight: bold; margin-bottom: 4px; text-shadow: 2px 2px 4px #000; white-space: nowrap; pointer-events: none; z-index: 110; }
+
+    .hp-wrapper { width: 120%; display: flex; flex-direction: column; gap: 2px; margin-top: 5px; z-index: 110; }
+    .hp-container { width: 100%; height: 14px; background: rgba(0,0,0,0.8); border-radius: 10px; border: 1.5px solid #333; position: relative; overflow: hidden; }
+    .hp-bar { height: 100%; background: var(--good); transition: 0.4s ease-out; }
+    .hp-text { position: absolute; width: 100%; text-align: center; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 10px; font-weight: bold; color: white; text-shadow: 1px 1px 2px #000; pointer-events: none; }
+    .temp-hp-container { width: 100%; height: 8px; background: rgba(0,0,0,0.8); border-radius: 10px; border: 1px solid #444; position: relative; overflow: hidden; display: none; }
+    .temp-hp-container.active { display: block; }
+    .hp-temp-bar { height: 100%; background: var(--temp); transition: 0.4s; }
+
+    .token.dead { opacity: 0.4; }
+    .death-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none; z-index: 120;}
+    .token.dead .death-icon { display: block; }
+
+    /* Objetos */
+    .object-item { position: absolute; cursor: move; transform-origin: center center; }
+    .object-img-wrap { position: relative; width: 100%; height: 100%; transition: transform 0.3s ease; }
+    .object-item img { width: 100%; height: 100%; pointer-events: none; }
+    .object-flipped .object-img-wrap { transform: scaleX(-1); }
+    .object-selected { outline: 2px dashed var(--accent); z-index: 15 !important; }
+    .obj-handle { position: absolute; width: 16px; height: 16px; background: #fff; border: 2px solid var(--accent); border-radius: 50%; display: none; }
+    .object-selected .obj-handle { display: block; }
+    .obj-resizer { right: -8px; bottom: -8px; cursor: nwse-resize; }
+    .obj-rotator { left: 50%; top: -25px; transform: translateX(-50%); cursor: alias; background: #facc15; }
+
+    #ctx-menu { position: fixed; display: none; background: #0a0e1a; border: 1px solid var(--accent); border-radius: 8px; padding: 5px; z-index: 2000; min-width: 170px; box-shadow: 0 5px 20px #000; }
+    #ctx-menu button { text-align: left; background: transparent; border: none; margin: 0; padding: 10px; color: #eee; width: 100%; cursor: pointer;}
+    #ctx-menu button:hover { background: #1b2550; }
+  </style>
+</head>
+<body>
+    
+ <div class="nav-top">
+        <a href="index.html" class="btn-nav"><i class="fa fa-home"></i> INÍCIO</a>
+ </div>
+
+<button class="toggle-btn" onclick="document.getElementById('sidebar').classList.toggle('collapsed')">☰</button>
+
+<div id="ctx-menu">
+  <div id="ctx-name" style="font-weight: bold; padding: 5px; color: var(--accent); border-bottom: 1px solid #333; text-align:center;">Nome</div>
+  <div id="token-options">
+      <button onclick="changeHP(true)">➕ Curar</button>
+      <button onclick="changeHP(false)">➖ Dano</button>
+      <button onclick="addTempHP()">🛡️ Vida Temporária</button>
+      <button onclick="toggleAura()">✨ Aura</button>
+  </div>
+  <button onclick="toggleFlip()">↔️ Inverter Imagem</button>
+  <button onclick="deleteSelected()" style="color: var(--bad)">❌ Remover</button>
+</div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <h2 style="margin-top:0">Mapas</h2>
+    <div class="layer-group">
+      <input type="file" onchange="loadMap(event, 0)">
+      <button id="btn-res-0" onclick="toggleResize(0)">📏 Dimensionar Mapa 1</button>
+    </div>
+    <div class="layer-group">
+      <input type="file" onchange="loadMap(event, 1)">
+      <button id="btn-res-1" onclick="toggleResize(1)">📏 Dimensionar Mapa 2</button>
+    </div>
+
+    <h2>Névoa de Guerra</h2>
+    <div class="layer-group">
+        <button id="fogToggle" onclick="toggleFog()">Ativar Escuridão</button>
+        <button id="brushToggle" onclick="toggleBrush()">🖌️ Pincel de Revelação</button>
+        <button onclick="resetFog()">Resetar Névoa</button>
+    </div>
+
+    <h2>Personagem</h2>
+    <div class="layer-group">
+      <input type="text" id="tName" placeholder="Nome">
+      <input type="number" id="tHP" value="20">
+      <input type="number" id="tSize" value="1" step="0.1">
+      <input type="color" id="tAuraColor" value="#6ea8fe">
+      <input type="file" id="tImg">
+      <button onclick="addToken()" style="background: var(--good); color: #fff">Criar Herói</button>
+    </div>
+
+    <h2>Objetos (Props)</h2>
+    <div class="layer-group">
+      <input type="file" id="oImg" accept="image/*">
+      <button onclick="addObject()" style="background: #a855f7; color: #fff">Adicionar Objeto</button>
+    </div>
+
+    <h2>Grade</h2>
+    <div class="layer-group">
+        <button id="gridToggle" onclick="toggleGrid()">Ocultar Grade</button>
+        <input type="number" id="cellSize" value="48" onchange="updateGrid()">
+    </div>
+  </aside>
+
+  <main class="board-wrap" id="boardWrap">
+    <div id="board" class="world">
+      <div id="layer0" class="map-layer"></div>
+      <div id="layer1" class="map-layer"></div>
+      <div id="layer2" class="map-layer"></div>
+      <div id="objectsContainer"></div>
+      
+      <canvas id="fogCanvas" width="10000" height="10000"></canvas>
+      <svg id="grid-svg"></svg>
+      <div id="tokensContainer"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const state = { 
+    zoom: 1, pan: { x: 0, y: 0 }, cell: 48, 
+    tokens: {}, objects: {}, 
+    selectedId: null, selectedType: null, 
+    gridVisible: true,
+    fogActive: false, brushMode: false, isPainting: false
+  };
+  
+  const board = document.getElementById('board');
+  const boardWrap = document.getElementById('boardWrap');
+  const fogCanvas = document.getElementById('fogCanvas');
+  const fogCtx = fogCanvas.getContext('2d');
+
+  function initFog() {
+    fogCtx.fillStyle = 'black';
+    fogCtx.fillRect(0, 0, 10000, 10000);
+    fogCanvas.style.display = 'none';
+  }
+
+  // --- Câmera e Novos Eventos de Pintura ---
+  boardWrap.oncontextmenu = e => e.preventDefault();
+  let isPanning = false, startMouse = { x: 0, y: 0 };
+
+  boardWrap.onmousedown = (e) => {
+    if (state.brushMode && e.button === 0) { state.isPainting = true; paint(e); return; }
+    if (e.button === 2 || e.button === 1) { 
+        isPanning = true; startMouse = { x: e.clientX - state.pan.x, y: e.clientY - state.pan.y };
+        document.getElementById('ctx-menu').style.display='none';
+    }
+  };
+
+  window.onmousemove = (e) => { 
+    if (state.isPainting) paint(e);
+    if (isPanning) { state.pan.x = e.clientX - startMouse.x; state.pan.y = e.clientY - startMouse.y; applyTransform(); } 
+  };
+
+  window.onmouseup = () => { isPanning = false; state.isPainting = false; };
+  
+  boardWrap.onwheel = (e) => { 
+    e.preventDefault();
+    const oldZoom = state.zoom;
+    state.zoom *= e.deltaY > 0 ? 0.9 : 1.1;
+    const rect = boardWrap.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left, mouseY = e.clientY - rect.top;
+    state.pan.x = mouseX - (mouseX - state.pan.x) * (state.zoom / oldZoom);
+    state.pan.y = mouseY - (mouseY - state.pan.y) * (state.zoom / oldZoom);
+    applyTransform(); 
+  };
+
+  function applyTransform() { board.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`; }
+
+  // --- LOGICA DA NÉVOA ---
+  function toggleFog() {
+    state.fogActive = !state.fogActive;
+    fogCanvas.style.display = state.fogActive ? 'block' : 'none';
+    document.getElementById('fogToggle').innerText = state.fogActive ? "Ocultar Escuridão" : "Ativar Escuridão";
+    if(state.fogActive) drawVision();
+  }
+
+  function toggleBrush() {
+    state.brushMode = !state.brushMode;
+    document.getElementById('brushToggle').classList.toggle('btn-active');
+    boardWrap.style.cursor = state.brushMode ? 'crosshair' : 'grab';
+  }
+
+  function paint(e) {
+    const rect = boardWrap.getBoundingClientRect();
+    const x = (e.clientX - rect.left - state.pan.x) / state.zoom + 5000;
+    const y = (e.clientY - rect.top - state.pan.y) / state.zoom + 5000;
+    fogCtx.globalCompositeOperation = 'destination-out';
+    fogCtx.beginPath();
+    fogCtx.arc(x, y, state.cell * 1.5, 0, Math.PI * 2);
+    fogCtx.fill();
+  }
+
+  function drawVision() {
+    if (!state.fogActive) return;
+    Object.values(state.tokens).forEach(t => {
+      const x = t.x + 5000 + (t.size * state.cell / 2);
+      const y = t.y + 5000 + (t.size * state.cell / 2);
+      fogCtx.globalCompositeOperation = 'destination-out';
+      fogCtx.beginPath();
+      fogCtx.arc(x, y, state.cell * 3, 0, Math.PI * 2); // Raio 5x5 aproximado
+      fogCtx.fill();
+    });
+  }
+
+  function resetFog() {
+    fogCtx.globalCompositeOperation = 'source-over';
+    fogCtx.fillStyle = 'black';
+    fogCtx.fillRect(0, 0, 10000, 10000);
+    drawVision();
+  }
+
+  // --- FUNÇÕES RECUPERADAS (MAPAS, TOKENS, OBJETOS) ---
+  function loadMap(event, idx) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const container = document.getElementById(`layer${idx}`);
+      container.innerHTML = `<img src="${e.target.result}" draggable="false"><div class="resizer-handle"></div>`;
+      container.style.width = "1000px";
+      const handle = container.querySelector('.resizer-handle');
+      handle.onmousedown = (ev) => {
+        ev.preventDefault(); ev.stopPropagation();
+        let startW = container.offsetWidth, startX = ev.clientX;
+        const onMove = (m) => { container.style.width = (startW + (m.clientX - startX) / state.zoom) + 'px'; };
+        const onUp = () => window.removeEventListener('mousemove', onMove);
+        window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp);
+      };
+    };
+    if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
+  }
+
+  function toggleResize(idx) { 
+    document.getElementById(`layer${idx}`).classList.toggle('resizable'); 
+    document.getElementById(`btn-res-${idx}`).classList.toggle('btn-active');
+  }
+
+  function addToken() {
+    const file = document.getElementById('tImg').files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const id = "t-" + Date.now();
+      const hp = parseInt(document.getElementById('tHP').value) || 20;
+      state.tokens[id] = { id, name: document.getElementById('tName').value || "Herói", hpMax: hp, hpCur: hp, hpTemp: 0, size: parseFloat(document.getElementById('tSize').value) || 1, imgSrc: e.target.result, auraColor: document.getElementById('tAuraColor').value, auraOn: false, flipped: false, x: 100, y: 100 };
+      renderTokens();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function renderTokens() {
+    const container = document.getElementById('tokensContainer');
+    container.innerHTML = '';
+    Object.values(state.tokens).forEach(t => {
+      const div = document.createElement('div');
+      div.className = `token ${t.hpCur <= 0 ? 'dead' : ''} ${t.flipped ? 'token-flipped' : ''}`;
+      const dim = t.size * state.cell;
+      div.style.cssText = `width:${dim}px; height:${dim}px; left:${t.x}px; top:${t.y}px;`;
+      
+      div.innerHTML = `
+        <div class="token-name" style="font-size: ${dim/6}px">${t.name}</div>
+        <div class="token-img-wrap">
+            <div class="aura ${t.auraOn ? 'active' : ''}" style="background: radial-gradient(circle, ${t.auraColor} 0%, transparent 70%);"></div>
+            <div class="death-icon" style="font-size: ${dim/2}px">💀</div>
+            <img src="${t.imgSrc}" class="token-img" draggable="false">
+        </div>
+        <div class="hp-wrapper">
+          <div class="hp-container">
+            <div class="hp-text">${t.hpCur} / ${t.hpMax}</div>
+            <div class="hp-bar" style="width:${(t.hpCur/t.hpMax)*100}%; background: ${t.hpCur <= t.hpMax/4 ? 'var(--bad)' : 'var(--good)'}"></div>
+          </div>
+          <div class="temp-hp-container ${t.hpTemp > 0 ? 'active' : ''}">
+             <div class="hp-temp-bar" style="width:100%"></div>
+             <div class="hp-text" style="font-size:8px">+${t.hpTemp}</div>
+          </div>
+        </div>`;
+      
+      div.onmousedown = (e) => {
+        if(e.button !== 0 || state.brushMode) return; e.stopPropagation();
+        let sX = e.clientX, sY = e.clientY;
+        const onMove = (m) => { 
+            t.x += (m.clientX - sX)/state.zoom; t.y += (m.clientY - sY)/state.zoom; 
+            sX=m.clientX; sY=m.clientY; div.style.left=t.x+'px'; div.style.top=t.y+'px';
+            if(state.fogActive) drawVision();
+        };
+        const onUp = () => { t.x = Math.round(t.x/state.cell)*state.cell; t.y = Math.round(t.y/state.cell)*state.cell; renderTokens(); window.removeEventListener('mousemove', onMove); };
+        window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp);
+      };
+      div.oncontextmenu = (e) => { e.preventDefault(); e.stopPropagation(); state.selectedId = t.id; state.selectedType = 'token'; showMenu(e, t.name, true); };
+      container.appendChild(div);
+    });
+    if(state.fogActive) drawVision();
+  }
+
+  function addObject() {
+    const file = document.getElementById('oImg').files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const id = "obj-" + Date.now();
+      state.objects[id] = { id, imgSrc: e.target.result, x: 200, y: 200, w: 150, h: 150, rotation: 0, flipped: false };
+      renderObjects();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function renderObjects() {
+    const container = document.getElementById('objectsContainer');
+    container.innerHTML = '';
+    Object.values(state.objects).forEach(o => {
+      const div = document.createElement('div');
+      div.className = 'object-item' + (o.flipped ? ' object-flipped' : '');
+      div.style.cssText = `left:${o.x}px; top:${o.y}px; width:${o.w}px; height:${o.h}px; transform: rotate(${o.rotation}deg);`;
+      div.innerHTML = `<div class="object-img-wrap"><img src="${o.imgSrc}" draggable="false"></div><div class="obj-handle obj-resizer"></div><div class="obj-handle obj-rotator"></div>`;
+      
+      div.onmousedown = (e) => {
+        if(e.button !== 0 || e.target.classList.contains('obj-handle') || state.brushMode) return; 
+        e.stopPropagation();
+        document.querySelectorAll('.object-item').forEach(el => el.classList.remove('object-selected'));
+        div.classList.add('object-selected');
+        let sX = e.clientX, sY = e.clientY;
+        const onMove = (m) => { o.x += (m.clientX - sX)/state.zoom; o.y += (m.clientY - sY)/state.zoom; sX=m.clientX; sY=m.clientY; div.style.left=o.x+'px'; div.style.top=o.y+'px'; };
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', () => window.removeEventListener('mousemove', onMove), {once:true});
+      };
+
+      div.querySelector('.obj-resizer').onmousedown = (e) => {
+        e.stopPropagation();
+        let sW = o.w, sH = o.h, sX = e.clientX, sY = e.clientY;
+        const onMove = (m) => { o.w = sW + (m.clientX - sX)/state.zoom; o.h = sH + (m.clientY - sY)/state.zoom; div.style.width=o.w+'px'; div.style.height=o.h+'px'; };
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', () => window.removeEventListener('mousemove', onMove), {once:true});
+      };
+
+      div.querySelector('.obj-rotator').onmousedown = (e) => {
+        e.stopPropagation();
+        const rect = div.getBoundingClientRect();
+        const centerX = rect.left + rect.width/2, centerY = rect.top + rect.height/2;
+        const onMove = (m) => { o.rotation = Math.atan2(m.clientY - centerY, m.clientX - centerX) * (180/Math.PI) + 90; div.style.transform = `rotate(${o.rotation}deg)`; };
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', () => window.removeEventListener('mousemove', onMove), {once:true});
+      };
+
+      div.oncontextmenu = (e) => { e.preventDefault(); e.stopPropagation(); state.selectedId = o.id; state.selectedType = 'object'; showMenu(e, "Objeto", false); };
+      container.appendChild(div);
+    });
+  }
+
+  function showMenu(e, name, isToken) {
+    const menu = document.getElementById('ctx-menu');
+    document.getElementById('ctx-name').innerText = name;
+    document.getElementById('token-options').style.display = isToken ? 'block' : 'none';
+    menu.style.display = 'block'; menu.style.left = e.clientX + 'px'; menu.style.top = e.clientY + 'px';
+  }
+
+  function deleteSelected() {
+    if(state.selectedType === 'token') delete state.tokens[state.selectedId];
+    else delete state.objects[state.selectedId];
+    renderTokens(); renderObjects();
+  }
+
+  function changeHP(heal) {
+    const val = parseInt(prompt("Valor:")); if (isNaN(val)) return;
+    const t = state.tokens[state.selectedId];
+    if (heal) t.hpCur = Math.min(t.hpCur + val, t.hpMax);
+    else {
+      if (t.hpTemp > 0) { 
+        let rem = val - t.hpTemp; t.hpTemp = Math.max(0, t.hpTemp - val); 
+        if (rem > 0) t.hpCur = Math.max(0, t.hpCur - rem); 
+      } else t.hpCur = Math.max(0, t.hpCur - val);
+    }
+    renderTokens();
+  }
+
+  function addTempHP() { const val = parseInt(prompt("Escudo:")); if (!isNaN(val)) state.tokens[state.selectedId].hpTemp = val; renderTokens(); }
+  function toggleAura() { state.tokens[state.selectedId].auraOn = !state.tokens[state.selectedId].auraOn; renderTokens(); }
+  function toggleFlip() {
+    if(state.selectedType === 'token') { state.tokens[state.selectedId].flipped = !state.tokens[state.selectedId].flipped; renderTokens(); }
+    else { state.objects[state.selectedId].flipped = !state.objects[state.selectedId].flipped; renderObjects(); }
+  }
+
+  function updateGrid() {
+    state.cell = parseInt(document.getElementById('cellSize').value) || 48;
+    document.getElementById('grid-svg').innerHTML = `<defs><pattern id="gridPattern" width="${state.cell}" height="${state.cell}" patternUnits="userSpaceOnUse"><path d="M ${state.cell} 0 L 0 0 0 ${state.cell}" fill="none" stroke="rgba(110,168,254,0.4)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#gridPattern)" />`;
+  }
+  function toggleGrid() { state.gridVisible = !state.gridVisible; document.getElementById('grid-svg').style.display = state.gridVisible ? "block" : "none"; }
+
+  window.onclick = () => { 
+    document.getElementById('ctx-menu').style.display='none';
+    if(!event.target.closest('.object-item')) document.querySelectorAll('.object-item').forEach(el => el.classList.remove('object-selected'));
+  };
+
+  initFog();
+  updateGrid();
+</script>
+</body>
+</html>

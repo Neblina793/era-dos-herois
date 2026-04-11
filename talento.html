@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Talentos - Era dos Heróis</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    
+    <style>
+        /* =========================================
+           CONFIGURAÇÃO PROFISSIONAL DO FUNDO
+           ========================================= */
+        body {
+            /* Define a imagem 01.png como fundo fixo e centralizado */
+            background-image: url('01.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        /* Máscara escura e transparente sobre a imagem para garantir leitura */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* 85% de preto puro para escurecer a imagem de fundo */
+            background-color: rgba(7, 7, 9, 0.85); 
+            z-index: 0;
+        }
+
+        /* Garante que o conteúdo da página fique acima da máscara */
+        nav, section, footer {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* =========================================
+           ESTILIZAÇÃO DOS CARDS DE TALENTO (PRO)
+           ========================================= */
+        .talent-card-pro {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Efeito de hover místico e dourado */
+        .talent-card-pro:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(212, 175, 55, 0.03);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Emblema de Categoria */
+        .category-badge {
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-200">
+
+    <nav class="fixed w-full z-50 glass py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="text-2xl font-cinzel font-bold gold-gradient tracking-widest uppercase">
+                Era dos <span class="text-white">Heróis</span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font-semibold uppercase tracking-wider">
+                <a href="index.html" class="hover:text-yellow-500 transition text-gray-400">Início</a>
+                <a href="index.html#regras" class="hover:text-yellow-500 transition text-gray-400">Regras</a>
+                <a href="#" class="text-yellow-500 transition">Talentos</a>
+                <a href="grimorio.html" class="hover:text-yellow-500 transition text-gray-400">Grimório</a>
+            </div>
+            <a href="index2.html" class="btn-gold text-black px-6 py-2 rounded-sm font-bold text-xs uppercase tracking-tighter">
+                2ª Temporada
+            </a>
+        </div>
+    </nav>
+
+     </section>
+
+    <section class="py-10">
+        <div class="container mx-auto px-6 max-w-4xl">
+            
+            <div class="mb-4">
+                <button onclick="toggleAccordion('lista-geral', this)" class="w-full glass p-6 rounded-t-xl flex justify-between items-center border-b border-yellow-500/20 hover:bg-white/5 transition-all">
+                    <span class="font-cinzel text-xl font-bold tracking-wider uppercase">Lista de Talentos</span>
+                    <i class="fa fa-chevron-down rotate-icon text-yellow-500"></i>
+                </button>
+                <div id="lista-geral" class="accordion-content glass rounded-b-xl border-x border-b border-white/5">
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="talent-card p-4 rounded-lg">
+                            <h4 class="text-yellow-500 font-bold font-cinzel mb-2">Talento e Categoria</h4>
+                            <p class="text-gray-400 text-sm">Adepto Elemental Geral</p>
+Agressor Geral</p>
+Alerta Origem</p>
+Analítico Geral</p>
+Arquearia Estilo de Luta</p>
+Artifista Origem</p>
+Atacante Selvagem Origem</p>
+Atirador Arcano Geral</p>
+Atleta Geral</p>
+Ator Geral</p>
+Aumento no Valor de Atributo Geral</p>
+Chef Geral</p>
+Combate com Armas de Arremesso Estilo de Luta</p>
+Combate com Armas Grandes Estilo de Luta</p>
+Combate com Duas Armas Estilo de Luta</p>
+Combate Desarmado Estilo de Luta</p>
+Combatente Montado Geral</p>
+Conjurador Bélico Geral</p>
+Conjurador Ritualista Geral</p>
+Curandeiro Origem</p>
+Dádiva da Fortitude Dádiva Épica</p>
+Dádiva da Proeza em Combate Dádiva Épica</p>
+Dádiva da Proficiência em Perícia Dádiva Épica</p>
+Dádiva da Recordação de Magia Dádiva Épica</p>
+Dádiva da Recuperação Dádiva Épica</p>
+Dádiva da Resistência à Energia Dádiva Épica</p>
+Dádiva da Velocidade Dádiva Épica</p>
+Dádiva da Viagem Dimensional Dádiva Épica</p>
+Dádiva da Visão Verdadeira Dádiva Épica</p>
+Dádiva do Ataque Irresistível Dádiva Épica</p>
+Dádiva do Destino Dádiva Épica</p>
+Dádiva do Espírito da Noite Dádiva Épica</p>
+Defensivo Estilo de Luta</p>
+Duelismo Estilo de Luta</p>
+Duelista Defensivo Geral</p>
+Envenenador Geral</p>
+Esmagador Geral</p>
+Especialista Ambidestro Geral</p>
+Especialista em Armaduras Leves Geral</p>
+Especialista em Armaduras Médias Geral</p>
+Especialista em Armaduras Pesadas Geral</p>
+Especialista em Besta Geral</p>
+Especialista em Perícia Geral</p>
+Exterminador de Conjuradores Geral</p>
+Habilidoso* Origem</p>
+Imobilizador Geral</p>
+Especialista em Armaduras Médias Geral</p>
+Especialista em Armaduras Pesadas Geral</p>
+Especialista em Besta Geral</p>
+Especialista em Perícia Geral</p>
+Exterminador de Conjuradores Geral</p>
+Habilidoso Origem</p>
+Imobilizador Geral</p>
+Iniciado em Magia Origem</p>
+Interceptação Estilo de Luta</p>
+Líder Inspirador Geral</p>
+Luta às Cegas Estilo de Luta</p>
+Mente Aguçada Geral</p>
+Mestre das Armas Geral</p>
+Mestre em Armaduras Médias Geral</p>
+Mestre em Armaduras Pesadas Geral</p>
+Mestre em Armas de Haste Geral</p>
+Mestre em Armas Grandes Geral</p>
+Mestre em Escudos Geral</p>
+Mestre-Atirador Geral</p>
+Músico Origem</p>
+Perfurador Geral</p>
+Protetivo Estilo de Luta</p>
+Resiliente Geral</p>
+Resistente Geral</p>
+Sentinela Geral</p>
+Sorrateiro Geral</p>
+Sortudo Origem</p>
+Talhador Geral</p>
+Telecinético Geral</p>
+Telepático Geral</p>
+Tocado pela Sombra Geral</p>
+Tocado pelas Fadas Geral</p>
+Treinamento com Armas Marciais Geral</p>
+Valentão de Taverna Origem</p>
+Velocista Geral</p>
+Vigoroso Origem</p>
+                       
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <button onclick="toggleAccordion('talentos-origem', this)" class="w-full glass p-6 rounded-t-xl flex justify-between items-center border-b border-yellow-500/20 hover:bg-white/5 transition-all">
+                    <span class="font-cinzel text-xl font-bold tracking-wider uppercase">Talentos de Origem</span>
+                    <i class="fa fa-chevron-down rotate-icon text-yellow-500"></i>
+                </button>
+                <div id="talentos-origem" class="accordion-content glass rounded-b-xl border-x border-b border-white/5">
+                    <div class="p-6">
+                        <p class="text-gray-400 italic mb-4">Estes talentos refletem o passado e a criação do seu herói.</p>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Alerta</h4>
+                            <p class="text-gray-400 text-sm">Você adquire os seguintes benefícios.
+Proficiência em Iniciativa. Quando você joga Iniciativa, pode adicionar seu Bônus de Proficiência à jogada.
+Troca de Iniciativa. Imediatamente após jogar Iniciativa, você pode trocar sua Iniciativa com a Iniciativa
+de um aliado voluntário no mesmo combate. Não é
+possível fazer a troca se você ou o aliado tem a condição Incapacitado.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Artifista</h4>
+                            <p class="text-gray-400 text-sm">Você adquire os seguintes benefícios.
+Proficiência com Ferramentas. Você adquire proficiência com três Ferramentas de Artesão diferentes à sua
+escolha na tabela Fabricação Rápida.
+Desconto. Sempre que você compra um item não
+mágico, recebe um desconto de 20% nele.
+Fabricação Rápida. Quando completa um Descanso
+Longo, você pode fabricar uma peça de equipamento
+da tabela Fabricação Rápida, se tiver as Ferramentas
+de Artesão associadas a esse item e tenha proficiência
+com essas ferramentas. O item permanece até que você
+complete outro Descanso Longo, momento em que o
+item se desfaz.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Atacante Selvagem</h4>
+                            <p class="text-gray-400 text-sm">Você treinou para causar ataques particularmente nocivos. Uma vez por turno, quando você atinge um alvo
+com uma arma, pode jogar os dados de dano da arma
+duas vezes e usar qualquer uma das jogadas contra o
+alvo.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Curandeiro</h4>
+                            <p class="text-gray-400 text-sm">Você adquire os seguintes benefícios.
+Médico de Combate. Caso tenha um Kit de Curandeiro, você pode gastar um uso e cuidar de uma criatura
+a até 1,5 metro de você como uma ação Usar Objeto.
+Essa criatura pode gastar um dos Dados de Pontos de
+Vida dela e você joga esse dado. A criatura recupera
+um número de Pontos de Vida igual à jogada mais o
+seu Bônus de Proficiência.
+Cura Garantida. Sempre que jogar um dado para determinar o número de Pontos de Vida que você recupera com uma magia ou com o benefício do talento Médico de Combate, você pode jogar novamente o dado se
+o resultado for 1, e você deve usar a nova jogada.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Habilidoso</h4>
+                            <p class="text-gray-400 text-sm">Você adquire proficiência em qualquer combinação de
+três perícias ou ferramentas à sua escolha.
+Repetível. Você pode adquirir este talento mais de
+uma vez.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Iniciado em Magia</h4>
+                            <p class="text-gray-400 text-sm">Você adquire os seguintes benefícios.
+Dois Truques. Você aprende dois truques à sua
+escolha na lista de magias de Clérigo, Druida ou Mago.
+Inteligência, Sabedoria ou Carisma é seu atributo de
+conjuração para as magias deste talento (escolha quando selecionar este talento).
+Magia de 1º Círculo. Escolha uma magia de 1º círculo
+da mesma lista que você selecionou para os truques
+deste talento. Você tem essa magia sempre preparada. Você pode conjurá-la uma vez sem um espaço de
+magia, e você restaura a capacidade de conjurá-la dessa
+maneira quando completa um Descanso Longo. Você
+também pode conjurar a magia usando qualquer espaço de magia que tiver.
+Substituição de Magia. Sempre que você alcança
+um novo nível, pode substituir uma das magias que
+escolheu para este talento por uma magia diferente do
+mesmo círculo da lista de magias escolhida.
+Repetível. Você pode adquirir este talento mais de
+uma vez, mas deve escolher uma lista de magias diferente a cada vez.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Músico</h4>
+                            <p class="text-gray-400 text-sm">Você adquire os seguintes benefícios.
+Treinamento em Instrumentos. Você adquire proficiência com três Instrumentos Musicais à sua escolha.
+Canção Encorajadora. Ao completar um Descanso
+Curto ou Longo, você pode tocar uma música em um
+Instrumento Musical com o qual tem proficiência e
+conceder Inspiração Heroica a aliados que ouvem a
+música. O número de aliados que você pode afetar
+desse modo é igual ao seu Bônus de Proficiência.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Sortudo</h4>
+                            <p class="text-gray-400 text-sm">Você adquire os seguintes benefícios.
+Pontos de Sorte. Você tem um número de Pontos de
+Sorte igual ao seu Bônus de Proficiência e pode gastar
+os pontos nos benefícios abaixo. Você restaura seus
+Pontos de Sorte gastos quando completa um Descanso
+Longo.
+Vantagem. Quando você joga um d20 para um Teste
+de D20, pode gastar 1 Ponto de Sorte para ter Vantagem na jogada.
+Desvantagem. Quando uma criatura jogar um d20
+para uma jogada de ataque contra você, você pode
+gastar 1 Ponto de Sorte para impor Desvantagem nessa
+jogada.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Valentão de Taverna
+</h4>
+                            <p class="text-gray-400 text-sm">Você adquire os seguintes benefícios.
+Ataque Desarmado Aprimorado. Quando você atinge
+com seu Ataque Desarmado e causar dano, pode causar
+dano Contundente igual a 1d4 pontos mais seu modificador de Força em vez do dano normal de um Ataque
+Desarmado.
+Dano Garantido. Sempre que você joga um dado de
+dano para seu Ataque Desarmado, pode jogar novamente o dado se o resultado for 1, e deve usar a nova
+jogada.
+Armamento Improvisado. Você tem proficiência com
+armas improvisadas.
+Empurrar. Quando você atinge uma criatura com um
+Ataque Desarmado como parte da ação Atacar no seu
+turno, pode causar dano ao alvo e também empurrá-
+-lo 1,5 metro para longe de você. Você pode usar esse
+benefício apenas uma vez por turno.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Vigoroso</h4>
+                            <p class="text-gray-400 text-sm">Seus Pontos de Vida máximos aumentam em um valor
+igual ao dobro do seu nível de personagem quando
+você obtém este talento. Sempre que você alcança um
+nível de personagem depois disso, seus Pontos de Vida
+máximos aumentam em 2 Pontos de Vida adicionais.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg border-l-4 border-l-yellow-600">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Inspirado pelos Deuses</h4>
+                            <p class="text-gray-400 text-sm">Você recebe um bônus em testes de resistência baseados no seu progenitor mitológico.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <button onclick="toggleAccordion('talentos-dadivas', this)" class="w-full glass p-6 rounded-t-xl flex justify-between items-center border-b border-yellow-500/20 hover:bg-white/5 transition-all">
+                    <span class="font-cinzel text-xl font-bold tracking-wider uppercase">Talento de Dádivas</span>
+                    <i class="fa fa-chevron-down rotate-icon text-yellow-500"></i>
+                </button>
+                <div id="talentos-dadivas" class="accordion-content glass rounded-b-xl border-x border-b border-white/5">
+                    <div class="p-6">
+                        <div class="talent-card p-4 rounded-lg mb-4">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Favor de Afrodite</h4>
+                            <p class="text-gray-400 text-sm">Vantagem em testes de Persuasão e charme místico.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Fúria de Ares</h4>
+                            <p class="text-gray-400 text-sm">Adiciona bônus de dano extra em ataques críticos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <button onclick="toggleAccordion('estilo-luta', this)" class="w-full glass p-6 rounded-t-xl flex justify-between items-center border-b border-yellow-500/20 hover:bg-white/5 transition-all">
+                    <span class="font-cinzel text-xl font-bold tracking-wider uppercase">Talento de Estilo de Luta</span>
+                    <i class="fa fa-chevron-down rotate-icon text-yellow-500"></i>
+                </button>
+                <div id="estilo-luta" class="accordion-content glass rounded-b-xl border-x border-b border-white/5">
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="talent-card p-4 rounded-lg">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Sentinela</h4>
+                            <p class="text-gray-400 text-sm">Capacidade de travar o deslocamento do inimigo com ataques de oportunidade.</p>
+                        </div>
+                        <div class="talent-card p-4 rounded-lg">
+                            <h4 class="text-yellow-500 font-bold font-cinzel">Atacante Selvagem</h4>
+                            <p class="text-gray-400 text-sm">Permite rerrolar resultados "1" em dados de dano de armas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-white/5 mt-20 text-center relative z-10">
+        <div class="text-xl font-cinzel font-bold gold-gradient tracking-widest mb-4 uppercase">Era dos Heróis</div>
+        <p class="text-gray-500 text-xs">© 2026 Era dos Heróis. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        function toggleAccordion(id, btn) {
+            const content = document.getElementById(id);
+            const icon = btn.querySelector('.rotate-icon');
+            
+            // Fecha outros abertos (Opcional)
+            /* document.querySelectorAll('.accordion-content').forEach(el => {
+                if(el.id !== id) {
+                    el.classList.remove('open');
+                    el.previousElementSibling.querySelector('.rotate-icon').classList.remove('active');
+                }
+            }); 
+            */
+
+            content.classList.toggle('open');
+            icon.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

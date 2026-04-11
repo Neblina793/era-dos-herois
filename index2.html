@@ -4,155 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Era dos Heróis - Temporada 2</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    
     <style>
-        :root {
-            --primary-gold: #d4af37;
-            --dark-bg: #0a0a0b;
-            --card-bg: #161618;
-            --text-light: #e0e0e0;
-            --neon-blue: #0ff;
+        /* Estilos específicos para as funcionalidades da Temporada 2 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
         }
-
-        body { 
-            font-family: 'Poppins', sans-serif; background-color: var(--dark-bg); color: var(--text-light); 
-            margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
-            padding: 40px 20px; overflow-x: hidden; position: relative;
+        .raca-description {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: rgba(0, 0, 0, 0.2);
         }
-
-        /* ANIMAÇÃO DE FUNDO */
-        .dice-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .rpg-dice { position: absolute; opacity: 0; animation: floatAndFade 10s infinite ease-in-out; will-change: transform, opacity; }
-        .rpg-dice img { width: 50px; filter: drop-shadow(0 0 10px var(--neon-blue)); }
-        
+        .raca-description.open {
+            max-height: 200px;
+            padding: 1rem;
+            border-left: 2px solid #d4af37;
+            margin-top: 0.5rem;
+        }
+        .dice-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .rpg-dice { position: absolute; opacity: 0; animation: floatAndFade 10s infinite ease-in-out; }
         @keyframes floatAndFade {
-            0% { transform: translate(var(--x-start), var(--y-start)) scale(0.5) rotate(0deg); opacity: 0; }
-            50% { opacity: 0.4; }
-            100% { transform: translate(var(--x-end), var(--y-end)) scale(1.2) rotate(360deg); opacity: 0; }
+            0% { transform: translate(var(--x-start), var(--y-start)) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.3; }
+            100% { transform: translate(var(--x-end), var(--y-end)) rotate(360deg); opacity: 0; }
         }
-
-        .main-container { width: 100%; max-width: 550px; text-align: center; z-index: 1; position: relative; }
-        
-        .logo-container { display: flex; justify-content: center; margin-bottom: 20px; }
-        .logo-img { max-width: 250px; height: auto; filter: drop-shadow(0 0 10px var(--primary-gold)); }
-
-        /* MENU SUPERIOR */
-        .nav-top { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; justify-content: center; }
-        .btn-nav { 
-            background: none; border: 1px solid var(--primary-gold); color: var(--primary-gold); 
-            padding: 10px 15px; border-radius: 5px; cursor: pointer; text-decoration: none; 
-            font-size: 12px; font-weight: bold; font-family: 'Cinzel';
-            transition: 0.3s;
-        }
-        .btn-nav:hover { background: var(--primary-gold); color: #000; }
-
-        .btn-main-expande { 
-            background: var(--card-bg); color: var(--primary-gold); padding: 18px; 
-            border: 2px solid var(--primary-gold); width: 100%; font-weight: bold; 
-            cursor: pointer; border-radius: 8px; margin-top: 15px; font-family: 'Cinzel';
-            display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 1.1rem;
-        }
-
-        .expand-content { display: none; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 0 0 8px 8px; margin-top: -5px; }
-        
-        .raca-item { margin-bottom: 5px; }
-        .btn-raca { 
-            background: #252529; color: #fff; border: 1px solid #444; padding: 12px; 
-            width: 100%; text-align: left; cursor: pointer; border-radius: 4px; 
-            font-family: 'Cinzel'; display: flex; justify-content: space-between; 
-        }
-        .btn-raca:hover { border-color: var(--primary-gold); }
-        .desc-raca { 
-            display: none; padding: 15px; font-size: 0.9rem; color: #bbb; 
-            border-left: 2px solid var(--primary-gold); background: rgba(0,0,0,0.2); 
-            text-align: left; margin-top: 2px;
-        }
-
-        #modal-ficha { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; overflow-y: auto; padding: 20px; }
-        .dnd-sheet { background: #fff; color: #000; max-width: 600px; margin: 20px auto; padding: 25px; border-radius: 5px; text-align: left; }
     </style>
 </head>
-<body>
+<body class="antialiased bg-[#070709] text-white">
 
-    <div class="dice-container" id="dice-animation-container"></div>
+    <div class="dice-bg" id="dice-animation-container"></div>
 
-    <div class="main-container">
-        <div class="logo-container">
-            <img src="logo2.png" class="logo-img" onerror="this.src='icon-192.png'">
+    <nav class="fixed w-full z-50 glass py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="text-2xl font-cinzel font-bold gold-gradient tracking-widest uppercase">
+                Era dos <span class="text-white">Heróis</span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font-semibold uppercase tracking-wider">
+                <a href="index.html" class="hover:text-yellow-500 transition">Início</a>
+                <a href="ficha_personagem.html" class="hover:text-yellow-500 transition">Novo Herói</a>
+                <a href="https://drive.google.com/drive/folders/1Y0BOCDEveI9aywgea5P9Jymb3WMGVYUT" target="_blank" class="hover:text-yellow-500 transition">Biblioteca</a>
+            </div>
+            <span class="text-yellow-500 font-cinzel font-bold text-xs border border-yellow-500/30 px-3 py-1 rounded">2ª TEMPORADA</span>
         </div>
+    </nav>
 
-        <div class="nav-top">
-            <a href="index.html" class="btn-nav"><i class="fa fa-home"></i> Início</a>
-            <a href="ficha_personagem.html" class="btn-nav"><i class="fa fa-user-plus"></i> Novo Herói</a>
-            <a href="https://drive.google.com/drive/folders/1Y0BOCDEveI9aywgea5P9Jymb3WMGVYUT" target="_blank" class="btn-nav">
-                <i class="fa fa-book"></i> BIBLIOTECA
-            </a>
+    <section class="pt-32 pb-10 relative z-10">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-yellow-500 font-cinzel text-xl mb-2 tracking-[0.3em] uppercase">A Continuação da Odisseia</h2>
+            <h1 class="text-4xl md:text-6xl font-cinzel font-bold mb-8 gold-gradient uppercase">Temporada 2</h1>
+            
+            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                
+                <div class="glass-card p-8 border-t-4 border-t-yellow-500/50">
+                    <h3 class="text-2xl font-cinzel font-bold mb-6 flex items-center justify-center gap-3">
+                        <i class="fa fa-users text-yellow-500 text-sm"></i> Heróis Forjados
+                    </h3>
+                    <div id="container-lista-pers" class="space-y-3 text-left max-h-[400px] overflow-y-auto pr-2">
+                        <p class="text-gray-500 text-center italic">Carregando crônicas...</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8 border-t-4 border-t-yellow-500/50 text-left">
+                    <h3 class="text-2xl font-cinzel font-bold mb-6 text-center flex items-center justify-center gap-3">
+                        <i class="fa fa-scroll text-yellow-500 text-sm"></i> Linhagens
+                    </h3>
+                    
+                    <div class="space-y-2">
+                        <div class="border-b border-white/5 pb-2">
+                            <button onclick="toggleRaca('desc-monstro')" class="w-full flex justify-between items-center py-2 hover:text-yellow-500 transition font-cinzel uppercase text-sm tracking-widest">
+                                Meio Monstro <i class="fa fa-paw text-xs"></i>
+                            </button>
+                            <div id="desc-monstro" class="raca-description text-gray-400 text-sm">
+                                Seres que carregam sangue de criaturas selvagens. Possuem força física brutal e instintos aguçados.
+                            </div>
+                        </div>
+
+                        <div class="border-b border-white/5 pb-2">
+                            <button onclick="toggleRaca('desc-deus')" class="w-full flex justify-between items-center py-2 hover:text-yellow-500 transition font-cinzel uppercase text-sm tracking-widest">
+                                Semi-Deus <i class="fa fa-bolt text-xs"></i>
+                            </button>
+                            <div id="desc-deus" class="raca-description text-gray-400 text-sm">
+                                Filhos de divindades com mortais. Carregam dons extraordinários e aura de autoridade.
+                            </div>
+                        </div>
+
+                        <div class="border-b border-white/5 pb-2">
+                            <button onclick="toggleRaca('desc-demonio')" class="w-full flex justify-between items-center py-2 hover:text-yellow-500 transition font-cinzel uppercase text-sm tracking-widest">
+                                Semi-Demônio <i class="fa fa-fire text-xs"></i>
+                            </button>
+                            <div id="desc-demonio" class="raca-description text-gray-400 text-sm">
+                                Indivíduos tocados pelas energias abissais. Possuem resistência ao fogo e habilidades sombrias.
+                            </div>
+                        </div>
+
+                        <div class="border-b border-white/5 pb-2">
+                            <button onclick="toggleRaca('desc-anjo')" class="w-full flex justify-between items-center py-2 hover:text-yellow-500 transition font-cinzel uppercase text-sm tracking-widest">
+                                Semi-Anjo <i class="fa fa-feather text-xs"></i>
+                            </button>
+                            <div id="desc-anjo" class="raca-description text-gray-400 text-sm">
+                                Descendentes de linhagens celestiais. Irradiam luz e aptidão inata para cura e proteção.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
+    </section>
 
-        <button class="btn-main-expande" onclick="toggle('sec-personagens')">
-            <i class="fa fa-users"></i> Personagens Salvos <i class="fa fa-chevron-down"></i>
-        </button>
-        <div id="sec-personagens" class="expand-content">
-            <div id="container-lista-pers">Carregando...</div>
-        </div>
-
-        <button class="btn-main-expande" onclick="toggle('guia-racas-lista')">
-            <i class="fa fa-scroll"></i> Guia das Raças <i class="fa fa-chevron-down"></i>
-        </button>
-        
-        <div id="guia-racas-lista" class="expand-content">
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-monstro')">Meio Monstro <i class="fa fa-paw"></i></button>
-                <div id="desc-monstro" class="desc-raca">Seres que carregam sangue de criaturas selvagens. Possuem força física brutal e instintos aguçados.</div>
-            </div>
-
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-deus')">Semi-Deus <i class="fa fa-bolt"></i></button>
-                <div id="desc-deus" class="desc-raca">Filhos de divindades com mortais. Carregam dons extraordinários e aura de autoridade.</div>
-            </div>
-
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-demonio')">Semi-Demonio <i class="fa fa-fire"></i></button>
-                <div id="desc-demonio" class="desc-raca">Indivíduos tocados pelas energias abissais. Possuem resistência ao fogo e habilidades sombrias.</div>
-            </div>
-
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-anjo')">Semi-Anjo <i class="fa fa-feather"></i></button>
-                <div id="desc-anjo" class="desc-raca">Descendentes de linhagens celestiais. Irradiam luz e aptidão inata para cura e proteção.</div>
-            </div>
-
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-entidade')">Semi-Entidade <i class="fa fa-eye"></i></button>
-                <div id="desc-entidade" class="desc-raca">Originados de forças primordiais. Podem distorcer levemente a percepção da realidade.</div>
-            </div>
-
-            <div class="raca-item">
-                <button class="btn-raca" onclick="toggle('desc-santo')">Semi-Santo <i class="fa fa-cross"></i></button>
-                <div id="desc-santo" class="desc-raca">Mortais que alcançaram pureza espiritual elevada. Sua fé manifesta milagres.</div>
-            </div>
+    <div id="modal-ficha" class="fixed inset-0 z-[100] hidden bg-black/95 backdrop-blur-sm p-4 overflow-y-auto">
+        <div class="max-w-2xl mx-auto mt-10 bg-white text-black rounded-lg p-8 shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black">
+                <i class="fa fa-times text-xl"></i>
+            </button>
+            <div id="conteudo-ficha" class="font-inter"></div>
         </div>
     </div>
 
-    <div id="modal-ficha">
-        <div class="dnd-sheet" id="conteudo-ficha"></div>
-        <button onclick="document.getElementById('modal-ficha').style.display='none'" style="width:100%; max-width:600px; padding:15px; background:#000; color:#fff; border:none; cursor:pointer; font-family:'Cinzel';">FECHAR</button>
-    </div>
+    <footer class="py-12 border-t border-white/5 mt-20 text-center relative z-10">
+        <div class="text-xl font-cinzel font-bold gold-gradient tracking-widest mb-4">ERA DOS HERÓIS</div>
+        <p class="text-gray-500 text-xs uppercase tracking-widest">A jornada continua na Segunda Temporada</p>
+    </footer>
 
     <script>
-        function toggle(id) {
+        // Lógica de Expansão das Raças
+        function toggleRaca(id) {
             const el = document.getElementById(id);
-            el.style.display = (el.style.display === "block") ? "none" : "block";
+            const isOpen = el.classList.contains('open');
+            
+            // Fecha todas as outras
+            document.querySelectorAll('.raca-description').forEach(d => d.classList.remove('open'));
+            
+            if (!isOpen) el.classList.add('open');
         }
 
+        // Modal Handler
+        function closeModal() {
+            document.getElementById('modal-ficha').classList.add('hidden');
+        }
+
+        // Animação de Dados (Fundo)
         function createDice() {
+            const container = document.getElementById('dice-animation-container');
             const dice = document.createElement('div');
             dice.className = 'rpg-dice';
             const img = document.createElement('img');
             const diceFiles = ['D4.png', 'D6.png', 'D8.png', 'D10.png', 'D12.png', 'D20.png'];
+            
+            // Tenta carregar a imagem, se falhar usa um ícone de fallback
             img.src = diceFiles[Math.floor(Math.random() * diceFiles.length)];
+            img.style.width = "40px";
+            img.style.filter = "sepia(1) saturate(5) hue-rotate(10deg) drop-shadow(0 0 5px rgba(212, 175, 55, 0.5))";
             
             dice.appendChild(img);
             dice.style.setProperty('--x-start', Math.random() * window.innerWidth + 'px');
@@ -160,21 +170,32 @@
             dice.style.setProperty('--x-end', Math.random() * window.innerWidth + 'px');
             dice.style.setProperty('--y-end', Math.random() * window.innerHeight + 'px');
             
-            document.getElementById('dice-animation-container').appendChild(dice);
+            container.appendChild(dice);
             setTimeout(() => dice.remove(), 10000);
         }
-        setInterval(createDice, 2000);
+        setInterval(createDice, 2500);
 
+        // Carregar Personagens do LocalStorage
         function carregarLista() {
             const personagens = JSON.parse(localStorage.getItem('rpg_v6_total')) || [];
             const container = document.getElementById('container-lista-pers');
-            if (personagens.length === 0) { container.innerHTML = "Nenhum herói forjado."; return; }
+            
+            if (personagens.length === 0) { 
+                container.innerHTML = `<div class="text-center py-10 text-gray-600 border border-dashed border-white/10 rounded-xl">Nenhum herói forjado nesta era.</div>`; 
+                return; 
+            }
+
             container.innerHTML = personagens.map((p, i) => `
-                <div style="background:#1c1c1e; padding:12px; margin-bottom:8px; border-radius:6px; border-left:4px solid var(--primary-gold); text-align:left;">
-                    <strong>${p.nome}</strong> - ${p.classe} (Nv ${p.nivel})
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-yellow-500/30 transition-all group flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-yellow-500 group-hover:text-yellow-400 transition">${p.nome}</div>
+                        <div class="text-xs text-gray-500 uppercase tracking-tighter">${p.classe} • Nível ${p.nivel}</div>
+                    </div>
+                    <i class="fa fa-chevron-right text-gray-700 group-hover:text-yellow-500 text-xs"></i>
                 </div>
             `).join('');
         }
+
         window.onload = carregarLista;
     </script>
 </body>
