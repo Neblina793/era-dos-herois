@@ -3,303 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ponto G | Gerenciador de Fichas Completo</title>
-    
-    <link rel="stylesheet" href="style.css">
+    <title>Forja de Heróis | Vandim VTT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
     <style>
-        :root {
-            --primary-gold: #d4af37;
-            --dark-bg: #0a0a0b;
-            --card-bg: #161618;
-            --text-light: #e0e0e0;
-            --accent-red: #ff4655;
+        :root { --gold: #d4af37; --dark: #070709; --card: #161618; }
+        body { 
+            font-family: 'Inter', sans-serif; background-color: var(--dark); color: #e2e8f0;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0;
+            background-image: url('001.png'); background-size: cover; background-attachment: fixed;
         }
-
-        body {
-    font-family: 'Inter', sans-serif;
-    background-color: #070709;
-    background-image: url('001.png'); /* Mesma imagem da index */
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    position: relative;
-    color: #e2e8f0;
-
-body::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(7, 7, 9, 0.9); 
-    z-index: -1; /* Fica atrás do conteúdo */
-}
-
-
-        h1, h3, h4, .btn-expande { font-family: 'Cinzel', serif; }
-        h1 { color: var(--primary-gold); text-transform: uppercase; text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); margin-top: 20px; }
-
-        /* NAVEGAÇÃO */
-        .nav-top { width: 100%; max-width: 550px; display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .btn-nav { background: none; border: 1px solid var(--primary-gold); color: var(--primary-gold); padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: 0.3s; text-decoration: none; font-size: 14px; font-weight: bold; }
-        .btn-nav:hover { background: var(--primary-gold); color: #000; }
-
-        .container { width: 100%; max-width: 550px; display: flex; flex-direction: column; gap: 12px; }
-        
-        .btn-expande { background-color: var(--card-bg); color: #f0f0f0; padding: 16px; border: 1px solid rgba(212, 175, 55, 0.4); text-align: left; width: 100%; font-weight: bold; cursor: pointer; border-radius: 8px; transition: 0.3s; outline: none; }
-        .btn-expande:hover { border-color: var(--primary-gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
-        
-        .conteudo { display: none; background-color: #111113; padding: 20px; border: 1px solid #333; border-top: none; border-radius: 0 0 8px 8px; margin-top: -12px; }
-
-        /* FORMULÁRIO */
-        .grid-campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 15px; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
-        label { font-size: 11px; color: var(--primary-gold); font-weight: bold; text-transform: uppercase; }
-        input, textarea { padding: 10px; background: #000; border: 1px solid #333; color: white; border-radius: 4px; outline: none; width: 100%; box-sizing: border-box; }
-        input:focus, textarea:focus { border-color: var(--primary-gold); }
-
-        /* LISTAS E CARDS */
-        .card-item { background: var(--card-bg); border-left: 4px solid var(--primary-gold); padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px; }
-        .actions-btns button { background: none; border: none; font-size: 18px; cursor: pointer; margin-left: 8px; }
-
-        /* MODAIS */
-        #modal-ficha, [id^="modal-seletor"] { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; overflow-y: auto; padding: 10px; }
-        .modal-content { background: var(--card-bg); border: 1px solid var(--primary-gold); max-width: 500px; margin: 40px auto; padding: 25px; border-radius: 12px; }
-        
-        /* FICHA TÉCNICA (BRANCA PARA IMPRESSÃO/LEITURA) */
-        .dnd-sheet { background: #fff; color: #000; max-width: 700px; margin: auto; padding: 25px; border-radius: 5px; }
-        .dnd-header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; display: grid; grid-template-columns: 100px 1fr 1fr; gap: 15px; align-items: center; }
-        .char-img-ficha { width: 80px; height: 80px; border: 2px solid #000; border-radius: 4px; object-fit: cover; background: #eee; }
-        .dnd-attr-box { border: 1px solid #000; border-radius: 10px; text-align: center; padding: 5px; background: #f9f9f9; }
-        .dnd-attr-mod { border: 1px solid #000; border-radius: 50%; width: 28px; height: 28px; margin: 4px auto; display: flex; align-items: center; justify-content: center; font-weight: bold; background: #fff; }
-        
-        .btn-salvar { background: var(--primary-gold); color: black; border: none; padding: 15px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
-        .btn-salvar:hover { background: #fff; transform: scale(1.02); }
-        .btn-fechar { background: #333; color: white; border: none; padding: 10px; border-radius: 4px; width: 100%; cursor: pointer; margin-top: 20px; font-weight: bold; }
-        .item-in-sheet { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dotted #888; padding: 5px 0; font-size: 13px; }
-        .item-remove { color: var(--accent-red); cursor: pointer; font-weight: bold; padding: 0 5px; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 7, 9, 0.9); z-index: -1; }
+        .container { width: 100%; max-width: 700px; padding: 20px; }
+        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; font-size: 2.5rem; margin-bottom: 20px; }
+        .btn-expande { background: var(--card); color: #fff; padding: 15px; border: 1px solid rgba(212, 175, 55, 0.3); width: 100%; text-align: left; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-family: 'Cinzel', serif; }
+        .conteudo { display: none; background: #111113; padding: 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #333; }
+        input, textarea, select { padding: 10px; background: #000; border: 1px solid #333; color: #fff; width: 100%; margin-bottom: 10px; border-radius: 4px; }
+        label { font-size: 11px; color: var(--gold); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .pericia-linha { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #222; }
+        .item-card { background: var(--card); padding: 10px; margin-bottom: 5px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--gold); }
+        #modal-ficha { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; overflow-y: auto; padding: 20px; }
+        .dnd-sheet { background: white; color: black; max-width: 600px; margin: auto; padding: 25px; border-radius: 5px; }
+        .ficha-categoria-titulo { font-family: 'Cinzel', serif; border-bottom: 2px solid #000; margin-top: 15px; font-weight: bold; color: #000; text-transform: uppercase; font-size: 0.9rem; }
+        .ficha-item-linha { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 5px 0; }
+        .nome-clicavel { cursor: pointer; font-weight: 600; color: #b91c1c; flex-grow: 1; }
+        .desc-expandida { display: none; font-size: 0.85rem; background: #f9f9f9; padding: 10px; border-radius: 4px; margin-top: 5px; border-left: 2px solid #ccc; color: #333; }
+        .img-preview { width: 100px; height: 100px; object-fit: cover; border: 2px solid var(--gold); border-radius: 8px; margin-bottom: 10px; }
+        .sheet-img { width: 120px; height: 120px; object-fit: cover; border: 3px solid black; float: right; margin-left: 15px; }
     </style>
 </head>
 <body>
 
-    <div class="nav-top">
-    <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl">
-    <div class="font-cinzel text-yellow-500 uppercase">
-        <a href="index.html" class="btn-nav"><i class="fa fa-home"></i> INÍCIO</a>
-        
-
-</div>
-
-    <h1>Forja de Heróis</h1>
-
     <div class="container">
-        <button class="btn-expande" onclick="toggle('criar-ficha')">✚ CRIAR / EDITAR PERSONAGEM</button>
-        <div id="criar-ficha" class="conteudo">
-            <input type="hidden" id="edit-index" value="-1">
-            <input type="hidden" id="char-img-base64" value="">
-            <div class="form-group"><label>Imagem</label><input type="file" id="char-img-input" accept="image/*" onchange="converterImagem()"></div>
-            <div class="grid-campos">
-                <div class="form-group" style="grid-column: span 2;"><label>Nome</label><input type="text" id="char-nome"></div>
-                <div class="form-group"><label>Classe</label><input type="text" id="char-classe"></div>
+        <h1>Forja de Heróis</h1>
+
+        <button class="btn-expande" onclick="toggle('form-personagem')">✚ NOVO PERSONAGEM / EDITAR</button>
+        <div id="form-personagem" class="conteudo">
+            <input type="hidden" id="edit-id" value="">
+            <label>Imagem</label>
+            <input type="file" id="p-img-input" accept="image/*" onchange="uploadImagem()">
+            <input type="hidden" id="p-img-base64">
+            <div id="preview-container"></div>
+
+            <label>Nome</label>
+            <input type="text" id="p-nome">
+            
+            <div class="grid grid-cols-3 gap-2">
+                <div><label>Classe</label><input type="text" id="p-classe"></div>
+                <div><label>Nível</label><input type="number" id="p-nivel" value="1" oninput="calcPericias()"></div>
+                <div><label>XP</label><input type="number" id="p-xp" value="0"></div>
             </div>
-            <div class="grid-campos">
-                <div class="form-group"><label>Nível</label><input type="number" id="char-nivel" value="1"></div>
-                <div class="form-group"><label>PV Máx</label><input type="number" id="char-pv"></div>
-                <div class="form-group"><label>CA</label><input type="number" id="char-ca"></div>
+
+            <div class="grid grid-cols-3 gap-2">
+                <div><label>PV (Vida)</label><input type="number" id="p-pv" value="10"></div>
+                <div><label>CA (Armadura)</label><input type="number" id="p-ca" value="10"></div>
+                <div><label>Proficiência</label><input type="number" id="p-prof" value="2" oninput="calcPericias()"></div>
             </div>
-            <div class="form-group"><label>Inventário</label><textarea id="char-inventario" rows="2"></textarea></div>
+
             <label>Atributos</label>
-            <div class="grid-campos">
-                <div class="form-group"><label>FOR</label><input type="number" id="for" value="10"></div>
-                <div class="form-group"><label>DES</label><input type="number" id="des" value="10"></div>
-                <div class="form-group"><label>CON</label><input type="number" id="con" value="10"></div>
-                <div class="form-group"><label>INT</label><input type="number" id="int" value="10"></div>
-                <div class="form-group"><label>SAB</label><input type="number" id="sab" value="10"></div>
-                <div class="form-group"><label>CAR</label><input type="number" id="car" value="10"></div>
+            <div class="grid grid-cols-6 gap-2">
+                <div><label>FOR</label><input type="number" id="v-for" value="10" oninput="calcPericias()"></div>
+                <div><label>DES</label><input type="number" id="v-des" value="10" oninput="calcPericias()"></div>
+                <div><label>CON</label><input type="number" id="v-con" value="10" oninput="calcPericias()"></div>
+                <div><label>INT</label><input type="number" id="v-int" value="10" oninput="calcPericias()"></div>
+                <div><label>SAB</label><input type="number" id="v-sab" value="10" oninput="calcPericias()"></div>
+                <div><label>CAR</label><input type="number" id="v-car" value="10" oninput="calcPericias()"></div>
             </div>
-            <button class="btn-salvar" onclick="salvarPersonagem()">💾 Salvar Personagem</button>
+
+            <label class="mt-4">Perícias (Proficiência Automática)</label>
+            <div id="area-pericias" class="bg-black p-3 rounded mb-4 max-h-48 overflow-y-auto border border-gray-800"></div>
+
+            <label>Inventário</label>
+            <textarea id="p-inventario" rows="3"></textarea>
+
+            <button onclick="salvarHeroi()" class="bg-yellow-600 text-black w-full p-3 font-bold rounded">💾 SALVAR PERSONAGEM</button>
         </div>
 
-        <button class="btn-expande" onclick="toggle('criar-magia')">✚ CRIAR NOVA MAGIA</button>
-        <div id="criar-magia" class="conteudo">
-            <div class="form-group"><label>Nome</label><input type="text" id="mag-nome"></div>
-            <div class="form-group"><label>Descrição</label><textarea id="mag-desc" rows="2"></textarea></div>
-            <button class="btn-salvar" onclick="salvarMagia()">💾 Salvar no Grimório</button>
-        </div>
+        <hr class="my-6 border-gray-800 opacity-30">
 
-        <button class="btn-expande" onclick="toggle('criar-talento')">✚ CRIAR NOVO TALENTO</button>
-        <div id="criar-talento" class="conteudo">
-            <div class="form-group"><label>Nome</label><input type="text" id="tal-nome"></div>
-            <div class="form-group"><label>Descrição</label><textarea id="tal-desc" rows="2"></textarea></div>
-            <button class="btn-salvar" onclick="salvarTalento()">💾 Salvar Talentos</button>
-        </div>
+        <button class="btn-expande" onclick="toggle('lista-p')">📋 MEUS PERSONAGENS</button>
+        <div id="lista-p" class="conteudo"></div>
 
-        <button class="btn-expande" onclick="toggle('criar-habilidade')">✚ CRIAR NOVA HABILIDADE</button>
-        <div id="criar-habilidade" class="conteudo">
-            <div class="form-group"><label>Nome</label><input type="text" id="hab-nome"></div>
-            <div class="form-group"><label>Descrição</label><textarea id="hab-desc" rows="2"></textarea></div>
-            <button class="btn-salvar" onclick="salvarHabilidade()">💾 Salvar Habilidades</button>
-        </div>
+        <button class="btn-expande" onclick="toggle('lista-m')">✨ GRIMÓRIO (MAGIAS)</button>
+        <div id="lista-m" class="conteudo"></div>
 
-        <hr style="border: 0.5px solid var(--primary-gold); opacity: 0.2; margin: 10px 0;">
+        <button class="btn-expande" onclick="toggle('lista-t')">📜 LISTA DE TALENTOS</button>
+        <div id="lista-t" class="conteudo"></div>
 
-        <button class="btn-expande" onclick="toggle('lista-pers')">📋 MEUS PERSONAGENS</button>
-        <div id="lista-pers" class="conteudo"><div id="container-lista-pers"></div></div>
-
-        <button class="btn-expande" onclick="toggle('lista-magias')">📖 GRIMÓRIO (MAGIAS)</button>
-        <div id="lista-magias" class="conteudo"><div id="container-lista-magias"></div></div>
-
-        <button class="btn-expande" onclick="toggle('lista-talentos')">📜 TALENTOS</button>
-        <div id="lista-talentos" class="conteudo"><div id="container-lista-talentos"></div></div>
-
-        <button class="btn-expande" onclick="toggle('lista-habilidades')">⚔️ HABILIDADES</button>
-        <div id="lista-habilidades" class="conteudo"><div id="container-lista-habilidades"></div></div>
+        <button class="btn-expande" onclick="toggle('lista-h')">⚔️ HABILIDADES DE CLASSE</button>
+        <div id="lista-h" class="conteudo"></div>
     </div>
 
-    <div id="modal-seletor"><div class="modal-content"><h3>Vincular Magia a:</h3><div id="lista-opcoes-pers"></div><button class="btn-fechar" onclick="fecharModal('modal-seletor')">FECHAR</button></div></div>
-    <div id="modal-seletor-talento"><div class="modal-content"><h3>Vincular Talento a:</h3><div id="lista-opcoes-pers-talento"></div><button class="btn-fechar" onclick="fecharModal('modal-seletor-talento')">FECHAR</button></div></div>
-    <div id="modal-seletor-habilidade"><div class="modal-content"><h3>Vincular Habilidade a:</h3><div id="lista-opcoes-pers-habilidade"></div><button class="btn-fechar" onclick="fecharModal('modal-seletor-habilidade')">FECHAR</button></div></div>
+    <div id="modal-seletor" style="display:none" class="fixed inset-0 bg-black/90 z-[2000] flex items-center justify-center p-4">
+        <div class="bg-[#161618] border border-yellow-600 p-6 rounded-lg w-full max-w-sm">
+            <h3 class="text-yellow-500 font-cinzel mb-4">Adicionar a qual personagem?</h3>
+            <div id="lista-opcoes-pers" class="flex flex-col gap-2 mb-4"></div>
+            <button onclick="document.getElementById('modal-seletor').style.display='none'" class="w-full p-2 bg-gray-800 text-white rounded">CANCELAR</button>
+        </div>
+    </div>
 
-    <div id="modal-ficha"><div class="dnd-sheet">
-        <button class="btn-nav" id="btn-edit-na-ficha" style="color:black; margin-bottom:10px">✎ EDITAR</button>
-        <div id="conteudo-ficha-detalhada"></div>
-        <button class="btn-fechar" style="background:#000" onclick="fecharModal('modal-ficha')">FECHAR</button>
-    </div></div>
+    <div id="modal-ficha">
+        <div class="dnd-sheet">
+            <div id="corpo-ficha"></div>
+            <div class="flex gap-2 mt-4">
+                <button id="btn-edit-ficha" class="flex-1 p-3 bg-blue-600 text-white font-bold rounded">EDITAR</button>
+                <button onclick="document.getElementById('modal-ficha').style.display='none'" class="flex-1 p-3 bg-black text-white font-bold rounded">FECHAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="banco_dados.js"></script>
 
     <script>
-        // RECUPERAÇÃO DE DADOS
-        let personagens = JSON.parse(localStorage.getItem('rpg_v6_total')) || [];
-        let magias = JSON.parse(localStorage.getItem('rpg_v6_mags')) || [];
-        let talentos = JSON.parse(localStorage.getItem('rpg_v6_talentos')) || [];
-        let habilidades = JSON.parse(localStorage.getItem('rpg_v6_habs')) || [];
+        let db = JSON.parse(localStorage.getItem('rpg_v20')) || { herois: [], magias: [], talentos: [], habs: [] };
 
-        function toggle(id) {
-            const status = document.getElementById(id).style.display;
-            document.querySelectorAll('.conteudo').forEach(d => d.style.display = 'none');
-            document.getElementById(id).style.display = (status === "block" ? "none" : "block");
-        }
+        let itemTemporario = null;
+        const periciasBase = [{n:"Acrobacia", a:"des"}, {n:"Adestrar Animais", a:"sab"}, {n:"Arcanismo", a:"int"}, {n:"Atletismo", a:"for"}, {n:"Atuação", a:"car"}, {n:"Enganação", a:"car"}, {n:"Furtividade", a:"des"}, {n:"História", a:"int"}, {n:"Intimidação", a:"car"}, {n:"Intuição", a:"sab"}, {n:"Investigação", a:"int"}, {n:"Medicina", a:"sab"}, {n:"Natureza", a:"int"}, {n:"Percepção", a:"sab"}, {n:"Persuasão", a:"car"}, {n:"Prestidigitação", a:"des"}, {n:"Religião", a:"int"}, {n:"Sobrevivência", a:"sab"}];
 
-        function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
-        function getMod(val) { let m = Math.floor((val - 10) / 2); return (m >= 0 ? "+" : "") + m; }
+        function toggle(id) { const el = document.getElementById(id); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
 
-        function converterImagem() {
-            const file = document.getElementById('char-img-input').files[0];
+        function uploadImagem() {
+            const file = document.getElementById('p-img-input').files[0];
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 200; canvas.height = 200;
-                    ctx.drawImage(img, 0, 0, 200, 200);
-                    document.getElementById('char-img-base64').value = canvas.toDataURL('image/jpeg', 0.7);
-                }
+            reader.onloadend = () => {
+                document.getElementById('p-img-base64').value = reader.result;
+                document.getElementById('preview-container').innerHTML = `<img src="${reader.result}" class="img-preview">`;
+            }
+            if (file) reader.readAsDataURL(file);
+        }
+
+        function calcPericias() {
+            const container = document.getElementById('area-pericias');
+            const prof = parseInt(document.getElementById('p-prof').value) || 0;
+            container.innerHTML = periciasBase.map((p, i) => {
+                const mod = Math.floor((document.getElementById('v-'+p.a).value - 10) / 2);
+                const isChecked = document.getElementById('ck-'+i)?.checked;
+                return `<div class="pericia-linha"><label class="flex items-center gap-2 m-0 cursor-pointer"><input type="checkbox" id="ck-${i}" onchange="calcPericias()" ${isChecked?'checked':''}> ${p.n}</label><span class="font-bold text-yellow-600">${isChecked ? mod + prof : mod}</span></div>`;
+            }).join('');
+        }
+
+        function salvarHeroi() {
+            const id = document.getElementById('edit-id').value;
+            const checks = periciasBase.map((_, i) => document.getElementById('ck-'+i) ? document.getElementById('ck-'+i).checked : false);
+            
+            const heroi = {
+                nome: document.getElementById('p-nome').value || "Herói Sem Nome",
+                classe: document.getElementById('p-classe').value,
+                nivel: document.getElementById('p-nivel').value,
+                xp: document.getElementById('p-xp').value,
+                pv: document.getElementById('p-pv').value,
+                ca: document.getElementById('p-ca').value,
+                prof: document.getElementById('p-prof').value,
+                img: document.getElementById('p-img-base64').value,
+                atts: { 
+                    for: document.getElementById('v-for').value, 
+                    des: document.getElementById('v-des').value, 
+                    con: document.getElementById('v-con').value, 
+                    int: document.getElementById('v-int').value, 
+                    sab: document.getElementById('v-sab').value, 
+                    car: document.getElementById('v-car').value 
+                },
+                periciasProf: checks,
+                inventario: document.getElementById('p-inventario').value,
+                magias: id !== "" ? db.herois[id].magias : [],
+                talentos: id !== "" ? db.herois[id].talentos : [],
+                habs: id !== "" ? db.herois[id].habs : []
             };
-            if(file) reader.readAsDataURL(file);
-        }
 
-        function salvarPersonagem() {
-            const idx = parseInt(document.getElementById('edit-index').value);
-            const p = {
-                nome: document.getElementById('char-nome').value || "Sem Nome",
-                classe: document.getElementById('char-classe').value || "Aventureiro",
-                nivel: document.getElementById('char-nivel').value || 1,
-                pv: document.getElementById('char-pv').value || 10,
-                ca: document.getElementById('char-ca').value || 10,
-                inventario: document.getElementById('char-inventario').value || "",
-                imagem: document.getElementById('char-img-base64').value,
-                for: document.getElementById('for').value, des: document.getElementById('des').value,
-                con: document.getElementById('con').value, int: document.getElementById('int').value,
-                sab: document.getElementById('sab').value, car: document.getElementById('car').value,
-                grimorio: (idx !== -1) ? (personagens[idx].grimorio || []) : [],
-                talentos: (idx !== -1) ? (personagens[idx].talentos || []) : [],
-                habilidades: (idx !== -1) ? (personagens[idx].habilidades || []) : []
-            };
-            if (idx === -1) personagens.push(p); else personagens[idx] = p;
-            localStorage.setItem('rpg_v6_total', JSON.stringify(personagens));
-            location.reload();
-        }
-
-        // MAGIAS, TALENTOS E HABILIDADES
-        function salvarMagia() { magias.push({nome: document.getElementById('mag-nome').value, desc: document.getElementById('mag-desc').value}); localStorage.setItem('rpg_v6_mags', JSON.stringify(magias)); renderListaMagias(); }
-        function salvarTalento() { talentos.push({nome: document.getElementById('tal-nome').value, desc: document.getElementById('tal-desc').value}); localStorage.setItem('rpg_v6_talentos', JSON.stringify(talentos)); renderListaTalentos(); }
-        function salvarHabilidade() { habilidades.push({nome: document.getElementById('hab-nome').value, desc: document.getElementById('hab-desc').value}); localStorage.setItem('rpg_v6_habs', JSON.stringify(habilidades)); renderListaHabilidades(); }
-
-        // RENDERS E VINCULOS (MAGIA/TALENTO/HAB)
-        function renderListaMagias() { document.getElementById('container-lista-magias').innerHTML = magias.map((m, i) => `<div class="card-item"><span>${m.nome}</span><button onclick="abrirSeletor(${i}, 'magia')" style="color:var(--primary-gold)">✚</button></div>`).join(""); }
-        function renderListaTalentos() { document.getElementById('container-lista-talentos').innerHTML = talentos.map((t, i) => `<div class="card-item"><span>${t.nome}</span><button onclick="abrirSeletor(${i}, 'talento')" style="color:var(--primary-gold)">✚</button></div>`).join(""); }
-        function renderListaHabilidades() { document.getElementById('container-lista-habilidades').innerHTML = habilidades.map((h, i) => `<div class="card-item"><span>${h.nome}</span><button onclick="abrirSeletor(${i}, 'habilidade')" style="color:var(--primary-gold)">✚</button></div>`).join(""); }
-
-        function abrirSeletor(idx, tipo) {
-            let mId = tipo === 'magia' ? 'modal-seletor' : (tipo === 'talento' ? 'modal-seletor-talento' : 'modal-seletor-habilidade');
-            let listId = tipo === 'magia' ? 'lista-opcoes-pers' : (tipo === 'talento' ? 'lista-opcoes-pers-talento' : 'lista-opcoes-pers-habilidade');
-            document.getElementById(listId).innerHTML = personagens.map((p, pIdx) => `<button class="btn-salvar" onclick="vincular(${idx}, ${pIdx}, '${tipo}')">${p.nome}</button>`).join("");
-            document.getElementById(mId).style.display = 'block';
-        }
-
-        function vincular(itemIdx, pIdx, tipo) {
-            let key = tipo === 'magia' ? 'grimorio' : (tipo === 'talento' ? 'talentos' : 'habilidades');
-            let source = tipo === 'magia' ? magias : (tipo === 'talento' ? talentos : habilidades);
-            personagens[pIdx][key].push(source[itemIdx]);
-            localStorage.setItem('rpg_v6_total', JSON.stringify(personagens));
-            alert("Vinculado com sucesso!");
-            fecharModal('modal-seletor'); fecharModal('modal-seletor-talento'); fecharModal('modal-seletor-habilidade');
+            if(id !== "") db.herois[id] = heroi; else db.herois.push(heroi);
+            atualizarTudo();
+            toggle('form-personagem');
+            limparForm();
         }
 
         function abrirFicha(i) {
-            const p = personagens[i];
-            document.getElementById('btn-edit-na-ficha').onclick = () => editarPers(i);
-            document.getElementById('conteudo-ficha-detalhada').innerHTML = `
-                <div class="dnd-header">
-                    <img src="${p.imagem || ''}" class="char-img-ficha">
-                    <div><small>NOME</small><br><b>${p.nome}</b></div>
-                    <div style="text-align:right"><small>${p.classe.toUpperCase()}</small><br><b>NV ${p.nivel}</b></div>
+            const p = db.herois[i];
+            const mod = (v) => Math.floor((v - 10) / 2);
+            document.getElementById('corpo-ficha').innerHTML = `
+                <img src="${p.img || ''}" class="sheet-img" onerror="this.style.display='none'">
+                <h2 class="text-2xl font-bold font-cinzel">${p.nome}</h2>
+                <p class="text-xs uppercase mb-1">${p.classe} — Nível ${p.nivel} (XP: ${p.xp})</p>
+                <div class="flex gap-4 mb-4 text-sm font-bold">
+                    <div class="bg-red-100 p-2 rounded">PV: ${p.pv}</div>
+                    <div class="bg-blue-100 p-2 rounded">CA: ${p.ca}</div>
                 </div>
-                <div style="display:flex; gap:15px;">
-                    <div style="width:100px">${['FOR', 'DES', 'CON', 'INT', 'SAB', 'CAR'].map(a => `<div class="dnd-attr-box"><label>${a}</label><div class="dnd-attr-mod">${getMod(p[a.toLowerCase()])}</div><small>${p[a.toLowerCase()]}</small></div>`).join("")}</div>
-                    <div style="flex:1">
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; border:1px solid #000; padding:10px; text-align:center; margin-bottom:10px;">
-                            <div><small>CA</small><br><b>${p.ca}</b></div>
-                            <div><small>PV</small><br><b>${p.pv}</b></div>
-                        </div>
-                        <h4 style="border-bottom:1px solid #000; margin:5px 0">HABILIDADES / TALENTOS</h4>
-                        ${(p.habilidades || []).map((h, hi) => `<div class="item-in-sheet"><span onclick="alert('${h.desc}')">⚔️ ${h.nome}</span><span class="item-remove" onclick="removerItem(${i}, ${hi}, 'habilidades')">✖</span></div>`).join("")}
-                        ${(p.talentos || []).map((t, ti) => `<div class="item-in-sheet"><span onclick="alert('${t.desc}')">📜 ${t.nome}</span><span class="item-remove" onclick="removerItem(${i}, ${ti}, 'talentos')">✖</span></div>`).join("")}
-                        <h4 style="border-bottom:1px solid #000; margin:5px 0; margin-top:10px;">GRIMÓRIO</h4>
-                        ${(p.grimorio || []).map((m, mi) => `<div class="item-in-sheet"><span onclick="alert('${m.desc}')">✨ ${m.nome}</span><span class="item-remove" onclick="removerItem(${i}, ${mi}, 'grimorio')">✖</span></div>`).join("")}
+                <div class="grid grid-cols-6 gap-1 mb-4 text-center">
+                    ${Object.entries(p.atts).map(([k,v]) => `<div class="border border-black bg-gray-100 p-1"><div class="text-[9px] uppercase">${k}</div><b>${mod(v)>=0?'+':''}${mod(v)}</b></div>`).join('')}
+                </div>
+                <div class="grid grid-cols-2 gap-4 text-[10px] mb-4">
+                    <div class="border p-2"><b>PERÍCIAS</b>
+                        ${periciasBase.map((pb, idx) => {
+                            const val = p.periciasProf[idx] ? mod(p.atts[pb.a]) + parseInt(p.prof) : mod(p.atts[pb.a]);
+                            return `<div>${p.periciasProf[idx]?'●':'○'} ${pb.n}: <b>${val >= 0 ? '+' : ''}${val}</b></div>`;
+                        }).join('')}
                     </div>
+                    <div class="border p-2"><b>INVENTÁRIO</b><br>${p.inventario.replace(/\n/g, '<br>')}</div>
                 </div>
+                <div class="ficha-categoria-titulo">MAGIAS</div>${renderItensFicha(p.magias, i, 'magias')}
+                <div class="ficha-categoria-titulo">TALENTOS</div>${renderItensFicha(p.talentos, i, 'talentos')}
+                <div class="ficha-categoria-titulo">HABILIDADES</div>${renderItensFicha(p.habs, i, 'habs')}
             `;
+            document.getElementById('btn-edit-ficha').onclick = () => prepararEdicao(i);
             document.getElementById('modal-ficha').style.display = 'block';
         }
 
-        function removerItem(pIdx, itemIdx, key) { if(confirm("Remover?")) { personagens[pIdx][key].splice(itemIdx, 1); localStorage.setItem('rpg_v6_total', JSON.stringify(personagens)); abrirFicha(pIdx); } }
-        function excluirPers(i) { if(confirm("Excluir personagem?")) { personagens.splice(i, 1); localStorage.setItem('rpg_v6_total', JSON.stringify(personagens)); renderListaPers(); } }
-
-        function renderListaPers() {
-            document.getElementById('container-lista-pers').innerHTML = personagens.map((p, i) => `
-                <div class="card-item">
-                    <div onclick="abrirFicha(${i})" style="cursor:pointer"><b>${p.nome}</b><br><small>${p.classe} - Nv ${p.nivel}</small></div>
-                    <div class="actions-btns"><button onclick="excluirPers(${i})" style="color:var(--accent-red)">✖</button></div>
-                </div>
-            `).join("");
+        function renderItensFicha(arr, pIdx, tipo) {
+            if(!arr || arr.length === 0) return "<p class='text-[10px]'>Nenhum.</p>";
+            return arr.map((it, idx) => `<div class="ficha-item-linha"><span class="nome-clicavel" onclick="toggleDesc('desc-${tipo}-${idx}')">${it.nome}</span><button onclick="removerItemFicha(${pIdx}, '${tipo}', ${idx})" class="text-red-600 font-bold ml-2">✖</button></div><div id="desc-${tipo}-${idx}" class="desc-expandida">${it.desc}</div>`).join('');
         }
 
-        function editarPers(i) {
-            const p = personagens[i]; document.getElementById('edit-index').value = i;
-            document.getElementById('char-nome').value = p.nome; document.getElementById('char-classe').value = p.classe;
-            document.getElementById('char-nivel').value = p.nivel; document.getElementById('char-pv').value = p.pv;
-            document.getElementById('char-ca').value = p.ca; document.getElementById('for').value = p.for;
-            document.getElementById('des').value = p.des; document.getElementById('con').value = p.con;
-            document.getElementById('int').value = p.int; document.getElementById('sab').value = p.sab;
-            document.getElementById('car').value = p.car; document.getElementById('char-inventario').value = p.inventario;
-            fecharModal('modal-ficha'); toggle('criar-ficha');
+        function toggleDesc(id) { const el = document.getElementById(id); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
+
+        function abrirSeletor(itemIdx, tipo) {
+            itemTemporario = { item: db[tipo][itemIdx], tipo: tipo };
+            const lista = document.getElementById('lista-opcoes-pers');
+            lista.innerHTML = db.herois.map((p, i) => `<button onclick="confirmarAdicao(${i})" class="bg-yellow-600 text-black font-bold p-2 rounded w-full mb-1">${p.nome}</button>`).join('');
+            document.getElementById('modal-seletor').style.display = 'flex';
         }
 
-        // Inicialização
-        renderListaPers(); renderListaMagias(); renderListaTalentos(); renderListaHabilidades();
+        function confirmarAdicao(pIdx) {
+            db.herois[pIdx][itemTemporario.tipo].push(itemTemporario.item);
+            atualizarTudo();
+            document.getElementById('modal-seletor').style.display = 'none';
+            alert("Adicionado!");
+        }
+
+        function removerItemFicha(pIdx, tipo, itemIdx) {
+            db.herois[pIdx][tipo].splice(itemIdx, 1);
+            atualizarTudo();
+            abrirFicha(pIdx);
+        }
+
+        function prepararEdicao(i) {
+            const p = db.herois[i];
+            document.getElementById('edit-id').value = i;
+            document.getElementById('p-nome').value = p.nome;
+            document.getElementById('p-classe').value = p.classe;
+            document.getElementById('p-nivel').value = p.nivel;
+            document.getElementById('p-xp').value = p.xp;
+            document.getElementById('p-pv').value = p.pv;
+            document.getElementById('p-ca').value = p.ca;
+            document.getElementById('p-prof').value = p.prof;
+            document.getElementById('p-img-base64').value = p.img;
+            document.getElementById('preview-container').innerHTML = `<img src="${p.img}" class="img-preview">`;
+            document.getElementById('p-inventario').value = p.inventario;
+            Object.entries(p.atts).forEach(([k,v]) => document.getElementById('v-'+k).value = v);
+            document.getElementById('modal-ficha').style.display = 'none';
+            toggle('form-personagem');
+            calcPericias();
+            p.periciasProf.forEach((check, idx) => { if(document.getElementById('ck-'+idx)) document.getElementById('ck-'+idx).checked = check; });
+            calcPericias();
+        }
+
+        function atualizarTudo() { localStorage.setItem('rpg_v20', JSON.stringify(db)); renderListasUI(); }
+
+        function renderListasUI() {
+            // CORREÇÃO: Força a leitura do LocalStorage para pegar novos itens do banco_dados.js
+            const dadosRecentes = localStorage.getItem('rpg_v20');
+            if (dadosRecentes) { db = JSON.parse(dadosRecentes); }
+
+            const r = (arr, t, id) => {
+                const container = document.getElementById(id);
+                if (!container) return;
+                container.innerHTML = arr.map((item, i) => `
+                    <div class="item-card"><span>${item.nome}</span>
+                        <div class="flex gap-2">
+                            <button onclick="abrirSeletor(${i}, '${t}')" class="text-yellow-500 font-bold">✚ ADD</button>
+                            <button onclick="excluirItemBanco(${i}, '${t}')" class="text-red-500">✖</button>
+                        </div>
+                    </div>`).join('');
+            };
+            r(db.magias, 'magias', 'lista-m');
+            r(db.talentos, 'talentos', 'lista-t');
+            r(db.habs, 'habs', 'lista-h');
+            document.getElementById('lista-p').innerHTML = db.herois.map((p, i) => `<div class="item-card"><span onclick="abrirFicha(${i})" class="cursor-pointer font-bold text-yellow-500 flex-1">${p.nome} (Nv ${p.nivel})</span><button onclick="excluirHeroi(${i})" class="text-red-500">✖</button></div>`).join('');
+        }
+
+        function excluirItemBanco(i, tipo) { if(confirm("Excluir do banco?")) { db[tipo].splice(i, 1); atualizarTudo(); } }
+        function excluirHeroi(i) { if(confirm("Excluir personagem?")) { db.herois.splice(i, 1); atualizarTudo(); } }
+        function limparForm() { document.getElementById('edit-id').value = ""; document.getElementById('p-img-base64').value = ""; document.getElementById('preview-container').innerHTML = ""; document.getElementById('p-nome').value = ""; document.getElementById('p-inventario').value = ""; }
+
+        calcPericias();
+        renderListasUI();
     </script>
 </body>
 </html>
