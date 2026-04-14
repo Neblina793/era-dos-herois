@@ -199,7 +199,7 @@
                     </div>
                     <div class="border p-2"><b>INVENTÁRIO</b><br>${p.inventario.replace(/\n/g, '<br>')}</div>
                 </div>
-                <div class="ficha-categoria-titulo">MAGIAS</div>${renderItensFicha(p.magias, i, 'magias')}
+                <div class="ficha-categoria-titulo">MAGIAS</div>${renderMagiasFicha(p.magias, i)}
                 <div class="ficha-categoria-titulo">TALENTOS</div>${renderItensFicha(p.talentos, i, 'talentos')}
                 <div class="ficha-categoria-titulo">HABILIDADES</div>${renderItensFicha(p.habs, i, 'habs')}
             `;
@@ -207,12 +207,40 @@
             document.getElementById('modal-ficha').style.display = 'block';
         }
 
+        // FUNÇÃO CORRIGIDA: Agrupa magias por nível na exibição da ficha
+        function renderMagiasFicha(arr, pIdx) {
+            if(!arr || arr.length === 0) return "<p class='text-[10px]'>Nenhum.</p>";
+            
+            const agrupadas = arr.reduce((acc, magia) => {
+                const nv = magia.nivel !== undefined ? magia.nivel : "?";
+                if (!acc[nv]) acc[nv] = [];
+                acc[nv].push(magia);
+                return acc;
+            }, {});
+
+            return Object.keys(agrupadas).sort().map(nivel => {
+                const titulo = nivel == 0 ? "TRUQUES" : `NÍVEL ${nivel}`;
+                const itens = agrupadas[nivel].map((it) => {
+                    const originalIdx = db.herois[pIdx].magias.indexOf(it);
+                    const idUnico = `desc-magia-${pIdx}-${nivel}-${Math.random().toString(36).substr(2, 5)}`;
+                    return `
+                        <div class="ficha-item-linha">
+                            <span class="nome-clicavel" onclick="toggleDesc('${idUnico}')">${it.nome}</span>
+                            <button onclick="removerItemFicha(${pIdx}, 'magias', ${originalIdx})" class="text-red-600 font-bold ml-2">✖</button>
+                        </div>
+                        <div id="${idUnico}" class="desc-expandida">${it.desc}</div>
+                    `;
+                }).join('');
+                return `<div class="mt-2 border-b border-gray-200 bg-gray-100 px-1 text-[9px] font-bold text-gray-500">${titulo}</div>${itens}`;
+            }).join('');
+        }
+
         function renderItensFicha(arr, pIdx, tipo) {
             if(!arr || arr.length === 0) return "<p class='text-[10px]'>Nenhum.</p>";
             return arr.map((it, idx) => `<div class="ficha-item-linha"><span class="nome-clicavel" onclick="toggleDesc('desc-${tipo}-${idx}')">${it.nome}</span><button onclick="removerItemFicha(${pIdx}, '${tipo}', ${idx})" class="text-red-600 font-bold ml-2">✖</button></div><div id="desc-${tipo}-${idx}" class="desc-expandida">${it.desc}</div>`).join('');
         }
 
-        function toggleDesc(id) { const el = document.getElementById(id); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
+        function toggleDesc(id) { const el = document.getElementById(id); if(el) el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
 
         function abrirSeletor(itemIdx, tipo) {
             itemTemporario = { item: db[tipo][itemIdx], tipo: tipo };
@@ -257,12 +285,38 @@
 
         function atualizarTudo() { localStorage.setItem('rpg_v20', JSON.stringify(db)); renderListasUI(); }
 
+        // FUNÇÃO CORRIGIDA: Renderiza as listas do banco, agrupando magias por nível no Grimório
         function renderListasUI() {
-            // CORREÇÃO: Força a leitura do LocalStorage para pegar novos itens do banco_dados.js
             const dadosRecentes = localStorage.getItem('rpg_v20');
             if (dadosRecentes) { db = JSON.parse(dadosRecentes); }
 
-            const r = (arr, t, id) => {
+            // Render Magias Agrupadas no Grimório
+            const containerM = document.getElementById('lista-m');
+            if(containerM) {
+                const agrupadasM = db.magias.reduce((acc, m) => {
+                    const nv = m.nivel !== undefined ? m.nivel : "?";
+                    if (!acc[nv]) acc[nv] = [];
+                    acc[nv].push(m);
+                    return acc;
+                }, {});
+
+                containerM.innerHTML = Object.keys(agrupadasM).sort().map(nivel => {
+                    const titulo = nivel == 0 ? "Truques" : `Nível ${nivel}`;
+                    const itens = agrupadasM[nivel].map(item => {
+                        const idxGlobal = db.magias.indexOf(item);
+                        return `
+                            <div class="item-card"><span>${item.nome}</span>
+                                <div class="flex gap-2">
+                                    <button onclick="abrirSeletor(${idxGlobal}, 'magias')" class="text-yellow-500 font-bold">✚ ADD</button>
+                                    <button onclick="excluirItemBanco(${idxGlobal}, 'magias')" class="text-red-500">✖</button>
+                                </div>
+                            </div>`;
+                    }).join('');
+                    return `<div class="text-yellow-600 font-bold text-[10px] mb-1 mt-3 uppercase border-b border-yellow-900/30">${titulo}</div>${itens}`;
+                }).join('');
+            }
+
+            const rNormal = (arr, t, id) => {
                 const container = document.getElementById(id);
                 if (!container) return;
                 container.innerHTML = arr.map((item, i) => `
@@ -273,9 +327,8 @@
                         </div>
                     </div>`).join('');
             };
-            r(db.magias, 'magias', 'lista-m');
-            r(db.talentos, 'talentos', 'lista-t');
-            r(db.habs, 'habs', 'lista-h');
+            rNormal(db.talentos, 'talentos', 'lista-t');
+            rNormal(db.habs, 'habs', 'lista-h');
             document.getElementById('lista-p').innerHTML = db.herois.map((p, i) => `<div class="item-card"><span onclick="abrirFicha(${i})" class="cursor-pointer font-bold text-yellow-500 flex-1">${p.nome} (Nv ${p.nivel})</span><button onclick="excluirHeroi(${i})" class="text-red-500">✖</button></div>`).join('');
         }
 
