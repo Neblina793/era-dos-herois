@@ -85,13 +85,36 @@
         <div id="lista-p" class="conteudo"></div>
 
         <button class="btn-expande" onclick="toggle('lista-m')">✨ GRIMÓRIO (MAGIAS)</button>
-        <div id="lista-m" class="conteudo"></div>
+        <div id="lista-m" class="conteudo">
+            <div class="bg-black/40 p-4 rounded border border-yellow-600/30 mb-6">
+                <label>Criar Nova Magia</label>
+                <input type="text" id="new-m-nome" placeholder="Nome da Magia">
+                <input type="number" id="new-m-nivel" placeholder="Nível (0 = Truque)">
+                <textarea id="new-m-desc" placeholder="Descrição da magia..." rows="2"></textarea>
+                <label>Adicionar direto na ficha de:</label>
+                <select id="select-m-heroi"></select>
+                <button onclick="salvarMagiaGlobal()" class="bg-yellow-600 text-black w-full p-2 font-bold rounded mt-2">CRIAR E SALVAR</button>
+            </div>
+            <hr class="border-gray-800 mb-4">
+            <div id="render-lista-m"></div>
+        </div>
 
         <button class="btn-expande" onclick="toggle('lista-t')">📜 LISTA DE TALENTOS</button>
         <div id="lista-t" class="conteudo"></div>
 
         <button class="btn-expande" onclick="toggle('lista-h')">⚔️ HABILIDADES DE CLASSE</button>
-        <div id="lista-h" class="conteudo"></div>
+        <div id="lista-h" class="conteudo">
+            <div class="bg-black/40 p-4 rounded border border-yellow-600/30 mb-6">
+                <label>Criar Nova Habilidade</label>
+                <input type="text" id="new-h-nome" placeholder="Nome da Habilidade">
+                <textarea id="new-h-desc" placeholder="Descrição da habilidade..." rows="2"></textarea>
+                <label>Adicionar direto na ficha de:</label>
+                <select id="select-h-heroi"></select>
+                <button onclick="salvarHabGlobal()" class="bg-yellow-600 text-black w-full p-2 font-bold rounded mt-2">CRIAR E SALVAR</button>
+            </div>
+            <hr class="border-gray-800 mb-4">
+            <div id="render-lista-h"></div>
+        </div>
     </div>
 
     <div id="modal-seletor" style="display:none" class="fixed inset-0 bg-black/90 z-[2000] flex items-center justify-center p-4">
@@ -111,8 +134,6 @@
             </div>
         </div>
     </div>
-
-    <script src="banco_dados.js"></script>
 
     <script>
         let db = JSON.parse(localStorage.getItem('rpg_v20')) || { herois: [], magias: [], talentos: [], habs: [] };
@@ -140,6 +161,45 @@
                 const isChecked = document.getElementById('ck-'+i)?.checked;
                 return `<div class="pericia-linha"><label class="flex items-center gap-2 m-0 cursor-pointer"><input type="checkbox" id="ck-${i}" onchange="calcPericias()" ${isChecked?'checked':''}> ${p.n}</label><span class="font-bold text-yellow-600">${isChecked ? mod + prof : mod}</span></div>`;
             }).join('');
+        }
+
+        // Funções para Criar Novos Itens no Banco e opcionalmente na Ficha
+        function salvarMagiaGlobal() {
+            const nome = document.getElementById('new-m-nome').value;
+            const nivel = parseInt(document.getElementById('new-m-nivel').value) || 0;
+            const desc = document.getElementById('new-m-desc').value;
+            const pIdx = document.getElementById('select-m-heroi').value;
+
+            if(!nome) return alert("Dê um nome à magia!");
+            const novaM = { nome, nivel, desc };
+            db.magias.push(novaM);
+            if(pIdx !== "") db.herois[pIdx].magias.push(novaM);
+            
+            atualizarTudo();
+            document.getElementById('new-m-nome').value = "";
+            document.getElementById('new-m-desc').value = "";
+        }
+
+        function salvarHabGlobal() {
+            const nome = document.getElementById('new-h-nome').value;
+            const desc = document.getElementById('new-h-desc').value;
+            const pIdx = document.getElementById('select-h-heroi').value;
+
+            if(!nome) return alert("Dê um nome à habilidade!");
+            const novaH = { nome, desc };
+            db.habs.push(novaH);
+            if(pIdx !== "") db.herois[pIdx].habs.push(novaH);
+            
+            atualizarTudo();
+            document.getElementById('new-h-nome').value = "";
+            document.getElementById('new-h-desc').value = "";
+        }
+
+        function atualizarSelectsHerois() {
+            const options = '<option value="">-- Não adicionar a ninguém --</option>' + 
+                db.herois.map((p, i) => `<option value="${i}">${p.nome}</option>`).join('');
+            document.getElementById('select-m-heroi').innerHTML = options;
+            document.getElementById('select-h-heroi').innerHTML = options;
         }
 
         function salvarHeroi() {
@@ -207,29 +267,20 @@
             document.getElementById('modal-ficha').style.display = 'block';
         }
 
-        // FUNÇÃO CORRIGIDA: Agrupa magias por nível na exibição da ficha
         function renderMagiasFicha(arr, pIdx) {
             if(!arr || arr.length === 0) return "<p class='text-[10px]'>Nenhum.</p>";
-            
             const agrupadas = arr.reduce((acc, magia) => {
                 const nv = magia.nivel !== undefined ? magia.nivel : "?";
                 if (!acc[nv]) acc[nv] = [];
                 acc[nv].push(magia);
                 return acc;
             }, {});
-
             return Object.keys(agrupadas).sort().map(nivel => {
                 const titulo = nivel == 0 ? "TRUQUES" : `NÍVEL ${nivel}`;
                 const itens = agrupadas[nivel].map((it) => {
                     const originalIdx = db.herois[pIdx].magias.indexOf(it);
                     const idUnico = `desc-magia-${pIdx}-${nivel}-${Math.random().toString(36).substr(2, 5)}`;
-                    return `
-                        <div class="ficha-item-linha">
-                            <span class="nome-clicavel" onclick="toggleDesc('${idUnico}')">${it.nome}</span>
-                            <button onclick="removerItemFicha(${pIdx}, 'magias', ${originalIdx})" class="text-red-600 font-bold ml-2">✖</button>
-                        </div>
-                        <div id="${idUnico}" class="desc-expandida">${it.desc}</div>
-                    `;
+                    return `<div class="ficha-item-linha"><span class="nome-clicavel" onclick="toggleDesc('${idUnico}')">${it.nome}</span><button onclick="removerItemFicha(${pIdx}, 'magias', ${originalIdx})" class="text-red-600 font-bold ml-2">✖</button></div><div id="${idUnico}" class="desc-expandida">${it.desc}</div>`;
                 }).join('');
                 return `<div class="mt-2 border-b border-gray-200 bg-gray-100 px-1 text-[9px] font-bold text-gray-500">${titulo}</div>${itens}`;
             }).join('');
@@ -283,15 +334,15 @@
             calcPericias();
         }
 
-        function atualizarTudo() { localStorage.setItem('rpg_v20', JSON.stringify(db)); renderListasUI(); }
+        function atualizarTudo() { 
+            localStorage.setItem('rpg_v20', JSON.stringify(db)); 
+            renderListasUI(); 
+            atualizarSelectsHerois();
+        }
 
-        // FUNÇÃO CORRIGIDA: Renderiza as listas do banco, agrupando magias por nível no Grimório
         function renderListasUI() {
-            const dadosRecentes = localStorage.getItem('rpg_v20');
-            if (dadosRecentes) { db = JSON.parse(dadosRecentes); }
-
-            // Render Magias Agrupadas no Grimório
-            const containerM = document.getElementById('lista-m');
+            // Render Magias
+            const containerM = document.getElementById('render-lista-m');
             if(containerM) {
                 const agrupadasM = db.magias.reduce((acc, m) => {
                     const nv = m.nivel !== undefined ? m.nivel : "?";
@@ -299,18 +350,11 @@
                     acc[nv].push(m);
                     return acc;
                 }, {});
-
                 containerM.innerHTML = Object.keys(agrupadasM).sort().map(nivel => {
                     const titulo = nivel == 0 ? "Truques" : `Nível ${nivel}`;
                     const itens = agrupadasM[nivel].map(item => {
                         const idxGlobal = db.magias.indexOf(item);
-                        return `
-                            <div class="item-card"><span>${item.nome}</span>
-                                <div class="flex gap-2">
-                                    <button onclick="abrirSeletor(${idxGlobal}, 'magias')" class="text-yellow-500 font-bold">✚ ADD</button>
-                                    <button onclick="excluirItemBanco(${idxGlobal}, 'magias')" class="text-red-500">✖</button>
-                                </div>
-                            </div>`;
+                        return `<div class="item-card"><span>${item.nome}</span><div class="flex gap-2"><button onclick="abrirSeletor(${idxGlobal}, 'magias')" class="text-yellow-500 font-bold">✚ ADD</button><button onclick="excluirItemBanco(${idxGlobal}, 'magias')" class="text-red-500">✖</button></div></div>`;
                     }).join('');
                     return `<div class="text-yellow-600 font-bold text-[10px] mb-1 mt-3 uppercase border-b border-yellow-900/30">${titulo}</div>${itens}`;
                 }).join('');
@@ -319,16 +363,11 @@
             const rNormal = (arr, t, id) => {
                 const container = document.getElementById(id);
                 if (!container) return;
-                container.innerHTML = arr.map((item, i) => `
-                    <div class="item-card"><span>${item.nome}</span>
-                        <div class="flex gap-2">
-                            <button onclick="abrirSeletor(${i}, '${t}')" class="text-yellow-500 font-bold">✚ ADD</button>
-                            <button onclick="excluirItemBanco(${i}, '${t}')" class="text-red-500">✖</button>
-                        </div>
-                    </div>`).join('');
+                container.innerHTML = arr.map((item, i) => `<div class="item-card"><span>${item.nome}</span><div class="flex gap-2"><button onclick="abrirSeletor(${i}, '${t}')" class="text-yellow-500 font-bold">✚ ADD</button><button onclick="excluirItemBanco(${i}, '${t}')" class="text-red-500">✖</button></div></div>`).join('');
             };
+
             rNormal(db.talentos, 'talentos', 'lista-t');
-            rNormal(db.habs, 'habs', 'lista-h');
+            rNormal(db.habs, 'habs', 'render-lista-h');
             document.getElementById('lista-p').innerHTML = db.herois.map((p, i) => `<div class="item-card"><span onclick="abrirFicha(${i})" class="cursor-pointer font-bold text-yellow-500 flex-1">${p.nome} (Nv ${p.nivel})</span><button onclick="excluirHeroi(${i})" class="text-red-500">✖</button></div>`).join('');
         }
 
@@ -338,6 +377,7 @@
 
         calcPericias();
         renderListasUI();
+        atualizarSelectsHerois();
     </script>
 </body>
 </html>
