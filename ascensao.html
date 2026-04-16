@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ascensão | Era dos Heróis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #0b0b0f;
+            --card-bg: rgba(22, 22, 30, 0.9);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: #e2e8f0;
+            margin: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0b0b0f 100%);
+        }
+
+        /* TELA DE LOADING LIMPA */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--dark-bg);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease-out;
+        }
+
+        .loader-gif { width: 200px; background: transparent; border: none; }
+
+        .loading-text {
+            margin-top: 20px;
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .container { position: relative; z-index: 10; }
+        h1, h2, h3, h4 { font-family: 'Cinzel', serif; text-transform: uppercase; }
+        
+        .ascensao-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 10px 20px;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            text-decoration: none;
+            transition: 0.3s;
+            background: rgba(0,0,0,0.5);
+        }
+        .btn-voltar:hover { background: var(--gold); color: black; }
+
+        .estagio-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+        }
+        .fade-in-section.visible { opacity: 1; transform: translateY(0); }
+
+        .mecanica-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed var(--gold);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <div id="loader">
+        <img src="meiomonstro.gif" alt="Carregando..." class="loader-gif">
+        <div class="loading-text">Traçando o Destino...</div>
+    </div>
+
+    <div id="main-content" class="container mx-auto px-4 py-12 max-w-5xl opacity-0">
+        
+        <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
+
+        <header class="text-center mb-16">
+            <h1 class="text-5xl text-gold mb-2">Sistema de Ascensão</h1>
+            <p class="text-gray-400 font-light tracking-widest italic">A jornada da mortalidade à semi-divindade (1–100)</p>
+        </header>
+
+        <div class="grid gap-6">
+            
+            <div class="ascensao-card fade-in-section border-l-4 border-gray-500">
+                <span class="estagio-tag bg-gray-500 text-white">🟤 Estágio 1 — Mortal Comum (1–14)</span>
+                <p class="text-sm text-gray-300 mb-4">Nenhuma influência divina. Apenas feitos humanos normais.</p>
+                <p class="text-xs italic text-gray-500">Narrativa: Os Deuses ignoram sua existência no Olimpo.</p>
+            </div>
+
+            <div class="ascensao-card fade-in-section border-l-4 border-blue-500">
+                <span class="estagio-tag bg-blue-500 text-white">🔵 Estágio 2 — Marcado pelo Destino (15–29)</span>
+                <p class="text-sm text-gray-300 mb-2">Sorte incomum e sobrevivência a eventos impossíveis. Presságios em sonhos.</p>
+                <p class="text-gold text-sm font-bold">Habilidade: +1 bônus leve por sessão (ex: +1 em uma rolagem).</p>
+                <p class="text-xs italic text-gray-500 mt-2">Narrativa: Começa a ser observado pelas Moiras.</p>
+            </div>
+
+            <div class="ascensao-card fade-in-section border-l-4 border-green-500">
+                <span class="estagio-tag bg-green-500 text-white">🟢 Estágio 3 — Tocando o Divino (30–44)</span>
+                <p class="text-sm text-gray-300 mb-2">Primeiro contato indireto e bênçãos temporárias.</p>
+                <p class="text-gold text-sm font-bold">Habilidade: 1 poder menor temático (ex: resistência, visão ou força leve).</p>
+                <p class="text-xs italic text-gray-500 mt-2">Narrativa: Chama a atenção de Hermes ou Atena.</p>
+            </div>
+
+            <div class="ascensao-card fade-in-section border-l-4 border-yellow-500">
+                <span class="estagio-tag bg-yellow-500 text-black">🟡 Estágio 4 — Escolhido dos Deuses (45–59)</span>
+                <p class="text-sm text-gray-300 mb-2">Observação direta divina e recebimento de missões sagradas.</p>
+                <p class="text-gold text-sm font-bold">Habilidade: 1 habilidade ativa especial + Invocar ajuda divina 1x por sessão.</p>
+                <p class="text-xs italic text-gray-500 mt-2">Narrativa: Você se torna o "Campeão" oficial de uma divindade.</p>
+            </div>
+
+            <div class="ascensao-card fade-in-section border-l-4 border-orange-500">
+                <span class="estagio-tag bg-orange-500 text-white">🟠 Estágio 5 — Herói Lendário (60–74)</span>
+                <p class="text-sm text-gray-300 mb-2">Feitos incríveis conhecidos pelo mundo. Capacidade de enfrentar monstros mitológicos.</p>
+                <p class="text-gold text-sm font-bold">Habilidade: Resistência aumentada, 2 habilidades divinas e presença intimidadora.</p>
+                <p class="text-xs italic text-gray-500 mt-2">Narrativa: Seu nome é comparado ao de Hércules.</p>
+            </div>
+
+            <div class="ascensao-card fade-in-section border-l-4 border-red-600">
+                <span class="estagio-tag bg-red-600 text-white">🔴 Estágio 6 — Semideus Desperto (75–89)</span>
+                <p class="text-sm text-gray-300 mb-2">O sangue divino ferve. Poderes consistentes e devastadores.</p>
+                <p class="text-gold text-sm font-bold">Habilidade: Poderes passivos e ativos fortes. Sobrevive a ataques fatais.</p>
+                <p class="text-xs italic text-gray-500 mt-2">Narrativa: Seu poder rivaliza com os filhos diretos de Zeus.</p>
+            </div>
+
+            <div class="ascensao-card fade-in-section border-l-4 border-purple-600">
+                <span class="estagio-tag bg-purple-600 text-white">🟣 Estágio 7 — Ascensão Divina (90–100)</span>
+                <p class="text-sm text-gray-300 mb-2">Transição completa para a semi-divindade.</p>
+                <p class="text-gold text-sm font-bold">Habilidade: Alterar a realidade em pequena escala e influência total sobre domínios.</p>
+                <p class="text-xs italic text-gray-500 mt-2">Narrativa: Aceito no Olimpo como um novo semideus, campeão eterno ou deus menor.</p>
+            </div>
+        </div>
+
+        <section class="fade-in-section">
+            <h2 class="text-3xl text-gold mt-12 mb-6">🎲 Mecânica de Pontuação</h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="mecanica-box">
+                    <h4 class="text-green-500 mb-4">Ganhos (Aclamação)</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>✨ Grandes Feitos: <span class="text-white">1d4 pontos</span></li>
+                        <li>📜 Missões: <span class="text-white">Dificuldade da missão</span></li>
+                        <li>⚔️ Derrotar Lendários: <span class="text-white">1 + Dificuldade</span></li>
+                    </ul>
+                </div>
+                <div class="mecanica-box" style="border-color: #922610;">
+                    <h4 class="text-red-500 mb-4">Perdas (Ira Divina)</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>❌ Negar Ajuda: <span class="text-white">-1 ponto</span></li>
+                        <li>💀 Matar Inocente: <span class="text-white">-1d4 pontos</span></li>
+                        <li>⚡ Desrespeitar Deuses: <span class="text-white">-5 (Menor) / -10 (Maior)</span></li>
+                        <li>🏛️ Profanar Templos: <span class="text-white">-15 (Menor) / -30 (Maior)</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mecanica-box border-red-600 bg-red-900/10 mt-6">
+                <h4 class="text-red-600 font-bold mb-2">⚠️ Punições Negativas</h4>
+                <p class="text-sm text-gray-300">Pontos negativos no Nível 1 geram punições severas:</p>
+                <ul class="list-disc ml-5 mt-2 text-xs text-gray-400 space-y-1">
+                    <li><span class="text-white">-30:</span> Desvantagem em testes.</li>
+                    <li><span class="text-white">-50:</span> Perseguição divina constante.</li>
+                    <li><span class="text-white">-80:</span> Possibilidade iminente de execução divina.</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer class="text-center text-gray-600 mt-20 pb-10">
+            <p>© 2026 Sistema Ascensão de Herois</p>
+        </footer>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for(let i=0; i<80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(212, 175, 55, 0.3)";
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+                p.y -= p.speed; if(p.y < 0) p.y = canvas.height;
+            });
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas(); draw();
+
+        (function() {
+            const tempoDeEspera = 5000;
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                const content = document.getElementById('main-content');
+                if (loader && content) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        content.classList.remove('opacity-0');
+                        content.classList.add('transition-opacity', 'duration-1000', 'opacity-100');
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+                        }, { threshold: 0.1 });
+                        document.querySelectorAll('.fade-in-section').forEach(s => observer.observe(s));
+                    }, 1000);
+                }
+            }, tempoDeEspera);
+        })();
+    </script>
+</body>
+</html>

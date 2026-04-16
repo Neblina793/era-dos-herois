@@ -1,318 +1,356 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Raças - Era dos Heróis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linhagens do Olimpo | Vandim VTT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0b0f;
             --gold: #d4af37;
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            --dark-bg: #0b0b0f;
+            --card-bg: rgba(22, 22, 30, 0.9);
         }
 
         body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: #e2e8f0;
             margin: 0;
-            background: var(--bg);
-            color: #eee;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            overflow-x: hidden;
             min-height: 100vh;
         }
 
-        header {
-            width: 100%;
-            text-align: center;
-            padding: 20px;
-            border-bottom: 1px solid #222;
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0b0b0f 100%);
         }
 
-        header img {
-            max-width: 420px;
-            width: 100%;
-        }
-
-        nav {
+        /* TELA DE LOADING LIMPA */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--dark-bg);
+            z-index: 9999;
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            gap: 10px;
-            background: #111;
-            padding: 10px;
-            width: 100%;
+            transition: opacity 1s ease-out;
         }
 
-        nav a {
+        .loader-gif { width: 200px; background: transparent; border: none; }
+
+        .loading-text {
+            margin-top: 20px;
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .container { position: relative; z-index: 10; }
+        h1, h2, h3, h4 { font-family: 'Cinzel', serif; text-transform: uppercase; }
+        
+        .raca-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid var(--gold);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 10px 20px;
             border: 1px solid var(--gold);
             color: var(--gold);
-            padding: 8px 14px;
+            font-family: 'Cinzel', serif;
             text-decoration: none;
             transition: 0.3s;
+            background: rgba(0,0,0,0.5);
+        }
+        .btn-voltar:hover { background: var(--gold); color: black; }
+
+        .habilidade-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
         }
 
-        nav a:hover {
-            background: var(--gold);
-            color: #000;
+        .variante-box {
+            border-left: 2px solid var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+            padding: 1rem;
+            margin-top: 0.5rem;
         }
 
-        main {
-            max-width: 800px;
-            width: 90%;
-            padding: 40px 0;
-        }
-
-        .gold {
-            color: var(--gold);
-        }
-
-        /* Estilos da Notícia Expansível */
-        .news-article {
-            background: #16161a;
-            border: 1px solid #333;
-            margin-bottom: 20px;
-            border-top: 4px solid var(--gold);
-            overflow: hidden;
-            transition: 0.3s;
-        }
-
-        .news-header {
-            padding: 20px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #1a1a20;
-            user-select: none;
-        }
-
-        .news-header:hover {
-            background: #202025;
-        }
-
-        .news-header h2 {
-            margin: 0;
-            font-size: 1.4rem;
-            pointer-events: none;
-        }
-
-        .toggle-icon {
-            color: var(--gold);
-            font-weight: bold;
-            transition: transform 0.3s;
-        }
-
-        .news-content {
-            padding: 0 30px;
-            max-height: 0;
+        .fade-in-section {
             opacity: 0;
-            overflow: hidden;
-            transition: all 0.5s ease-out;
-            line-height: 1.6;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
         }
+        .fade-in-section.visible { opacity: 1; transform: translateY(0); }
 
-        .news-article.active .news-content {
-            max-height: 5000px;
-            opacity: 1;
-            padding: 30px;
-        }
-
-        .news-article.active .toggle-icon {
-            transform: rotate(180deg);
-        }
-
-        .news-image {
-            width: 100%;
-            border: 2px solid var(--gold);
-            margin-bottom: 25px;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-        }
-
-        h3 { margin-top: 25px; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        
-        .intro-text {
-            font-style: italic;
-            font-size: 1.1rem;
-            color: #ccc;
-            margin-bottom: 20px;
-        }
-
-        blockquote {
-            border-left: 3px solid var(--gold);
-            margin: 20px 0;
-            padding-left: 20px;
-            color: #bbb;
-            font-style: italic;
-        }
+        .tag-info { font-weight: bold; color: var(--gold); font-size: 0.8rem; margin-right: 15px; }
     </style>
 </head>
 <body>
-    <header>
-        <img src="icon-192.png" alt="Era dos Heróis">
-    </header>
-    
-    <nav>
-        <a href="index.html">Início</a>
-        <a href="news.html">Noticias</a>
-        <a href="raça.html">Raças</a>
-        <a href="criar.html">Criar Personagem</a>
-        <a href="personagens.html">Personagens</a>
-        <a href="divindades.html">Divindades</a>
-        <a href="cadmagia.html">Cadastrar Magia</a>
-        <a href="grimorio.html">Grimorio</a>
-        <a href="cadtalentos.html">Adicionar Talentos</a>
-        <a href="talentos.html">Talentos</a>
-    </nav>
 
-    <main>
-        <article class="news-article">
-            <div class="news-header" onclick="toggleNews(this)">
-                <h2 class="gold">RAÇAS - Introdução </h2>
-                <span class="toggle-icon">▼</span>
-            </div>
-            
-            <div class="news-content">
-                <img src="01.png" alt="Raças da Era dos Herois" class="news-image">
+    <canvas id="bg-canvas"></canvas>
 
-                <p class="intro-text">Introdução:</p>
-<p>O presente artigo é fruto de uma breve 
-explicação sobre os seres que compõem o 
-universo do “Era dos Herois RPG”, tem 
-como principal objetivo comentar 
-brevemente sobre as criaturas que 
-apareceram nesse universo que se 
-demonstra cada vez mais infinito.
-Algumas criaturas estão vinculadas de 
-forma exclusiva com os eventos que 
-acontecem nas sagas de Era dos Herois RPG.</p>
- 
-            </div>
-        </article>
+    <div id="loader">
+        <img src="meiomonstro.gif" alt="Carregando..." class="loader-gif">
+        <div class="loading-text">Lendo os Pergaminhos...</div>
+    </div>
 
-        <article class="news-article">
-            <div class="news-header" onclick="toggleNews(this)">
-                <h2 class="gold">SEMI-DEUSES</h2>
-                <span class="toggle-icon">▼</span>
-            </div>
-            
-            <div class="news-content">
-                <img src="02.png" alt="SEMI-DEUSES" class="news-image">
-
-                <p>Semideuses , ou mestiços , são uma raça de seres que são meio
-mortais e meio-deus. Eles possuem almas mortais e são 
-vulneráveis à velhice, embora mais que a média de 
-expectativa de vida humana; no entanto, seu sangue divino lhes 
-confere habilidades sobrenaturais que lhes permitem alcançar 
-feitos geralmente não possíveis pelos seres humanos . Semideuses 
-são o resultado final de uma divindade e um mortal 
-(principalmente com humanos) tendo um filho juntos. Como essas 
-crianças são parte de um deus, elas aprimoraram suas habilidades 
-físicas acima dos reflexos da média, uma afinidade pelo idioma que 
-seu progenitor divino era adorado, e podem ter algum nível de 
-controle ou habilidade sobre o domínio de seus pais piedosos</p>
-                </div>
+    <div id="main-content" class="container mx-auto px-4 py-12 max-w-5xl opacity-0">
         
-            </article>
-<article class="news-article">
-            <div class="news-header" onclick="toggleNews(this)">
-                <h2 class="gold">SEMI-MONSTROS</h2>
-                <span class="toggle-icon">▼</span>
+        <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
+
+        <header class="text-center mb-16">
+            <h1 class="text-5xl text-gold mb-2">Linhagens Sagradas</h1>
+            <p class="text-gray-400 font-light tracking-widest">As raças que moldam o destino do Olimpo</p>
+        </header>
+
+        <div class="raca-card fade-in-section">
+            <h2 class="text-3xl text-gold mb-2">🐺 Meio Monstro</h2>
+            <p class="italic text-gray-400 mb-6">Você carrega o sangue de criaturas como o Minotauro ou a Quimera.</p>
+            
+            <div class="flex flex-wrap mb-6">
+                <span class="tag-info">📊 TIPO: Besta</span>
+                <span class="tag-info">📏 TAMANHO: P, M ou G</span>
+                <span class="tag-info">🚶 DESLOCAMENTO: 9m</span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="habilidade-box">
+                    <h4 class="text-gold mb-2 text-sm">🌑 Essência Bestial</h4>
+                    <p class="text-xs text-gray-300">• Visão no escuro 18m</p>
+                    <p class="text-xs text-gray-300">• Vantagem em Percepção (olfato/audição)</p>
+                    <p class="text-xs text-gray-300">• Resistência a um tipo: ácido, frio, fogo, elétrico ou veneno.</p>
+                </div>
+                <div class="habilidade-box">
+                    <h4 class="text-gold mb-2 text-sm">🧠 Instinto Predador</h4>
+                    <p class="text-xs text-gray-300">Proficiência em: Atletismo, Intimidação ou Sobrevivência.</p>
+                </div>
+            </div>
+
+            <h3 class="text-xl text-gold mt-8 mb-4 border-b border-gold/20 pb-2">🧬 Forma Monstruosa (Escolha 1)</h3>
+            <div class="grid md:grid-cols-2 gap-4 text-xs">
+                <div class="variante-box">
+                    <b class="text-white block mb-1">🐂 Chifres (Minotauro)</b>
+                    Ataque Natural: 1d8 + Força (perfurante). Se mover 6m em linha reta e atingir: +1d6 dano e alvo faz teste de FOR (CD 8+Prof+Mod) ou fica caído.
+                </div>
+                <div class="variante-box">
+                    <b class="text-white block mb-1">🐍 Corpo Serpentino (Hidra)</b>
+                    Resistência a veneno e vantagem contra envenenado. Uma vez por turno ao acertar: +1d6 veneno.
+                </div>
+                <div class="variante-box">
+                    <b class="text-white block mb-1">🦁 Garras Predatórias (Quimera)</b>
+                    Ataque Natural: 1d6 cortante. Se acertar duas vezes no mesmo turno: +1d6 de dano.
+                </div>
+                <div class="variante-box">
+                    <b class="text-white block mb-1">🐗 Couraça Natural</b>
+                    +1 CA (sem armadura pesada). Resistência a danos contundente, perfurante e cortante.
+                </div>
+                <div class="variante-box">
+                    <b class="text-white block mb-1">🦅 Asas de Grifo</b>
+                    Voo 9m. Não funciona com armadura pesada.
+                </div>
+                <div class="variante-box">
+                    <b class="text-white block mb-1">🔥 Sopro Bestial (Quimera)</b>
+                    Ação (Cone 4,5m): 2d6 fogo ou ácido. Teste de DES (CD 8+Prof+Mod) para metade. Usos = Bônus Proficiência por Descanso Longo.
+                </div>
+                <div class="variante-box" style="grid-column: span 2;">
+                    <b class="text-white block mb-1">🩸 Regeneração Instável (Hidra)</b>
+                    Início do turno: recupera PV = Bônus Proficiência. Não funciona se sofreu dano de fogo no último turno.
+                </div>
+            </div>
+        </div>
+
+        <div class="raca-card fade-in-section" style="border-left-color: #922610;">
+            <h2 class="text-3xl text-red-600 mb-2">🔥 Descendente do Tártaro</h2>
+            <p class="italic text-gray-400 mb-6">Tocado pelas profundezas do abismo.</p>
+            
+            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                <div class="habilidade-box">
+                    <h4 class="text-red-500 mb-2 text-sm">🌑 Essência do Abismo</h4>
+                    <p class="text-xs text-gray-300">• Resistência a necrótico / Vantagem contra medo</p>
+                    <p class="text-xs text-gray-300">• Visão das Profundezas (18m)</p>
+                </div>
+                <div class="habilidade-box">
+                    <h4 class="text-red-500 mb-2 text-sm">🧠 Natureza Sombria</h4>
+                    <p class="text-xs text-gray-300">Proficiência em: Intimidação ou Religião.</p>
+                </div>
+            </div>
+
+            <div class="variante-box border-red-800">
+                <b class="text-red-400 block mb-1">👁‍🗨 Presença Opressiva</b>
+                <p class="text-xs">Ação bônus: criaturas a 3m fazem teste de SAB (CD 8+Prof+Mod). Falha: Amedrontadas até o fim do seu próximo turno. (Usos = Proficiência/DL).</p>
             </div>
             
-            <div class="news-content">
-                <img src="03.png" alt="Meio Monstro" class="news-image">
-
-                <p>Os meios-monstros são seres fruto da relação entre um 
-humano com uma espécie de monstro que aparece nas 
-religiões e no folclore de várias culturas como criaturas 
-lendárias. Filhos dos seguintes monstros com um humano 
-podem serem dados como exemplo : Medusa, Aracne e 
-Cérberos .</p>
-           </div>
-           </article>
-
-<article class="news-article">
-            <div class="news-header" onclick="toggleNews(this)">
-                <h2 class="gold">SEMI-DEMÔNIOS</h2>
-                <span class="toggle-icon">▼</span>
+            <div class="variante-box border-red-800 mt-2">
+                <b class="text-red-400 block mb-1">🕳 Marca do Castigo</b>
+                <p class="text-xs">Duração 1 min. Ao acertar: dano extra = metade da proficiência. (Usos = Proficiência/DL).</p>
             </div>
-            
-            <div class="news-content">
-                <img src="04.png" alt="Meio Demonio" class="news-image">
 
-                <p>Os meio-demônios são híbridos nascidos da união de 
-demônios inferiores ou de alto escalão com humanos ou 
-qualquer outra raça humanoide que tenha um pouco de 
-inteligência, na visão deles. Tais híbridos, possuem 
-características e habilidades próprias, mas que se 
-assemelham muito as habilidades de seus pais, são 
-portadores de uma excelente agilidade, sabedoria, intelecto e 
-beleza. Há lugares onde são odiados, e há lugares onde são 
-adorados, depende muito das culturas, mas fato é, que isso 
-pode ser ou não um fator determinante da índole do meio
-demônio. Em diversas situações, os demônios engravidam 
-das humanas contra à vontade destas, se apossando de seus 
-corpos de forma evasiva e traumatizante. Muitas mães optam 
-por abandonarem seus filhos logo após eles nascerem.
-</p>
-           </div>
-           </article>
-<article class="news-article">
-            <div class="news-header" onclick="toggleNews(this)">
-                <h2 class="gold">SEMI-ENTIDADES</h2>
-                <span class="toggle-icon">▼</span>
+            <h3 class="text-xl text-red-600 mt-8 mb-4 border-b border-red-900/20 pb-2">🔥 Variantes do Tártaro</h3>
+            <div class="grid md:grid-cols-2 gap-4 text-xs">
+                <div class="variante-box border-red-600">
+                    <b class="text-white">⛓ Carcereiro (Subst. Presença)</b>
+                    <p>Prisão Absoluta: Ao acertar, teste de FOR. Falha: Paralisado até o fim do próximo turno.</p>
+                </div>
+                <div class="variante-box border-red-600">
+                    <b class="text-white">🌪 Filho do Abismo (Subst. Marca)</b>
+                    <p>Colapso Primordial: Teste de CON. Falha: Desvantagem em ataques e sem reações.</p>
+                </div>
+                <div class="variante-box border-red-600">
+                    <b class="text-white">🌘 Sombra Viva (Subst. Marca)</b>
+                    <p>Forma Intangível: Resistência a todos os danos (exceto radiante) e atravessa criaturas por 1 turno.</p>
+                </div>
+                <div class="variante-box border-red-600">
+                    <b class="text-white">⚖ Executor (Subst. Marca)</b>
+                    <p>Julgamento Inevitável: Alvos com <50% PV sofrem 2x Proficiência de dano extra e não curam.</p>
+                </div>
             </div>
-            
-            <div class="news-content">
-                <img src="05.png" alt="Filhos de Entidades" class="news-image">
+        </div>
 
-                <p>As semi-entidades são seres fruto da relação entre 
-um humano com uma entidade suprema. Filhos dos 
-seguintes entidades com um humano podem serem 
-dados como exemplo : Tehom, Luz, Guerra, Morte, 
-Fome, Peste e alguns outros. 
-Os filhos das Ninfas também podem serem 
-considerados semi-entidades.</p>
-           </div>
-           </article>
+        <div class="raca-card fade-in-section" style="border-left-color: #3a86ff;">
+            <h2 class="text-3xl text-blue-400 mb-2">✨ Descendente do Éter</h2>
+            <p class="italic text-gray-400 mb-6">Tocado pela luz primordial.</p>
 
-<article class="news-article">
-            <div class="news-header" onclick="toggleNews(this)">
-                <h2 class="gold">SEMI-SANTO</h2>
-                <span class="toggle-icon">▼</span>
+            <div class="grid md:grid-cols-2 gap-4 text-xs mb-6">
+                <div class="habilidade-box">
+                    <h4 class="text-blue-300 mb-2 text-sm">🌟 Essência Celestial</h4>
+                    <p>Resistência a radiante e Vantagem contra enfeitiçado. Visão Celestial (18m e percebe invisíveis a 3m).</p>
+                </div>
+                <div class="habilidade-box">
+                    <h4 class="text-blue-300 mb-2 text-sm">💫 Luz Primordial</h4>
+                    <p>Ação bônus (9m): Cura 1d6 + Prof OU vantagem no próximo teste/ataque. (Usos = Proficiência/DL).</p>
+                </div>
             </div>
-            
-            <div class="news-content">
-                <img src="06.png" alt="Semi santos" class="news-image">
 
-                <p>Os semi-santos são humanos comuns que nasceram 
-da relação entre dois humanos, no entanto. Ainda 
-durante seus primeiros anos de vidas os mesmos 
-foram abençoados por algum Deus que lhe concedeu 
-poderes para que estes façam o bem na terra. Esses 
-Deuses acompanham os seus escolhidos e os 
-aconselham em suas mentes como se eles fossem um 
-pai/mãe. Por essa razão os Semi-Santos muitas 
-alegam serem filhos desses Deuses. É algo mais de 
-consideração</p>
-           </div>
-           </article>
+            <h3 class="text-xl text-blue-400 mb-4 border-b border-blue-900/20 pb-2">✨ Variantes do Éter</h3>
+            <div class="grid md:grid-cols-2 gap-4 text-xs">
+                <div class="variante-box border-blue-400">
+                    <b class="text-white">🌈 Arauto de Aurora (Subst. Luz)</b>
+                    <p>Passo Prismático: Teleporte 9m. Criaturas próximas fazem teste de DES ou sofrem desvantagem no ataque.</p>
+                </div>
+                <div class="variante-box border-blue-400">
+                    <b class="text-white">🔆 Iluminado de Apolo (Subst. Centelha)</b>
+                    <p>Luz Reveladora: Alvo não pode ficar invisível e sofre vantagem em ataques se estiver no escuro.</p>
+                </div>
+                <div class="variante-box border-blue-400">
+                    <b class="text-white">🛡 Guardião (Subst. Luz)</b>
+                    <p>Égide Radiante: Reação para reduzir dano de aliado em 1d6 + proficiência.</p>
+                </div>
+                <div class="variante-box border-blue-400">
+                    <b class="text-white">🌠 Filho da Luz (Subst. Visão)</b>
+                    <p>Olhar do Éter: Ação (9m) causa desvantagem no próximo ataque/teste em falha de SAB.</p>
+                </div>
+            </div>
+        </div>
 
-    </main>
+        <div class="raca-card fade-in-section" style="border-left-color: #777;">
+            <h2 class="text-3xl text-gray-300 mb-2">🪨 Descendente dos Gigantes</h2>
+            <p class="italic text-gray-400 mb-6">Seres colossais que desafiaram os deuses.</p>
+
+            <div class="bg-black/40 p-6 border border-white/10 rounded mb-6">
+                <h4 class="text-gold mb-3">🔄 Forma Colossal (Ação Bônus)</h4>
+                <div class="grid md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                        <b class="text-white">🧍 Forma Média:</b> Deslocamento 10,5m.
+                    </div>
+                    <div>
+                        <b class="text-white">🗿 Forma Gigante (10 min):</b> Tamanho Grande, +1,5m de deslocamento, Vantagem em FOR, Desvantagem em Furtividade.
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 text-xs">
+                <div class="habilidade-box">
+                    <b class="text-gold block mb-1">🪓 Alcance Ampliado</b>
+                    Ataques corpo a corpo têm +1,5m de alcance enquanto estiver Gigante.
+                </div>
+                <div class="habilidade-box">
+                    <b class="text-gold block mb-1">🛡 Pele de Colosso</b>
+                    Reduz danos físicos (Contundente/Perfurante/Cortante) em valor igual à Proficiência.
+                </div>
+                <div class="habilidade-box">
+                    <b class="text-gold block mb-1">🧠 Força Titânica</b>
+                    Conta como um tamanho maior para carga, empurrar e puxar.
+                </div>
+                <div class="habilidade-box">
+                    <b class="text-gold block mb-1">🌍 Passos Tremores</b>
+                    Ao acertar ataque corpo a corpo Gigante: alvo faz teste de FOR (CD 8+Prof+Mod) ou cai.
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center text-gray-600 mt-20 pb-10">
+            <p>© 2026 Desemvolvido por Evandro Neto</p>
+        </footer>
+    </div>
 
     <script>
-        function toggleNews(header) {
-            const article = header.parentElement;
-            article.classList.toggle('active');
-            
-            // Opcional: Fecha outras notícias ao abrir uma nova
-            document.querySelectorAll('.news-article').forEach(item => {
-                if (item !== article) item.classList.remove('active');
-            });
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for(let i=0; i<80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5
+                });
+            }
         }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(212, 175, 55, 0.3)";
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+                p.y -= p.speed; if(p.y < 0) p.y = canvas.height;
+            });
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas(); draw();
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                const content = document.getElementById('main-content');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    content.classList.remove('opacity-0');
+                    content.classList.add('transition-opacity', 'duration-1000', 'opacity-100');
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+                    }, { threshold: 0.1 });
+                    document.querySelectorAll('.fade-in-section').forEach(s => observer.observe(s));
+                }, 1000);
+            }, 5000); 
+        });
     </script>
 </body>
 </html>
