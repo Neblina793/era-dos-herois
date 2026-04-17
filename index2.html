@@ -3,200 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Era dos Heróis - Temporada 2</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <title>Prólogo - Era dos Heróis</title>
     <style>
-        /* Estilos específicos para as funcionalidades da Temporada 2 */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+
+        :root {
+            --gold: #ffd700;
+            --gold-dark: #b8860b;
+            --fire: #ff4500;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #050505;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* Fundo Animado Alternado */
+        #bg-slideshow {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 2s ease-in-out;
+            filter: brightness(0.3);
+        }
+
+        #bg-slideshow::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(5,5,5,0.7), rgba(5,5,5,0.9));
+        }
+
+        /* Botão Voltar Fixo */
+        .btn-voltar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--gold-dark);
+            color: var(--gold);
+            padding: 10px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            transition: 0.3s;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 1.5rem;
-            transition: all 0.3s ease;
+            letter-spacing: 2px;
         }
-        .raca-description {
-            max-height: 0;
+
+        .btn-voltar:hover {
+            background: var(--gold);
+            color: #000;
+        }
+
+        /* Tela de Carregamento */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #loader img { width: 120px; margin-bottom: 20px; }
+
+        .loading-text {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            letter-spacing: 5px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        /* Conteúdo Principal */
+        #main-content {
+            display: none;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 100px 20px;
+            animation: fadeIn 2s ease-in;
+            position: relative;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h1, h2, h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+        }
+
+        .quote {
+            font-style: italic;
+            text-align: center;
+            color: var(--gold-dark);
+            font-size: 1.3rem;
+            margin: 40px 0;
+            display: block;
+        }
+
+        section { margin-bottom: 80px; text-align: center; }
+        p { margin-bottom: 20px; font-size: 1.1rem; color: #ccc; }
+        strong { color: var(--gold); }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-dark), transparent);
+            margin: 50px 0;
+        }
+
+        /* Efeito O Evento com Partículas */
+        .event-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, rgba(255,69,0,0.1) 0%, transparent 70%);
+            margin: 50px 0;
             overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            background: rgba(0, 0, 0, 0.2);
         }
-        .raca-description.open {
-            max-height: 200px;
-            padding: 1rem;
-            border-left: 2px solid #d4af37;
-            margin-top: 0.5rem;
+
+        .event-image {
+            width: 300px;
+            z-index: 2;
+            filter: drop-shadow(0 0 15px rgba(0,0,0,0.8));
         }
-        .dice-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .rpg-dice { position: absolute; opacity: 0; animation: floatAndFade 10s infinite ease-in-out; }
-        @keyframes floatAndFade {
-            0% { transform: translate(var(--x-start), var(--y-start)) rotate(0deg); opacity: 0; }
-            50% { opacity: 0.3; }
-            100% { transform: translate(var(--x-end), var(--y-end)) rotate(360deg); opacity: 0; }
+
+        .fire-particle {
+            position: absolute;
+            background: var(--fire);
+            border-radius: 50%;
+            filter: blur(5px);
+            opacity: 0;
+            animation: float-fire 3s infinite linear;
         }
+
+        @keyframes float-fire {
+            0% { transform: translateY(100px) scale(0); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-200px) scale(1.5); opacity: 0; }
+        }
+
+        .front { z-index: 3; }
+        .back { z-index: 1; }
     </style>
 </head>
-<body class="antialiased bg-[#070709] text-white">
+<body>
 
-    <div class="dice-bg" id="dice-animation-container"></div>
+    <div id="bg-slideshow"></div>
 
-    <nav class="fixed w-full z-50 glass py-4">
-        <div class="container mx-auto px-6 flex justify-between items-center">
-            <div class="text-2xl font-cinzel font-bold gold-gradient tracking-widest uppercase">
-                Era dos <span class="text-white">Heróis</span>
-            </div>
-            <div class="hidden md:flex space-x-8 text-sm font-semibold uppercase tracking-wider">
-                <a href="index.html" class="hover:text-yellow-500 transition">Início</a>
-                <a href="ficha_personagem.html" class="hover:text-yellow-500 transition">Novo Herói</a>
-                <a href="https://drive.google.com/drive/folders/1Y0BOCDEveI9aywgea5P9Jymb3WMGVYUT" target="_blank" class="hover:text-yellow-500 transition">Biblioteca</a>
-            </div>
-            <span class="text-yellow-500 font-cinzel font-bold text-xs border border-yellow-500/30 px-3 py-1 rounded">2ª TEMPORADA</span>
-        </div>
-    </nav>
+    <a href="index.html" class="btn-voltar">← VOLTAR AO INÍCIO</a>
 
-    <section class="pt-32 pb-10 relative z-10">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-yellow-500 font-cinzel text-xl mb-2 tracking-[0.3em] uppercase">A Continuação da Odisseia</h2>
-            <h1 class="text-4xl md:text-6xl font-cinzel font-bold mb-8 gold-gradient uppercase">Temporada 2</h1>
-            
-            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-                
-                <div class="glass-card p-8 border-t-4 border-t-yellow-500/50">
-                    <h3 class="text-2xl font-cinzel font-bold mb-6 flex items-center justify-center gap-3">
-                        <i class="fa fa-users text-yellow-500 text-sm"></i> Heróis Forjados
-                    </h3>
-                    <div id="container-lista-pers" class="space-y-3 text-left max-h-[400px] overflow-y-auto pr-2">
-                        <p class="text-gray-500 text-center italic">Carregando crônicas...</p>
-                    </div>
-                </div>
-
-                <div class="glass-card p-8 border-t-4 border-t-yellow-500/50 text-left">
-                    <h3 class="text-2xl font-cinzel font-bold mb-6 text-center flex items-center justify-center gap-3">
-                        <i class="fa fa-scroll text-yellow-500 text-sm"></i> Linhagens
-                    </h3>
-                    
-                    <div class="space-y-2">
-                        <div class="border-b border-white/5 pb-2">
-                            <button onclick="toggleRaca('desc-monstro')" class="w-full flex justify-between items-center py-2 hover:text-yellow-500 transition font-cinzel uppercase text-sm tracking-widest">
-                                Meio Monstro <i class="fa fa-paw text-xs"></i>
-                            </button>
-                            <div id="desc-monstro" class="raca-description text-gray-400 text-sm">
-                                Seres que carregam sangue de criaturas selvagens. Possuem força física brutal e instintos aguçados.
-                            </div>
-                        </div>
-
-                        <div class="border-b border-white/5 pb-2">
-                            <button onclick="toggleRaca('desc-deus')" class="w-full flex justify-between items-center py-2 hover:text-yellow-500 transition font-cinzel uppercase text-sm tracking-widest">
-                                Semi-Deus <i class="fa fa-bolt text-xs"></i>
-                            </button>
-                            <div id="desc-deus" class="raca-description text-gray-400 text-sm">
-                                Filhos de divindades com mortais. Carregam dons extraordinários e aura de autoridade.
-                            </div>
-                        </div>
-
-                        <div class="border-b border-white/5 pb-2">
-                            <button onclick="toggleRaca('desc-demonio')" class="w-full flex justify-between items-center py-2 hover:text-yellow-500 transition font-cinzel uppercase text-sm tracking-widest">
-                                Semi-Demônio <i class="fa fa-fire text-xs"></i>
-                            </button>
-                            <div id="desc-demonio" class="raca-description text-gray-400 text-sm">
-                                Indivíduos tocados pelas energias abissais. Possuem resistência ao fogo e habilidades sombrias.
-                            </div>
-                        </div>
-
-                        <div class="border-b border-white/5 pb-2">
-                            <button onclick="toggleRaca('desc-anjo')" class="w-full flex justify-between items-center py-2 hover:text-yellow-500 transition font-cinzel uppercase text-sm tracking-widest">
-                                Semi-Anjo <i class="fa fa-feather text-xs"></i>
-                            </button>
-                            <div id="desc-anjo" class="raca-description text-gray-400 text-sm">
-                                Descendentes de linhagens celestiais. Irradiam luz e aptidão inata para cura e proteção.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <div id="modal-ficha" class="fixed inset-0 z-[100] hidden bg-black/95 backdrop-blur-sm p-4 overflow-y-auto">
-        <div class="max-w-2xl mx-auto mt-10 bg-white text-black rounded-lg p-8 shadow-2xl relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black">
-                <i class="fa fa-times text-xl"></i>
-            </button>
-            <div id="conteudo-ficha" class="font-inter"></div>
-        </div>
+    <div id="loader">
+        <img src="20.gif" alt="Carregando">
+        <div class="loading-text">CARREGANDO...</div>
     </div>
 
-    <footer class="py-12 border-t border-white/5 mt-20 text-center relative z-10">
-        <div class="text-xl font-cinzel font-bold gold-gradient tracking-widest mb-4">ERA DOS HERÓIS</div>
-        <p class="text-gray-500 text-xs uppercase tracking-widest">A jornada continua na Segunda Temporada</p>
-    </footer>
+    <div id="main-content">
+        <header>
+            <h1>⚔️ ERA DOS HERÓIS — PRÓLOGO: O JULGAMENTO DOS MORTAIS</h1>
+            <span class="quote">“Os deuses ainda observam… mas não irão salvar ninguém.”</span>
+        </header>
+
+        <section>
+            <p>O trovão ainda ecoa nos céus.<br>Não como um aviso…</p>
+            <p><strong>mas como um lembrete.</strong></p>
+            <p>Zeus, senhor do Olimpo, não abandonou o mundo.</p>
+            <p>Ele fez algo muito pior.<br>Ele proibiu os deuses de agir.</p>
+        </section>
+
+        <div class="divider"></div>
+
+        <section>
+            <h2>⚖️ O DECRETO DIVINO</h2>
+            <p>Após séculos de guerras, tragédias e manipulações divinas, Zeus declarou o Grande Decreto:</p>
+            <p><em>“Nenhum deus intervirá no destino dos mortais.”</em></p>
+            <p>Sem milagres.<br>Sem bênçãos.<br>Sem punições.</p>
+            <p>Os deuses observam… em silêncio.<br>E o mundo… foi deixado à própria sorte.</p>
+        </section>
+
+        <section>
+            <h2>🩸 HERANÇA PROIBIDA</h2>
+            <p>Mesmo sem intervenção divina, o sangue antigo ainda corre.<br>Vocês são prova disso.</p>
+            <p>Descendentes de forças primordiais<br>Portadores de dons que não deveriam existir<br>Filhos de um mundo que já foi governado por deuses e titãs</p>
+            <p>Entre vocês estão aqueles marcados pela força brutal dos Gigantes —<br>não os Titãs… mas seus herdeiros.</p>
+            <p>Seres que herdaram fragmentos de poder suficiente para abalar montanhas.<br>E agora… esse poder desperta.</p>
+        </section>
+
+        <section>
+            <h2>⛓️ CORRENTES</h2>
+            <p>Mas não como heróis. Não ainda.<br>Vocês começam… <strong>como escravos.</strong></p>
+            <p>Capturados por um império cruel que teme aquilo que não pode controlar, vocês foram acorrentados, vendidos e reduzidos a ferramentas.</p>
+            <p>Trabalhando até a exaustão em um lugar esquecido pelos deuses: Uma arena subterrânea.</p>
+            <p>Ali, escravos lutam… não por glória, mas por sobrevivência.</p>
+            <p>E hoje… Algo diferente vai acontecer.</p>
+        </section>
+
+        <section>
+            <h2>🐉 O DIA EM QUE O CÉU TREMEU</h2>
+            <p>Os portões da arena se abrem. Mas não para mais uma luta comum.</p>
+            <p>O chão treme. O ar fica pesado. E até os guardas… recuam.</p>
+            <p>Uma criatura lendária foi capturada. Um monstro que não deveria existir entre os mortais. Um eco de uma era antiga.</p>
+        </section>
+
+        <section>
+            <h2>⚔️ OS HERÓIS</h2>
+            <p>Do outro lado da arena, eles entram. Heróis. Guerreiros livres. Campeões reconhecidos. Lendas vivas.</p>
+            <p>Eles vieram matar a criatura. A multidão grita. Os deuses… observam.</p>
+        </section>
+
+        <div class="divider"></div>
+
+        <section id="evento-section">
+            <h2>💥 O EVENTO</h2>
+            
+            <div class="event-container" id="fire-container">
+                <img src="ox.png" alt="O Evento" class="event-image">
+            </div>
+
+            <p>A batalha começa. Espadas colidem. Magias rasgam o ar.</p>
+            <p>A criatura ruge como se o próprio mundo estivesse sendo partido.<br>Mas algo dá errado. Muito errado.</p>
+            <p>Durante o combate, a criatura — ferida e furiosa — libera um poder selado dentro de si.</p>
+            <p>Não é apenas força… é energia antiga. Primordial. Proibida.</p>
+            <p>O impacto explode pela arena. As correntes que prendem vocês… se partem.</p>
+            <p>Os pilares racham. Os portões são destruídos. O chão desmorona.<br>E no caos… Vocês estão livres.</p>
+        </section>
+
+        <section>
+            <h2>🔥 O PRIMEIRO PASSO</h2>
+            <p>Os guardas estão mortos… ou fugindo. Os heróis estão ocupados tentando sobreviver. A criatura está fora de controle.</p>
+            <p>E vocês? Vocês têm uma escolha.<br>Fugir… Lutar… Ou provar que não são apenas sobreviventes.</p>
+            <p class="quote">“Os deuses não decidirão o destino de vocês…”<br>“…mas o mundo vai lembrar do que vocês escolherem fazer agora.”</p>
+        </section>
+    </div>
 
     <script>
-        // Lógica de Expansão das Raças
-        function toggleRaca(id) {
-            const el = document.getElementById(id);
-            const isOpen = el.classList.contains('open');
-            
-            // Fecha todas as outras
-            document.querySelectorAll('.raca-description').forEach(d => d.classList.remove('open'));
-            
-            if (!isOpen) el.classList.add('open');
+        const images = ["03.png", "04.png", "05.png"];
+        let currentIndex = 0;
+        const bgElement = document.getElementById('bg-slideshow');
+
+        function changeBackground() {
+            bgElement.style.backgroundImage = `url('${images[currentIndex]}')`;
+            currentIndex = (currentIndex + 1) % images.length;
         }
 
-        // Modal Handler
-        function closeModal() {
-            document.getElementById('modal-ficha').classList.add('hidden');
-        }
-
-        // Animação de Dados (Fundo)
-        function createDice() {
-            const container = document.getElementById('dice-animation-container');
-            const dice = document.createElement('div');
-            dice.className = 'rpg-dice';
-            const img = document.createElement('img');
-            const diceFiles = ['D4.png', 'D6.png', 'D8.png', 'D10.png', 'D12.png', 'D20.png'];
-            
-            // Tenta carregar a imagem, se falhar usa um ícone de fallback
-            img.src = diceFiles[Math.floor(Math.random() * diceFiles.length)];
-            img.style.width = "40px";
-            img.style.filter = "sepia(1) saturate(5) hue-rotate(10deg) drop-shadow(0 0 5px rgba(212, 175, 55, 0.5))";
-            
-            dice.appendChild(img);
-            dice.style.setProperty('--x-start', Math.random() * window.innerWidth + 'px');
-            dice.style.setProperty('--y-start', Math.random() * window.innerHeight + 'px');
-            dice.style.setProperty('--x-end', Math.random() * window.innerWidth + 'px');
-            dice.style.setProperty('--y-end', Math.random() * window.innerHeight + 'px');
-            
-            container.appendChild(dice);
-            setTimeout(() => dice.remove(), 10000);
-        }
-        setInterval(createDice, 2500);
-
-        // Carregar Personagens do LocalStorage
-        function carregarLista() {
-            const personagens = JSON.parse(localStorage.getItem('rpg_v6_total')) || [];
-            const container = document.getElementById('container-lista-pers');
-            
-            if (personagens.length === 0) { 
-                container.innerHTML = `<div class="text-center py-10 text-gray-600 border border-dashed border-white/10 rounded-xl">Nenhum herói forjado nesta era.</div>`; 
-                return; 
+        function createFire() {
+            const container = document.getElementById('fire-container');
+            const particleCount = 40;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'fire-particle ' + (Math.random() > 0.5 ? 'front' : 'back');
+                const size = Math.random() * 10 + 5 + 'px';
+                particle.style.width = size;
+                particle.style.height = size;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 3 + 's';
+                particle.style.backgroundColor = ['#ff4500', '#ff8c00', '#ffd700'][Math.floor(Math.random() * 3)];
+                container.appendChild(particle);
             }
-
-            container.innerHTML = personagens.map((p, i) => `
-                <div class="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-yellow-500/30 transition-all group flex justify-between items-center">
-                    <div>
-                        <div class="font-bold text-yellow-500 group-hover:text-yellow-400 transition">${p.nome}</div>
-                        <div class="text-xs text-gray-500 uppercase tracking-tighter">${p.classe} • Nível ${p.nivel}</div>
-                    </div>
-                    <i class="fa fa-chevron-right text-gray-700 group-hover:text-yellow-500 text-xs"></i>
-                </div>
-            `).join('');
         }
 
-        window.onload = carregarLista;
+        window.addEventListener('load', () => {
+            changeBackground();
+            setInterval(changeBackground, 6000);
+            createFire();
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            }, 3000);
+        });
     </script>
 </body>
 </html>
