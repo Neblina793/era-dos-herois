@@ -1,236 +1,323 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relíquias do Olimpo - Gerador de Itens</title>
-  <style>
-    :root {
-      --bg-body: #0b0b0f;
-      --bg-card: #16161e;
-      --gold: #d4af37;
-      --primary-color: #e63946;
-      --text-main: #eee;
-      --text-muted: #aaa;
-      --border-color: #333;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado dos Heróis - Era dos Heróis</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap');
 
-    body {
-      font-family: 'Georgia', serif;
-      background: var(--bg-body);
-      color: var(--text-main);
-      margin: 0;
-      padding: 20px;
-    }
+        :root {
+            --gold: #ffd700;
+            --gold-dark: #b8860b;
+            --glass: rgba(0, 0, 0, 0.8);
+            --raro: #3498db;
+            --lendario: #e74c3c;
+            --artefato: #9b59b6;
+        }
 
-    .container { max-width: 900px; margin: auto; }
-    
-    header { text-align: center; margin-bottom: 30px; }
-    header h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid var(--gold); display: inline-block; padding-bottom: 10px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
-    nav a { border: 1px solid var(--gold); color: var(--gold); padding: 8px 14px; text-decoration: none; border-radius: 4px; font-family: sans-serif; font-size: 0.9em; transition: 0.3s; }
-    nav a:hover { background: var(--gold); color: black; }
+        body {
+            background-color: #000;
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+        }
 
-    .gerador-box {
-      background: var(--bg-card);
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
-      align-items: flex-end;
-      margin-bottom: 30px;
-    }
+        /* Botão Voltar */
+        .btn-voltar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--glass);
+            border: 1px solid var(--gold-dark);
+            color: var(--gold);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .field { display: flex; flex-direction: column; gap: 5px; }
-    .field label { color: var(--gold); font-size: 0.8em; font-weight: bold; text-transform: uppercase; }
-    
-    select, input, button {
-      background: #0b0b0f;
-      border: 1px solid var(--border-color);
-      color: white;
-      padding: 10px;
-      border-radius: 4px;
-      outline: none;
-    }
+        .btn-voltar:hover {
+            background: var(--gold-dark);
+            color: #000;
+            transform: scale(1.05);
+        }
 
-    .btn-principal { background: var(--gold); color: black; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; padding: 12px 25px; }
-    .btn-principal:hover { background: #fff; transform: scale(1.05); }
+        /* Tela de Carregamento */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
 
-    .btn-save { background: #2a9d8f; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; margin-top: 15px; font-weight: bold; }
-    
-    .btn-excluir { background: var(--primary-color); color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.8em; margin-top: 10px; }
-    .btn-editar { background: #3a86ff; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.8em; margin-top: 10px; margin-right: 5px; }
+        #loader img { width: 150px; margin-bottom: 20px; border: none; }
 
-    .ficha-item {
-      background: #fdf1dc;
-      color: #2c1e11;
-      padding: 20px;
-      border-radius: 2px;
-      border-left: 8px solid #704214;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-      margin-top: 20px;
-      text-align: left;
-    }
+        .loading-text {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            letter-spacing: 4px;
+            animation: pulse 1.5s infinite;
+        }
 
-    .preview-section { display: none; margin-bottom: 40px; text-align: center; }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
-    .item-header h2 { margin: 0; font-size: 1.6em; color: #922610; font-variant: small-caps; }
-    .item-header p { margin: 0; font-style: italic; font-size: 0.9em; border-bottom: 1px solid #704214; padding-bottom: 5px; margin-bottom: 10px; }
+        /* Conteúdo Principal */
+        #main-content {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('003.png') no-repeat center center fixed;
+            background-size: cover;
+            padding: 80px 20px 40px; /* Aumentado o padding top por causa do botão */
+            animation: fadeIn 1.2s ease-out;
+        }
 
-    .item-prop { font-size: 0.95em; line-height: 1.5; }
-    .item-prop b { color: #922610; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    #listaSalvos { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
-  </style>
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header { text-align: center; margin-bottom: 60px; }
+        h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: var(--gold); text-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            border-bottom: 1px solid var(--gold-dark);
+            margin: 50px 0 25px;
+            padding-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .item-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .item-name { font-family: 'Cinzel', serif; font-size: 1.1rem; color: #fff; }
+        .price { color: var(--gold); font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.9rem; }
+        .rarity { font-size: 0.7rem; text-transform: uppercase; color: #888; }
+
+        .rare { border-left: 5px solid var(--raro); }
+        .legendary { border-left: 5px solid var(--lendario); }
+        .artifact { border: 2px solid var(--artefato); background: rgba(155, 89, 182, 0.05); }
+
+        .description {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, margin-top 0.3s ease;
+            font-size: 0.9rem;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .item-card.active .description {
+            max-height: 300px;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .mission-info {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px dashed #2ecc71;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #2ecc71;
+            font-size: 0.85rem;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <header>
-    <h1>Relíquias do Olimpo</h1>
-  </header>
+    <a href="index.html" class="btn-voltar">
+        <span>←</span> VOLTAR AO INÍCIO
+    </a>
 
-  <nav>
-    <a href="index.html">Início</a>
-    <a href="mestre.html">Área do Mestre</a>
-    <a href="Gerador de Monstro.html">Gerador de Monstros</a>
-  </nav>
-
-  <div class="gerador-box">
-    <div class="field">
-      <label>Nome do Item</label>
-      <input type="text" id="nomeItem" placeholder="Ex: Lança de Aquiles">
+    <div id="loader">
+        <img src="20.gif" alt="Carregando">
+        <div class="loading-text">CARREGANDO...</div>
     </div>
-    <div class="field">
-      <label>Tipo de Item</label>
-      <select id="tipoItem">
-        <option value="arma">Arma</option>
-        <option value="armadura">Armadura / Escudo</option>
-        <option value="acessorio">Acessório</option>
-        <option value="consumivel">Consumível</option>
-      </select>
+
+    <div id="main-content">
+        <div class="container">
+            <header>
+                <h1>Mercado dos Heróis</h1>
+                <p style="color: #aaa; font-style: italic;">"Equipamentos para aqueles que desafiam o destino"</p>
+            </header>
+
+            <h2 class="section-title">Itens Comuns</h2>
+            <div class="item-grid">
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Ração de Viagem</span><span class="price">5 Dracmas</span></div>
+                    <span class="rarity">Comum</span>
+                    <div class="description">Alimentos secos e preservados. Mantém um herói alimentado por um dia inteiro de marcha.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Vinho (Garrafa)</span><span class="price">10 Dracmas</span></div>
+                    <span class="rarity">Comum</span>
+                    <div class="description">Um tinto encorpado das vinhas de Dionísio. Excelente para banquetes e descanso.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Poção de Cura</span><span class="price">50 Dracmas</span></div>
+                    <span class="rarity">Comum</span>
+                    <div class="description">Recupera 2d4 + 2 pontos de vida instantaneamente. Essencial para qualquer aventura.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Poção de Escalada</span><span class="price">75 Dracmas</span></div>
+                    <span class="rarity">Comum</span>
+                    <div class="description">Ganha deslocamento de escalada igual ao seu deslocamento de caminhada por 1 hora.</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Itens Incomuns</h2>
+            <div class="item-grid">
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">🗡️ Adaga de Envenenamento</span><span class="price">8.000 Dracmas</span></div>
+                    <span class="rarity">Incomum</span>
+                    <div class="description">Uma lâmina escura com veios esverdeados pulsantes. Libera um veneno mágico que corrói o corpo do inimigo lentamente.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">💍 Anel de Armazenar Magia</span><span class="price">20.000 Dracmas</span></div>
+                    <span class="rarity">Incomum</span>
+                    <div class="description">Permite armazenar magias lançadas nele e reutilizá-las depois. O brilho das gemas indica a energia contida.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">🛡️ Armadura de Resistência</span><span class="price">15.000 Dracmas</span></div>
+                    <span class="rarity">Incomum</span>
+                    <div class="description">Encantada com runas. O usuário ganha resistência a um tipo de dano elemental à escolha (Fogo, Gelo, Ácido, etc).</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">🪽 Asas Voadoras</span><span class="price">20.000 Dracmas</span></div>
+                    <span class="rarity">Incomum</span>
+                    <div class="description">Asas mágicas surgem nas costas, permitindo voo livre por curtos períodos.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">🔮 Cubo de Força</span><span class="price">20.000 Dracmas</span></div>
+                    <span class="rarity">Incomum</span>
+                    <div class="description">Cria um campo de força invisível que bloqueia ataques e magias, consumindo a energia do cubo.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">🔥 Colar de Bolas de Fogo</span><span class="price">8.000 Dracmas</span></div>
+                    <span class="rarity">Incomum</span>
+                    <div class="description">Contas vermelhas que, ao serem lançadas, explodem como a poderosa magia de 3º nível.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">🧥 Manto de Deslocamento</span><span class="price">15.000 Dracmas</span></div>
+                    <span class="rarity">Incomum</span>
+                    <div class="description">Distorce a luz ao redor do usuário, criando uma ilusão que dificulta ser atingido por ataques físicos.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">⚡ Varinha de Relâmpagos</span><span class="price">12.000 Dracmas</span></div>
+                    <span class="rarity">Incomum</span>
+                    <div class="description">Dispara raios devastadores em linha reta, atravessando múltiplos alvos.</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Relíquias de Olimpo</h2>
+            <div class="item-grid">
+                <div class="item-card legendary" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Robe do Arquimago</span><span class="price">250.000 Dracmas</span></div>
+                    <span class="rarity">Lendário</span>
+                    <div class="description">Veste sagrada que oferece proteção mística superior e aumenta drasticamente a potência de conjuração do portador.</div>
+                </div>
+                <div class="item-card artifact" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Lâmina da Lua</span><span class="price">Inestimável</span></div>
+                    <span class="rarity">Artefato</span>
+                    <div class="description">Uma arma inteligente de poder incomensurável, cujo valor não pode ser medido em moedas mundanas.</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Quadro de Recompensas (Missões)</h2>
+            <div class="item-grid">
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Azagaia de Relâmpago</span><span class="price">Troca: 2.000 Dracmas</span></div>
+                    <div class="mission-info">
+                        <strong>Missão: A Ira de Zeus</strong><br>
+                        Recupere a centelha roubada do altar sagrado nas montanhas.
+                    </div>
+                    <div class="description">Ao ser arremessada, torna-se um raio (4d6 de dano). Pode ser trocada por 2.000 Dracmas.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Botas de Caminhar no Ar</span><span class="price">Troca: 4.500 Dracmas</span></div>
+                    <div class="mission-info">
+                        <strong>Missão: O Mensageiro Perdido</strong><br>
+                        Encontre o mensageiro de Hermes perdido no Pico das Névoas.
+                    </div>
+                    <div class="description">Permite caminhar no ar por 1 hora. Valor de troca: 4.500 Dracmas.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Manto Élfico</span><span class="price">Troca: 3.500 Dracmas</span></div>
+                    <div class="mission-info">
+                        <strong>Missão: Silêncio na Floresta</strong><br>
+                        Elimine a besta que assombra os bosques de Ártemis.
+                    </div>
+                    <div class="description">Dá vantagem em testes de Furtividade. Valor de troca: 3.500 Dracmas.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Chapéu de Disfarce</span><span class="price">Troca: 2.500 Dracmas</span></div>
+                    <div class="mission-info">
+                        <strong>Missão: Infiltração em Atenas</strong><br>
+                        Recupere os documentos secretos do senado sem ser visto.
+                    </div>
+                    <div class="description">Permite usar a magia Disfarçar-se à vontade. Recompensa alternativa: 2.500 Dracmas.</div>
+                </div>
+                <div class="item-card" onclick="toggleCard(this)">
+                    <div class="item-header"><span class="item-name">Corda de Escalada</span><span class="price">Troca: 1.500 Dracmas</span></div>
+                    <div class="mission-info">
+                        <strong>Missão: O Labirinto de Cnossos</strong><br>
+                        Mapeie os níveis inferiores do labirinto e retorne vivo.
+                    </div>
+                    <div class="description">Corda mágica de 18 metros que se move sob comando. Troca por 1.500 Dracmas.</div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="field">
-        <label>Raridade</label>
-        <select id="raridade">
-          <option value="Comum">Comum</option>
-          <option value="Incomum">Incomum</option>
-          <option value="Raro">Raro</option>
-          <option value="Muito Raro">Muito Raro</option>
-          <option value="Lendário">Lendário</option>
-        </select>
-      </div>
-    <button class="btn-principal" onclick="gerarItem()">FORJAR ITEM</button>
-  </div>
 
-  <div id="previewArea" class="preview-section">
-    <h2 style="color: var(--gold);">Item Recém Forjado!</h2>
-    <div id="itemPreview"></div>
-    <button class="btn-save" onclick="salvarItem()">💾 GUARDAR NO INVENTÁRIO</button>
-  </div>
+    <script>
+        function toggleCard(card) {
+            card.classList.toggle('active');
+        }
 
-  <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 40px 0;">
-  
-  <h2 style="color: var(--gold); text-align: center;">🎒 Inventário de Itens Salvos</h2>
-  <div id="listaSalvos"></div>
-</div>
-
-<script>
-let itemAtual = null;
-
-const efeitos = {
-  arma: ["Causa +1d6 de dano de fogo.", "Vantagem contra mortos-vivos.", "+1 de bônus no ataque.", "Dano necrótico extra.", "Ignora armadura mundana."],
-  armadura: ["+1 na Classe de Armadura.", "Resistência a veneno.", "Vantagem contra medo.", "Reflete 1d4 de dano.", "Aumenta vida em +5."],
-  acessorio: ["Visão no escuro (18m).", "Respirar debaixo d'água.", "+1 em Intuição.", "Aumenta velocidade em 3m.", "Teletransporte (1/dia)"],
-  consumivel: ["Recupera 2d4+2 de Vida.", "Invisibilidade (1 min).", "Cura Envenenamento.", "Força aumentada por 1 hora.", "Voo por 10 minutos."]
-};
-
-function gerarItem() {
-  const nome = document.getElementById('nomeItem').value || "Relíquia Sem Nome";
-  const tipo = document.getElementById('tipoItem').value;
-  const raridade = document.getElementById('raridade').value;
-  
-  const lista = efeitos[tipo];
-  const efeito = lista[Math.floor(Math.random() * lista.length)];
-
-  itemAtual = { nome, tipo, raridade, efeito };
-
-  // Gera o HTML na área de prévia
-  document.getElementById('itemPreview').innerHTML = criarHtmlItem(itemAtual);
-  // Mostra a área escondida
-  document.getElementById('previewArea').style.display = 'block';
-  
-  // Rola até o item novo
-  window.scrollTo({ top: document.getElementById('previewArea').offsetTop - 20, behavior: 'smooth' });
-}
-
-function criarHtmlItem(it, index = -1) {
-  return `
-    <div class="ficha-item">
-      <div class="item-header">
-        <span style="color:#d4af37; font-weight:bold; text-transform:uppercase; font-size:0.8em;">${it.raridade}</span>
-        <h2>${it.nome}</h2>
-        <p>${it.tipo.toUpperCase()}</p>
-      </div>
-      <div class="item-prop">
-        <b>Propriedade Mágica:</b> ${it.efeito}
-      </div>
-      ${index !== -1 ? `
-        <button class="btn-editar" onclick="editarNome(${index})">📝 Editar Nome</button>
-        <button class="btn-excluir" onclick="excluirItem(${index})">🗑️ Excluir</button>
-      ` : ''}
-    </div>
-  `;
-}
-
-function editarNome(index) {
-  let salvos = JSON.parse(localStorage.getItem('itens_gregos') || '[]');
-  const novoNome = prompt("Digite o novo nome para este item:", salvos[index].nome);
-  
-  if (novoNome !== null && novoNome.trim() !== "") {
-    salvos[index].nome = novoNome.trim();
-    localStorage.setItem('itens_gregos', JSON.stringify(salvos));
-    renderizarItens();
-  }
-}
-
-function salvarItem() {
-  if (!itemAtual) return;
-  let salvos = JSON.parse(localStorage.getItem('itens_gregos') || '[]');
-  salvos.push(itemAtual);
-  localStorage.setItem('itens_gregos', JSON.stringify(salvos));
-  
-  // Esconde a prévia e limpa o campo
-  document.getElementById('previewArea').style.display = 'none';
-  document.getElementById('nomeItem').value = '';
-  renderizarItens();
-}
-
-function renderizarItens() {
-  let salvos = JSON.parse(localStorage.getItem('itens_gregos') || '[]');
-  const container = document.getElementById('listaSalvos');
-  container.innerHTML = salvos.length === 0 ? '<p style="color:var(--text-muted); text-align:center; grid-column:1/-1;">O inventário está vazio.</p>' : '';
-  
-  salvos.forEach((it, i) => {
-    container.innerHTML += criarHtmlItem(it, i);
-  });
-}
-
-function excluirItem(index) {
-  if (confirm('Deseja destruir este item permanentemente?')) {
-    let salvos = JSON.parse(localStorage.getItem('itens_gregos') || '[]');
-    salvos.splice(index, 1);
-    localStorage.setItem('itens_gregos', JSON.stringify(salvos));
-    renderizarItens();
-  }
-}
-
-// Carregar itens ao abrir a página
-window.onload = renderizarItens;
-</script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            }, 5000);
+        });
+    </script>
 </body>
 </html>

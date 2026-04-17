@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mural de Missões - Taverna</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            font-family: 'Cinzel', serif;
+            overflow: hidden;
+        }
+
+        /* Tela de Carregamento */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #loading-screen img {
+            max-width: 250px;
+            border: none;
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            color: #e0c097;
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Conteúdo Principal */
+        #main-content {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('003.png');
+            background-size: cover;
+            background-position: center;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(224, 192, 151, 0.1);
+            border: 1px solid #e0c097;
+            color: #e0c097;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+        .btn-voltar:hover {
+            background: #e0c097;
+            color: #000;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            color: #e0c097;
+            font-size: 3rem;
+            text-shadow: 0 0 15px rgba(224, 192, 151, 0.5);
+            letter-spacing: 10px;
+        }
+
+        /* Mural de Missões */
+        .quest-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .quest-paper {
+            background: url('https://www.transparenttextures.com/patterns/paper-fibers.png'), #c5a880;
+            padding: 25px;
+            min-height: 200px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+            transform: rotate(-1deg);
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid #8e735b;
+        }
+
+        .quest-paper:nth-child(even) { transform: rotate(2deg); }
+        .quest-paper:nth-child(3n) { transform: rotate(-2deg); }
+
+        .quest-paper:hover {
+            transform: scale(1.05) rotate(0deg);
+            z-index: 5;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .quest-paper h3 {
+            color: #4a3728;
+            border-bottom: 2px solid #4a3728;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .quest-paper p {
+            color: #5d4637;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .stamp {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-weight: bold;
+            color: #8b0000;
+            opacity: 0.7;
+            border: 3px solid #8b0000;
+            padding: 5px;
+            transform: rotate(-15deg);
+            text-transform: uppercase;
+        }
+
+        /* Modal */
+        #quest-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #e0c097;
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            border: 10px double #4a3728;
+            color: #4a3728;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .modal-content h2 { font-size: 2rem; margin-bottom: 20px; border-bottom: 3px solid #4a3728; }
+        .modal-content p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; }
+        .reward-box { font-size: 1.3rem; font-weight: bold; color: #8b0000; }
+
+    </style>
+</head>
+<body>
+
+    <div id="loading-screen">
+        <img src="20.gif" alt="Carregando">
+        <div class="loading-text">ENTRANDO NA TAVERNA...</div>
+    </div>
+
+    <div id="main-content">
+        <a href="index.html" class="btn-voltar">← VOLTAR</a>
+        
+        <header>
+            <h1>MURAL DE MISSÕES</h1>
+        </header>
+
+        <div class="quest-board">
+            <div class="quest-paper" onclick="openQuest(1)">
+                <h3>O Touro de Creta</h3>
+                <p>Um touro branco enviado por Poseidon está causando o caos. Domine a fera...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+
+            <div class="quest-paper" onclick="openQuest(3)">
+                <h3>O Voo de Ícaro</h3>
+                <p>Recupere as penas das aves de Estínfalo para que Dédalo possa completar sua invenção...</p>
+                <div class="stamp">Urgente</div>
+            </div>
+
+            <div class="quest-paper" onclick="openQuest(4)">
+                <h3>O Olho das Graias</h3>
+                <p>As irmãs Graias perderam seu único olho compartilhado. Encontre-o nas cavernas nebulosas...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+
+            <div class="quest-paper" onclick="openQuest(5)">
+                <h3>O Mel de Aristeu</h3>
+                <p>As abelhas de Aristeu pararam de produzir. Descubra a maldição que aflige o enxame...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+
+            <div class="quest-paper" onclick="openQuest(6)">
+                <h3>Sombra de Érebo</h3>
+                <p>Uma escuridão não natural está consumindo as plantações do sul. Elimine os espectros...</p>
+                <div class="stamp">Perigo</div>
+            </div>
+
+            <div class="quest-paper" onclick="openQuest(7)">
+                <h3>O Sangue da Hidra</h3>
+                <p>Colete uma amostra do veneno da Hidra de Lerna para o alquimista real...</p>
+                <div class="stamp">Urgente</div>
+            </div>
+
+            <div class="quest-paper" onclick="openQuest(8)">
+                <h3>Canto das Sereias</h3>
+                <p>Marinheiros estão desaparecendo perto dos recifes. Investigue as vozes misteriosas...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+
+            <div class="quest-paper" onclick="openQuest(9)">
+                <h3>Ladrões de Ambrósia</h3>
+                <p>Um carregamento sagrado foi desviado por saqueadores no sopé do Olimpo...</p>
+                <div class="stamp">Urgente</div>
+            </div>
+
+            <div class="quest-paper" onclick="openQuest(10)">
+                <h3>O Sono de Hipnos</h3>
+                <p>Uma vila inteira caiu em um sono profundo. Encontre a flor de lótus negra para acordá-los...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="quest-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title">Título</h2>
+            <p id="modal-desc">Descrição completa</p>
+            <div class="reward-box">Recompensa: <span id="modal-reward">0</span></div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            }, 5000);
+        });
+
+        const quests = {
+            1: {
+                title: "O Touro de Creta",
+                desc: "Um touro branco enviado por Poseidon está causando o caos. Domine a fera e traga-a viva para o continente.",
+                reward: "750 Dracmas"
+            },
+            3: {
+                title: "O Voo de Ícaro",
+                desc: "Recupere as penas das aves de Estínfalo para que Dédalo possa completar sua maior invenção.",
+                reward: "500 Dracmas"
+            },
+            4: {
+                title: "O Olho das Graias",
+                desc: "As irmãs Graias perderam seu único olho compartilhado. Recupere-o das profundezas das cavernas de gelo antes que elas amaldiçoem a região.",
+                reward: "1200 Dracmas"
+            },
+            5: {
+                title: "O Mel de Aristeu",
+                desc: "As abelhas divinas pararam de produzir mel. Investigue o santuário de Aristeu e purifique a fonte da maldição.",
+                reward: "600 Dracmas"
+            },
+            6: {
+                title: "Sombra de Érebo",
+                desc: "Espectros das sombras estão atravessando o véu e aterrorizando vilarejos. Elimine a origem da fenda espiritual.",
+                reward: "2000 Dracmas"
+            },
+            7: {
+                title: "O Sangue da Hidra",
+                desc: "Entre no pântano de Lerna e colete um frasco do sangue tóxico de uma Hidra. Cuidado: o veneno é corrosivo.",
+                reward: "2500 Dracmas"
+            },
+            8: {
+                title: "Canto das Sereias",
+                desc: "Barcos mercantes estão naufragando na Costa das Lamentações. Encontre a ilha das sereias e ponha fim aos seus cânticos mortais.",
+                reward: "1500 Dracmas"
+            },
+            9: {
+                title: "Ladrões de Ambrósia",
+                desc: "Bandidos audazes roubaram uma oferenda de ambrósia destinada aos deuses. Recupere a carga antes que a ira divina caia sobre nós.",
+                reward: "1800 Dracmas"
+            },
+            10: {
+                title: "O Sono de Hipnos",
+                desc: "Uma névoa mágica colocou a vila de Orizon para dormir. Busque o antídoto no Jardim de Hipnos, no Reino dos Sonhos.",
+                reward: "1300 Dracmas"
+            }
+        };
+
+        function openQuest(id) {
+            const q = quests[id];
+            document.getElementById('modal-title').innerText = q.title;
+            document.getElementById('modal-desc').innerText = q.desc;
+            document.getElementById('modal-reward').innerText = q.reward;
+            document.getElementById('quest-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('quest-modal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('quest-modal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
