@@ -100,7 +100,18 @@
         </div>
 
         <button class="btn-expande" onclick="toggle('lista-t')">📜 LISTA DE TALENTOS</button>
-        <div id="lista-t" class="conteudo"></div>
+        <div id="lista-t" class="conteudo">
+            <div class="bg-black/40 p-4 rounded border border-yellow-600/30 mb-6">
+                <label>Criar Novo Talento</label>
+                <input type="text" id="new-t-nome" placeholder="Nome do Talento">
+                <textarea id="new-t-desc" placeholder="Descrição do talento..." rows="2"></textarea>
+                <label>Adicionar direto na ficha de:</label>
+                <select id="select-t-heroi"></select>
+                <button onclick="salvarTalentoGlobal()" class="bg-yellow-600 text-black w-full p-2 font-bold rounded mt-2">CRIAR E SALVAR</button>
+            </div>
+            <hr class="border-gray-800 mb-4">
+            <div id="render-lista-t"></div>
+        </div>
 
         <button class="btn-expande" onclick="toggle('lista-h')">⚔️ HABILIDADES DE CLASSE</button>
         <div id="lista-h" class="conteudo">
@@ -163,7 +174,6 @@
             }).join('');
         }
 
-        // Funções para Criar Novos Itens no Banco e opcionalmente na Ficha
         function salvarMagiaGlobal() {
             const nome = document.getElementById('new-m-nome').value;
             const nivel = parseInt(document.getElementById('new-m-nivel').value) || 0;
@@ -195,11 +205,27 @@
             document.getElementById('new-h-desc').value = "";
         }
 
+        function salvarTalentoGlobal() {
+            const nome = document.getElementById('new-t-nome').value;
+            const desc = document.getElementById('new-t-desc').value;
+            const pIdx = document.getElementById('select-t-heroi').value;
+
+            if(!nome) return alert("Dê um nome ao talento!");
+            const novoT = { nome, desc };
+            db.talentos.push(novoT);
+            if(pIdx !== "") db.herois[pIdx].talentos.push(novoT);
+            
+            atualizarTudo();
+            document.getElementById('new-t-nome').value = "";
+            document.getElementById('new-t-desc').value = "";
+        }
+
         function atualizarSelectsHerois() {
             const options = '<option value="">-- Não adicionar a ninguém --</option>' + 
                 db.herois.map((p, i) => `<option value="${i}">${p.nome}</option>`).join('');
             document.getElementById('select-m-heroi').innerHTML = options;
             document.getElementById('select-h-heroi').innerHTML = options;
+            document.getElementById('select-t-heroi').innerHTML = options;
         }
 
         function salvarHeroi() {
@@ -366,7 +392,7 @@
                 container.innerHTML = arr.map((item, i) => `<div class="item-card"><span>${item.nome}</span><div class="flex gap-2"><button onclick="abrirSeletor(${i}, '${t}')" class="text-yellow-500 font-bold">✚ ADD</button><button onclick="excluirItemBanco(${i}, '${t}')" class="text-red-500">✖</button></div></div>`).join('');
             };
 
-            rNormal(db.talentos, 'talentos', 'lista-t');
+            rNormal(db.talentos, 'talentos', 'render-lista-t');
             rNormal(db.habs, 'habs', 'render-lista-h');
             document.getElementById('lista-p').innerHTML = db.herois.map((p, i) => `<div class="item-card"><span onclick="abrirFicha(${i})" class="cursor-pointer font-bold text-yellow-500 flex-1">${p.nome} (Nv ${p.nivel})</span><button onclick="excluirHeroi(${i})" class="text-red-500">✖</button></div>`).join('');
         }
