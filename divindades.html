@@ -1,309 +1,189 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divindades - Era dos Heróis</title>
+    <title>Era dos Heróis - Biblioteca de HQs</title>
     <style>
         :root {
-            --bg-body: #0b0b0f;
-            --bg-card: #16161e;
-            --gold: #d4af37;
-            --text-main: #eee;
-            --border-color: #333;
+            --primary-gold: #d4af37;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--bg-body);
-            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding-top: 80px; /* Espaço para o menu fixo */
         }
 
-        .container { width: 100%; max-width: 900px; }
-        header { text-align: center; margin-bottom: 20px; }
-        header img { max-width: 150px; }
-
-        nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
-        nav a { border: 1px solid var(--gold); color: var(--gold); padding: 8px 14px; text-decoration: none; transition: 0.3s; }
-        nav a:hover { background: var(--gold); color: #000; }
-
-        h2 { color: var(--gold); text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; }
-
-        .grid-deuses {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-
-        .deus-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-            border-radius: 4px;
-        }
-
-        .deus-card:hover { border-color: var(--gold); transform: translateY(-3px); }
-        .deus-card.maior { border-left: 4px solid var(--gold); }
-        .deus-card.menor { border-left: 4px solid #555; }
-
-        #painelDetalhes {
-            display: none; 
-            background: #1c1c24;
-            border: 2px solid var(--gold);
-            padding: 25px;
-            border-radius: 8px;
-            margin-top: 20px;
-            position: relative;
+        /* Menu de Navegação Fixo */
+        nav {
+            position: fixed;
+            top: 0;
             width: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-gold);
+            z-index: 1000;
         }
 
-        .btn-fechar {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #e63946;
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .atributo-tag {
-            background: #000;
-            color: var(--gold);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.85em;
+        .btn-home {
+            text-decoration: none;
+            color: var(--primary-gold);
+            border: 1px solid var(--primary-gold);
+            padding: 10px 25px;
+            border-radius: 5px;
             font-weight: bold;
-            display: inline-block;
-            margin-bottom: 10px;
+            transition: 0.3s;
         }
 
-        .habilidade-box {
-            background: #111;
-            padding: 15px;
-            margin-top: 15px;
-            border-left: 3px solid var(--gold);
-            text-align: left;
+        .btn-home:hover {
+            background-color: var(--primary-gold);
+            color: black;
         }
 
-        .lista-detalhada { list-style: none; padding: 0; }
-        .lista-detalhada li {
-            background: #222;
-            margin: 10px 0;
-            padding: 12px;
-            border-radius: 4px;
-            border-left: 2px solid #555;
-            text-align: left;
+        /* Layout Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        .lista-detalhada b { color: var(--gold); display: block; margin-bottom: 4px; }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Acordeão (Menus Expansíveis) */
+        .edition-section {
+            margin-bottom: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .edition-header {
+            background-color: var(--card-bg);
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+            transition: background 0.3s;
+        }
+
+        .edition-header:hover {
+            background-color: #252525;
+        }
+
+        .edition-content {
+            display: none;
+            padding: 20px;
+            background-color: #1a1a1a;
+            text-align: center;
+        }
+
+        /* Estilo das Capas */
+        .hq-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .hq-item {
+            max-width: 280px;
+            transition: transform 0.3s;
+        }
+
+        .hq-item:hover {
+            transform: scale(1.05);
+        }
+
+        .hq-item img {
+            width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            border: 1px solid #444;
+        }
+
+        .hq-title {
+            margin-top: 10px;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .coming-soon {
+            font-style: italic;
+            color: #888;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <img src="icon-192.png" alt="Logo">
-        <h1 style="color: var(--gold);">Divindades da Era dos Heróis</h1>
-    </header>
-
     <nav>
-        <a href="index.html">Início</a>
-        <a href="criar.html">Criar Personagem</a>
-        <a href="personagens.html">Personagens</a>
+        <a href="index.html" class="btn-home">VOLTAR PARA INÍCIO</a>
     </nav>
 
-    <section id="listaGeral">
-        <h2>Divindades Maiores (Olimpianos)</h2>
-        <div class="grid-deuses" id="gridMaiores"></div>
+    <div class="container">
+        <h1>Biblioteca Galeria de HQs</h1>
 
-        <h2>Divindades Menores</h2>
-        <div class="grid-deuses" id="gridMenores"></div>
-    </section>
+        <div class="edition-section">
+            <div class="edition-header" onclick="toggleSection('zero')">
+                EDIÇÃO ZERO <span>+</span>
+            </div>
+            <div id="zero" class="edition-content">
+                <div class="hq-grid">
+                    <div class="hq-item">
+                        <a href="https://drive.google.com/file/d/1K5w28kHf4T-HhTLCapBJmEiSoed6mbwE/view" target="_blank">
+                            <img src="capa001.png" alt="HQ Edição 001 - Capa">
+                            <span class="hq-title">Visualizar Parte 1</span>
+                        </a>
+                    </div>
+                    <div class="hq-item">
+                        <a href="https://drive.google.com/file/d/1gzUzhq40hExcg_ZuryduI6-lP9fyuIvB/view" target="_blank">
+                            <img src="capa002.png" alt="HQ Edição 002 - Capa">
+                            <span class="hq-title">Visualizar Parte 2</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div id="painelDetalhes">
-        <button class="btn-fechar" onclick="fecharDetalhes()">X Fechar</button>
-        <div id="conteudoDeus"></div>
+        <div class="edition-section">
+            <div class="edition-header" onclick="toggleSection('ed001')">
+                EDIÇÃO 001 <span>+</span>
+            </div>
+            <div id="ed001" class="edition-content">
+                <p class="coming-soon">Em breve...</p>
+            </div>
+        </div>
+
     </div>
-</div>
 
-<script>
-    const deusesMaiores = [
-        { 
-            nome: "Zeus", attr: "+2 Carisma", desc: "Soberano do Olimpo e senhor dos céus.", 
-            hab: `<b>"Raio de Autoridade:</b> Vantagem em testes de Intimidação e dano de raio adicional."<br><br>
-            <b>Presença Encatadora:</b> Você ganha o dobro da proeficiência e vantagens em testes de persuasão.`,
-            talentos: ["Líder Inspirador", "Adepto Elemental (Raio)", "Atacante Selvagem", "Sentinela"]
-        },
-        { 
-            nome: "Hera", attr: "+2 Carisma", desc: "Rainha do Olimpo e deusa do matrimônio.", 
-            hab:`<b> "Vínculo Inquebrável:</b> Pode usar uma reação para proteger um aliado próximo, concedendo +2 na CA dele.""<br><br>
-            <b>Intuição Apurada:</b> Você ganha o dobro da proeficiência e vantagens em testes de Intuição.`,
-            talentos: ["Líder Inspirador", "Alerta", "Observador", "Resiliente"]
-        },
-        { 
-            nome: "Poseidon", attr: "+2 Força", desc: "Senhor dos Mares e Terremotos.", 
-            hab:`</b> "Fúria Abissal:</b> Deslocamento de natação e capacidade de empurrar inimigos com ataques de água."<br><br>
-            <b>Giria das Aguas:</b> Você pode se comunicar com animais marinhos.`,
-            talentos: ["Mestre de Armas de Haste", "Combatente Montado", "Atleta", "Durão"]
-        },
-        { 
-            nome: "Atena", attr: "+2 Inteligência", desc: "Deusa da estratégia, sabedoria e guerra justa.", 
-            hab:`</b> "Mente Tática:</b> Adicione seu modificador de INT à sua Iniciativa."<br><br>
-            <b>Golpe Calculado::</b> Uma vez por turno, quando você atingir uma criatura com um ataque de arma, você pode renunciar ao dano extra de um acerto crítico ou de uma habilidade (como Punição Divina ou Ataque Furtivo) para, em vez disso, permitir que um aliado a até 9 metros use a Reação dele para realizar um ataque imediato contra o mesmo alvo..`,
-            talentos: ["Estrategista de Batalha", "Mestre de Escudos", "Observador", "Mente Astuta"]
-        },
-        { 
-            nome: "Apolo", attr: "+2 Destreza", desc: "Deus do sol, artes, cura e profecia.", 
-            hab:`</b> "Marca Solar:</b> Marca o inimigo com essa marca na ação bonus. Durante o combate seus ataque de dano adicionam 1d6 de dano radiante. essa marca dura 1 minuto e pode ser usada uma quantidade de vezes igual seu modificador de destreza por descanço longo."<br><br>
-            <b>Deslumbre do futuro:</b> uma vez por descanço longo você pode refazer todo o dialogo ou ato em que você não se agradou com resultado. isso não funciona em combate pois demanda concentração algo que no campo de batalha e impossivel de acontecer.`,
-            talentos: ["Atirador de Elite", "Curandeiro", "Ator", "Sortudo"]
-        },
-        { 
-            nome: "Ártemis", attr: "+2 Sabedoria", desc: "Deusa da caça, da lua e dos animais selvagens.", 
-            hab:`</b> "Passo do Caçador:</b> Você não deixa rastros físicos e ganha +2 em testes de Sobrevivência."<br><br>
-            <b>Passo da Ninfa:</b> Como uma ação bônus, você pode se mover até metade do seu deslocamento sem provocar ataques de oportunidade. Se terminar esse movimento escondido atrás de cobertura natural (como árvores ou folhagens), você tem vantagem no seu próximo teste de Furtividade.`,
-            talentos: ["Atirador de Elite", "Explorador de Masmorras", "Observador", "Móvel"]
-        },
-        { 
-            nome: "Ares", attr: "+2 Força", desc: "Deus da guerra brutal e da violência.", 
-            hab:`</b> "Sede de Sangue: </b> Quando você derruba um inimigo, pode realizar um ataque adicional como ação bônus."<br><br>
-            <b>Olhar do Provocador:</b> Ao conversar com um NPC, você pode tentar identificar o que o faz perder a paciência. Com um teste bem-sucedido de Intimidação ou Percepção, você descobre o "ponto de ruptura" daquela pessoa (um trauma, um inimigo ou um segredo que a deixaria furiosa).`,
-            talentos: ["Resposta Violenta", "Sortudo", "Durão", "Assustador"]
-        },
-        { 
-            nome: "Afrodite", attr: "+2 Carisma", desc: "Deusa do amor, beleza e desejo.", 
-            hab:`</b> "Aura de Fascínio: </b> Criaturas têm desvantagem em testes contra serem encantadas por você."<br><br>
-            <b>Vínculo da Paixão:</b> Efeito: Com uma Ação Bônus, você escolhe um aliado e um inimigo que você possa ver a até 18 metros. Enquanto você mantiver a concentração (como em uma magia), o vínculo permanece:
-
-Punição: Sempre que o inimigo escolhido causar dano ao aliado vinculado, o inimigo sofre Dano Psíquico igual ao seu modificador de Carisma (mínimo de 1) + seu bônus de proficiência, enquanto a "dor do amado" ecoa nele.
-
-Proteção: O aliado ganha um bônus de +2 na Classe de Armadura enquanto estiver a até 9 metros do inimigo vinculado, pois os movimentos do inimigo se tornam hesitantes e fascinados.`,            
-            talentos: ["Ator", "Líder Inspirador", "Sortudo", "Resiliente (Carisma)"]
-        },
-        { 
-            nome: "Hefesto", attr: "+2 Força", desc: "Deus do fogo, da forja e da tecnologia.", 
-            hab:`</b> "Mestre Artífice: </b> Proficiência com ferramentas de ferreiro e resistência a dano de fogo."<br><br>
-<b>Sobrecarga de Autômato Ação Bonus:</b> Arma: Ela brilha em um vermelho incandescente. O próximo ataque feito com essa arma ignora resistências a danos não-mágicos e adiciona +1d6 de dano ígneo.
-
-Armadura: As juntas da armadura se tornam perfeitamente alinhadas por engrenagens invisíveis. O usuário ganha +2 na CA contra o próximo ataque que sofrer.
-
-Custo: Você pode usar esta habilidade um número de vezes igual ao seu bônus de proficiência por Descanso Longo.`,            
-            talentos: ["Mestre de Armadura Pesada", "Adepto Elemental (Fogo)", "Resiliente (Constituição)", "Durão"]
-        },
-        { 
-            nome: "Hermes", attr: "+2 Destreza", desc: "Mensageiro dos deuses, deus do comércio e ladrões.", 
-            hab:`</b> "Pés Alados: </b> Seu deslocamento terrestre aumenta em 3 metros (10 ft)."<br><br>
-            <b>Golpe de Astúcia:</b> Se você estiver usando uma arma com a propriedade Acuidade (Finesse), como uma adaga ou rapieira, e tiver vantagem no ataque, você pode abdicar da vantagem para realizar um segundo ataque como parte da mesma ação. Hermes prefere a precisão e a rapidez sobre a sorte.`,
-            talentos: ["Móvel", "Alerta", "Mãos Rápidas", "Especialista em Perícia"]
-        },
-        { 
-            nome: "Dionísio", attr: "+2 Constituição", desc: "Deus do vinho, da loucura e do teatro.", 
-            hab:`</b> "Êxtase Divino: </b> Você é imune à condição Envenenado e tem vantagem contra Medo."<br><br>
-            <b>Névoa do Êxtase:</b> Efeito: Cada criatura inimiga em um cone de 6 metros deve realizar um Teste de Resistência de Sabedoria.
-
-Falha: A criatura é atingida por uma embriaguez mágica súbita. Até o início do seu próximo turno, ela sofre os efeitos da condição Envenenado (Poisoned) e, se tentar realizar um ataque, deve primeiro rolar um d6. Em um resultado 1-3, ela ataca o espaço vazio mais próximo, rindo de uma alucinação.
-
-Sucesso: A criatura sofre apenas Desvantagem no próximo teste de ataque que realizar.`, 
-            talentos: ["Durão", "Resiliente (Constituição)", "Ator", "Taberneiro de Aluguel"]
-        },
-        { 
-            nome: "Hades", attr: "+2 Constituição", desc: "Deus do Submundo dos Mortos e das Riquesas", 
-            hab: `<b>Falar com os Mortos:</b> É um feitiço de clérigo de 3º nível que permite que você reanime um cadáver com o conhecimento que ele tinha em vida e faça 5 perguntas. As respostas geralmente são breves e/ou crípticas, e se ele reconhecer você como um inimigo, ele pode mentir ou enganá-lo.<br><br>
-              <b>Aura do Submundo:</b> Devido a sua descendência e ligação com os Mortos, você pode adicionar <span style="color:var(--gold)">1d4 de dano Necrótico</span> aos seus golpes de magia ou físicos em combate.`,
-            talentos: ["Constituição Infernal", "Analítico", "Adepto Místico", "Alerta"]
+    <script>
+        function toggleSection(id) {
+            const section = document.getElementById(id);
+            const isVisible = section.style.display === "block";
+            
+            // Fecha todas antes de abrir a nova (opcional)
+            document.querySelectorAll('.edition-content').forEach(el => el.style.display = 'none');
+            
+            // Abre ou fecha a clicada
+            section.style.display = isVisible ? "none" : "block";
         }
-    ];
+    </script>
 
-    const deusesMenores = [
-        { nome: "Hécate", habs: [{n:"Mestra Arcanista", d:"Ganha um truque extra de feiticeiro."}, {n:"Visão Sombria", d:"Vê no escuro mágico até 9m."}, {n:"Sorte", d:"Repete um teste de resistência 1x/dia."}, {n:"Ervas", d:"Proficiência em Kits de Herbalismo."}] },
-        { nome: "Pan", habs: [{n:"Pânico", d:"Urro que pode amedrontar animais."}, {n:"Flauta", d:"Vantagem em Performance musical."}, {n:"Cascos", d:"Ignora terreno difícil em florestas."}, {n:"Instinto", d:"Sente a presença de intrusos."}] },
-        { nome: "Niké", habs: [{n:"Triunfo", d:"+1 no ataque se HP < 50%."}, {n:"Asas", d:"Pode saltar o dobro da distância."}, {n:"Inspirar", d:"+1 na CA para aliados próximos."}, {n:"Fôlego", d:"Vantagem contra exaustão."}] },
-        { nome: "Tique", habs: [{n:"Sorte", d:"Transforma um 1 num 20 (1x/descanso longo)."}, {n:"Aposta", d:"Rola um d4 extra em testes de perícia."}, {n:"Proteção", d:"Projéteis têm desvantagem contra si."}, {n:"Moeda", d:"Encontra dobro de moedas em tesouros."}] },
-        { nome: "Perséfone", habs: [{n:"Raízes", d:"Prende os pés de um alvo com vinhas."}, {n:"Dualidade", d:"Resistência a frio ou veneno."}, {n:"Rainha", d:"Vantagem social com fantasmas."}, {n:"Florescer", d:"+1d6 cura sob luz solar."}] },
-        { nome: "Thanatos", habs: [{n:"Toque", d:"Dano necrótico extra em críticos."}, {n:"Sentir", d:"Sabe se o alvo tem < 10 PV."}, {n:"Mortalha", d:"Invisível para mortos-vivos."}, {n:"Silêncio", d:"Vantagem em Furtividade sozinho."}] },
-        { nome: "Hypnos", habs: [{n:"Sono", d:"Coloca alvo pequeno para dormir 1 rodada."}, {n:"Descanso", d:"Recupera exaustão em 1 hora."}, {n:"Névoa", d:"Reduz percepção de inimigos."}, {n:"Lúcido", d:"Imune a ser enfeitiçado."}] },
-        { nome: "Éris", habs: [{n:"Pomo", d:"Faz dois inimigos lutarem entre si."}, {n:"Caos", d:"Inimigos não podem flanqueá-lo."}, {n:"Língua", d:"Proficiência em Enganação."}, {n:"Sorriso", d:"Confunde alvos ao tocar objetos."}] },
-        { nome: "Íris", habs: [{n:"Mensagem", d:"Envia mensagens via arco-íris."}, {n:"Ponte", d:"Teleporte de 9m através da luz."}, {n:"Cores", d:"Aliados curados ganham velocidade."}, {n:"Verdade", d:"Vantagem para detetar ilusões."}] },
-        { nome: "Hélios", habs: [{n:"Brilho", d:"Luz solar pura num raio de 18m."}, {n:"Olhar", d:"Dano de fogo extra em ataques."}, {n:"Carruagem", d:"Vantagem com montarias."}, {n:"Fervor", d:"Imune a cegueira por luz."}] },
-        { nome: "Hebe", habs: [{n:"Néctar", d:"Cria poção de cura com água."}, {n:"Juventude", d:"Imune a envelhecimento mágico."}, {n:"Vigor", d:"+1 PV extra por nível."}, {n:"Hospitalidade", d:"Vantagem em Persuasão."}] },
-        { nome: "Nêmesis", habs: [{n:"Olho por Olho", d:"+2 no ataque após sofrer dano."}, {n:"Rastro", d:"Vantagem para rastrear culpados."}, {n:"Justiça", d:"Ignora desvantagem por escuridão."}, {n:"Retribuição", d:"Dano psíquico a quem o atacar."}] }
-    ];
-
-    function renderizar() {
-        const gm = document.getElementById('gridMaiores');
-        const gn = document.getElementById('gridMenores');
-        gm.innerHTML = ''; gn.innerHTML = '';
-
-        deusesMaiores.forEach(d => {
-            const card = document.createElement('div');
-            card.className = 'deus-card maior';
-            card.innerHTML = `<strong>${d.nome}</strong><br><small>${d.attr}</small>`;
-            card.onclick = () => exibirMaior(d);
-            gm.appendChild(card);
-        });
-
-        deusesMenores.forEach(d => {
-            const card = document.createElement('div');
-            card.className = 'deus-card menor';
-            card.innerHTML = `<strong>${d.nome}</strong>`;
-            card.onclick = () => exibirMenor(d);
-            gn.appendChild(card);
-        });
-    }
-
-    function exibirMaior(d) {
-        // Cria a lista de talentos em HTML
-        const talentosHtml = d.talentos.map(t => `<li>${t}</li>`).join('');
-        
-        document.getElementById('conteudoDeus').innerHTML = `
-            <h1 style="color:var(--gold)">${d.nome}</h1>
-            <span class="atributo-tag">Bónus: ${d.attr}</span>
-            <p>${d.desc}</p>
-            <div class="habilidade-box">
-                <b>Habilidade Única:</b><br>${d.hab}
-            </div>
-            <div style="margin-top:20px; text-align:left;">
-                <b style="color:var(--gold)">Talentos Recomendados (D&D 5e):</b>
-                <ul style="margin-top:10px; columns: 2;">
-                    ${talentosHtml}
-                </ul>
-            </div>
-        `;
-        abrirPainel();
-    }
-
-    function exibirMenor(d) {
-        let html = d.habs.map(h => `<li><b>${h.n}:</b> ${h.d}</li>`).join('');
-        document.getElementById('conteudoDeus').innerHTML = `
-            <h1 style="color:#aaa">${d.nome}</h1>
-            <p>Habilidades de seguidor:</p>
-            <ul class="lista-detalhada">${html}</ul>
-        `;
-        abrirPainel();
-    }
-
-    function abrirPainel() {
-        document.getElementById('listaGeral').style.display = 'none';
-        document.getElementById('painelDetalhes').style.display = 'block';
-        window.scrollTo(0,0);
-    }
-
-    function fecharDetalhes() {
-        document.getElementById('listaGeral').style.display = 'block';
-        document.getElementById('painelDetalhes').style.display = 'none';
-    }
-
-    renderizar();
-</script>
 </body>
 </html>
