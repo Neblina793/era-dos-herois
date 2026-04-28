@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferreiro - Sistema de Forja | Era dos Heróis</title>
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-steel: #2c2c2c;
+            --bg-black: #0f0f0f;
+            --text-gray: #ccc;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--bg-black);
+            color: var(--text-gray);
+            margin: 0;
+            padding-top: 70px;
+        }
+
+        /* Menu Fixo */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.95);
+            border-bottom: 2px solid var(--gold);
+            padding: 15px 0;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid var(--gold);
+            padding: 8px 20px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--gold);
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        .intro {
+            background: #1a1a1a;
+            padding: 20px;
+            border-left: 4px solid var(--gold);
+            margin-bottom: 30px;
+        }
+
+        /* Acordeão */
+        .accordion {
+            background-color: var(--dark-steel);
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1.2em;
+            transition: 0.4s;
+            margin-top: 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .active, .accordion:hover {
+            background-color: #444;
+            color: var(--gold);
+        }
+
+        .panel {
+            padding: 0 18px;
+            display: none;
+            background-color: #1a1a1a;
+            overflow-x: auto;
+            border: 1px solid #333;
+        }
+
+        /* Tabelas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            min-width: 600px;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #000;
+            color: var(--gold);
+        }
+
+        tr:nth-child(even) { background-color: #222; }
+
+        .price-tag { color: #f1c40f; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-link">VOLTAR PARA INÍCIO</a>
+    <a href="forja.html" class="nav-link">SIMULADOR</a>
+</nav>
+
+<div class="container">
+    <h1>Ferreiro: Sistema de Forja</h1>
+    
+    <div class="intro">
+        <p>As regras sobre armas obra-prima superiores e seu uso servem para acrescentar a diversificação existente do Livro do Jogador de D&D 5.5 de 2024. Usaremos no texto a sigla “OP”, para os itens obra-prima.</p>
+
+<p><strong>Que fique bem claro: não recomendamos a cumulação do melhoramento de itens obra-primas superiores junto aos mágicos no mesmo cenário de jogo. Primeiro porque, se existem itens mágicos, não haverá um contexto histórico forte para que sejam desenvolvidos cumulativamente itens obra-prima superiores. Segundo porque itens obra-prima costumam sair mais barato que os mágicos, ideais para campanhas com poucos tesouros ou que não se quer que faça a diferença só os personagens talentosos, e não penduricalhos ambulantes de itens mágicos. Se você gosta de campanhas recheadas de “Desagas Douradas de Brisbeath Exóplica Covetas e Chanfros de Umbra III”, esse artigo não é para você.</p>
+
+<p><strong>Em cenários com baixa magia ou sem a tradição de armas mágicas, é evidente que sejam produzidos armas e armaduras superiores para aproveitar o cenário de maneira alternativa. Nestes casos existem os níveis de obra-prima, cada um com seus benefícios e custos. Os valores para os benefícios são cumulativos — uma espada longa OP 2 custa 765 PO, 15 pelo valor base da arma mais 250 pelo OP 1 e outros 500 pelo OP 2.</p>
+
+<p><strong>Para usar esta tabela, o PC inicial de itens obra-prima, para resultar em valores mais fáceis de lembrar. Utilize as regras normais para criação de armas, armaduras e munições vistas no Livro do Jogador. A CD para criar ou melhorar itens obra-prima acima do nível de progressão aumenta em 4 pontos por nível.</p>
+
+<p><strong>Materiais Especiais</p>
+
+<p><strong>Vários cenários de fantasia possuem metais ou materiais superiores, usados na confecção de itens, como o Mithral ou o Adamante. Temos forjado custos de materiais especiais, e seus efeitos NÃO se acumulam com as melhorias de Obra-Prima equivalentes ao do material. Tais itens podem receber níveis de obra-prima normalmente.</p>
+
+<p><strong>A CD de Ofícios para torná-lo obra-prima ou para melhorá-lo aumenta em +2 por raridade e tem como modificador o Nível de OP + o valor conforme o Nível. Exemplo: um Mithral é considerado um material Raro. A CD para criar uma Armadura de Mithral de Nível 3 de OP para o Nível 4 será:</p>
+<p><strong>8 + 6 + 5 = 19 (Base + Raridade + Nível de OP seguinte +1).
+
+<p><strong>Profissões</p>
+
+<p><strong>Os Personagens que tem como Profissão Armeiro ou Armagunheiro utilizam metade do valor das tabelas, que equivalem aos materiais necessários.</p>
+        <p><strong>Nota:</strong> Itens com nome "Refinado" consomem o dobro do valor original[cite: 45, 49].</p>
+    </div>
+
+    <button class="accordion">ARMAS CORPO-A-CORPO (OP) <span>+</span></button>
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nível</th>
+                    <th>Melhoramento</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>1/2 do peso</td><td class="price-tag">250 Dracmas</td></tr>
+                <tr><td>2</td><td>+1 no ataque e dano</td><td class="price-tag">500 Dracmas</td></tr>
+                <tr><td>3 (+1)</td><td>+2 no ataque e dano</td><td class="price-tag">1.500 Dracmas</td></tr>
+                <tr><td>4 (+1)</td><td>+3 no ataque e dano</td><td class="price-tag">2.500 Dracmas</td></tr>
+                <tr><td>5 (+2)</td><td>+1 em FOR ou DES; Vence RD</td><td class="price-tag">5.000 Dracmas</td></tr>
+                <tr><td>6 (+2)</td><td>+4 no atq e dano; -1 Margem de Crítico</td><td class="price-tag">10.000 Dracmas</td></tr>
+                <tr><td>7 (+3)</td><td>1d6 dano (Impacto, Sangramento ou Cortante)</td><td class="price-tag">20.000 Dracmas</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button class="accordion">ARMAS DE COMBATE A DISTANCIA (OP) <span>+</span></button>
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nível</th>
+                    <th>Melhoramento</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>1/2 do peso</td><td class="price-tag">250 Dracmas</td></tr>
+                <tr><td>2</td><td>+1 no ataque e dano</td><td class="price-tag">500 Dracmas</td></tr>
+                <tr><td>3 (+1)</td><td>+2 no ataque e dano</td><td class="price-tag">1.500 Dracmas</td></tr>
+                <tr><td>4 (+1)</td><td>+3 no ataque e dano</td><td class="price-tag">2.500 Dracmas</td></tr>
+                <tr><td>5 (+2)</td><td>+1 em FOR ou DES; Vence RD</td><td class="price-tag">5.000 Dracmas</td></tr>
+                <tr><td>6 (+2)</td><td>+4 no atq e dano; -1 Margem de Crítico</td><td class="price-tag">10.000 Dracmas</td></tr>
+                <tr><td>7 (+3)</td><td>1d6 dano (Impacto, Sangramento ou Cortante)</td><td class="price-tag">20.000 Dracmas</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button class="accordion">ARMAS CORPO A CORPO (OP) <span>+</span></button>
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nível</th>
+                    <th>Melhoramento</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>1/2 do peso</td><td class="price-tag">250 Dracmas</td></tr>
+                <tr><td>2</td><td>+1 no ataque e dano</td><td class="price-tag">500 Dracmas</td></tr>
+                <tr><td>3 (+1)</td><td>+2 no ataque e dano</td><td class="price-tag">1.500 Dracmas</td></tr>
+                <tr><td>4 (+1)</td><td>+3 no ataque e dano</td><td class="price-tag">2.500 Dracmas</td></tr>
+                <tr><td>5 (+2)</td><td>+1 em FOR ou DES; Vence RD</td><td class="price-tag">5.000 Dracmas</td></tr>
+                <tr><td>6 (+2)</td><td>+4 no atq e dano; -1 Margem de Crítico</td><td class="price-tag">10.000 Dracmas</td></tr>
+                <tr><td>7 (+3)</td><td>1d6 dano (Impacto, Sangramento ou Cortante)</td><td class="price-tag">20.000 Dracmas</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button class="accordion">MUNIÇÃO (OP) <span>+</span></button>
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nível</th>
+                    <th>Melhoramento</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>Adquire Tipo de dano: Concussivo</td><td class="price-tag">25 Dracmas</td></tr>
+                <tr><td>2 (+1)</td><td>Sem Penalidade de Distância</td><td class="price-tag">50 Dracmas</td></tr>
+                <tr><td>3 (+1)</td><td>Adquire Tipo de dano: Cortante.</td><td class="price-tag">150 Dracmas</td></tr>
+                <tr><td>4 (+2)</td><td>Habilidade: Transpassar (Max 3)</td><td class="price-tag">250 Dracmas</td></tr>
+                <tr><td>5 (+3)</td><td>Chance de Impedir= CD 8 + 1/2 Nivel</td><td class="price-tag">500 Dracmas</td></tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <button class="accordion">ARMADURAS (OP) <span>+</span></button>
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nível</th>
+                    <th>Melhoramento</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>- 1/2 do peso</td><td class="price-tag">150 Dracmas</td></tr>
+                <tr><td>2</td><td>Aumenta bônus de DES máx em +1</td><td class="price-tag">250 Dracmas</td></tr>
+                <tr><td>3 (+1)</td><td>Extingue penalidades de deslocamento</td><td class="price-tag">500 Dracmas</td></tr>
+                <tr><td>4 (+1)</td><td>Aumenta bônus de DES máx em +2</td><td class="price-tag">1.500 Dracmas</td></tr>
+                <tr><td>5 (+2)</td><td>+1 em CON; ganha RD</td><td class="price-tag">2.500 Dracmas</td></tr>
+                <tr><td>6 (+2)</td><td>+1 na CA</td><td class="price-tag">5.000 Dracmas</td></tr>
+                <tr><td>7 (+3)</td><td>Talento: Mobilidade</td><td class="price-tag">10.000 Dracmas</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button class="accordion">ESCUDOS (OP) <span>+</span></button>
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nível</th>
+                    <th>Melhoramento</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>- 1/2 do peso</td><td class="price-tag">200 Dracmas</td></tr>
+                <tr><td>2 (+1)</td><td>+1 de dano<td class="price-tag">300 Dracmas</td></tr>
+                <tr><td>3 (+1)</td><td>+2 no dano e +1 no ataque</td><td class="price-tag">600 Dracmas</td></tr>
+                <tr><td>4 (+2</td><td>+2 no ataque; +1 na CA </td><td class="price-tag">2.000 Dracmas</td></tr>
+                <tr><td>5 (+3</td><td>Ganha RD; Retornavel (interação com objeto)</td><td class="price-tag">3.500 Dracmas</td></tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <button class="accordion">MATERIAIS - ARMADURAS METÁLICAS <span>+</span></button>
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Material</th>
+                    <th>Raridade</th>
+                    <th>Efeito</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Ferro</td><td>Comum (+2)</td><td>X</td></tr>
+                <tr><td>Latão</td><td>Comum (+2)</td><td>X</td></tr>
+                <tr><td>Prata</td><td>Incomum (+4)</td><td>Criaturas com aversão a prata tem desvantagem em ataques corpo a corpo contra você.</td></tr>
+                <tr><td>Prata Astral</td><td>Incomum (+4)</td><td>Como Uma Ação Bonus, Você pode dizer uma palavra de comando para você receber uma quantidade de pontos de vida temporarios igual ao seu bonus de proeficiencia. A armadura oide prover pontos de vida temporarios novamente no proximo nascer do Sol</td></tr>
+                <tr><td>Ferro Negro</td><td>Incomum (+4)</td><td>Reduz em 2 o dano Concussivo, Cortante ou Perfurante.</td></tr>
+                <tr><td>Ferro Erudito</td><td>M. Raro (+8)</td><td>Resistência a dano radiante e necrótico[cite: 44].</td></tr>
+                <tr><td>Mithral</td><td>Raro (+6)</td><td>Retira o requisito de força para armadura</td></tr>
+                <tr><td>Ferro Frio</td><td>Raro (+6)</td><td>vantagens em magias lançadas por Aetherianos e Tartarianos</td></tr>
+                <tr><td>Adamantium</td><td>M. Raro (+8)</td><td>Imunidade a dano Critico</td></tr>
+                <tr><td>Ferro Erudito Refinado</td><td>M. Raro (+8)</td><td>Resistência a dano radiante e necrótico[cite: 44].</td></tr>
+                <tr><td>Meteorito</td><td>M. Raro (+8)</td><td>Resistência a dano radiante e necrótico[cite: 44].</td></tr>
+                <tr><td>Ferro das Profundesas</td><td>Muito Raro (+8)</td><td>Criaturas, Fadas, Aetherion e Celestiais Tem desvantagem em ataques corpo-a-corpo contra você.</td></tr>
+                <tr><td>Osso de Manticora</td><td>Raro (+6)</td><td>Vantagem em teste de Força e Conjuração para Resistir a efeitos magicos</td></tr>
+                <tr><td>Mithral Refinado</td><td>M. Raro (+8)</td><td>Resistência a dano radiante e necrótico[cite: 44].</td></tr>
+                <tr><td>Aetherita</td><td>Artefato (+10)</td><td>Se a criatura atacou o usuario da armadura tirar 10 ou menos naturais, o usuario  dela pode escolher dar 4d6 de dano radiante na criatura atacante.</td></tr>
+                <tr><td>Aetherita Fragmentadado</td><td>Artefato (+10)</td><td>Corruptos, Aberrações, Mortos vivos e Tartarianos tem desvantagem em ataques corpo a corpo feitos contra você.</td></tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <button class="accordion">MATERIAIS - PELE E COURO <span>+</span></button>
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Material</th>
+                    <th>Raridade</th>
+                    <th>Efeito</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Pele</td><td>Comum (+2)</td><td>X</td></tr>
+                <tr><td>couro</td><td>Comum (+2)</td><td>X</td></tr>
+                <tr><td>Couro de Monstro</td><td>Incomum (+4)</td><td>o ususario não e afetado por condições naturais de execesso de claor (exemplo: Deserto, Vulcoes, etc)</td></tr>
+                <tr><td>Revetimento de Penas</td><td>Incomum (+4)</td><td>vantagens em teste de adestrar animais.</td></tr>
+                <tr><td>Sedasombra</td><td>incomum (+4)</td><td>Vantagem em esconder-se em areas de penumbra.</td></tr>
+                <tr><td>Revestimento de Folhas</td><td>incomum (+4)</td><td>Vantagem em esconder-se em areas de Floresta</td></tr>
+                <tr><td>Linho de fragmento da Criação</td><td>Raro (+6)</td><td>+1 de bBonus em Teste de Resistencia para manter concentração.</td></tr>
+                <tr><td>Quitina</td><td>Raro (+6)</td><td>Aumenta o maximo de Desteza da Armadura em +1</td></tr>
+                <tr><td>Linho Infernal</td><td>Raro (+6)</td><td>Resistência a dano de fogo.</td></tr>
+                <tr><td>Linho de Shadowfell</td><td>Raro (+6)</td><td>Resistência a dano psciquico.</td></tr>
+                <tr><td>Linho de Fragmento da Criação</td><td>Raro (+6)</td><td>+3 fr bonus em testes de resistencia para manter a concentração.</td></tr>
+                <tr><td>Escama de Wyvern</td><td>Raro (+6)</td><td>resitencia a dano acido e veneno.</td></tr>
+                <tr><td>Escama de Hidra</td><td>Muito Raro (+8)</td><td>No combate a dada rodada enquanto o portador estiver conciente recupere 1 ponto de vida.fora do combate a cada 1 hora o portador recupera 1 dado de vida.</td></tr>
+                <tr><td>Escama de Dragão</td><td>Muito Raro (+8)</td><td>+1 de CA e resistencia ai elemento de dano do sopro do dragão especificado.</td></tr>
+                <tr><td>Fibra de Gaia</td><td>Artefato (+10)</td><td>Resistência a Perfurante, Cortante, Acido e fogo. para destruir esse equipamento em seu estado perfeito o jogador adiciona sua carisma no CD de Destruição com Vantagem. Em caso de esta remendado A rolagem do CD e normal porem se falhar o objeto e destruido sem possibilidade de reparo. este efeito não funciona se o material usado no remendo for o mesmo da materia prima manipulado em THAMUR-VAL (O Pulmão da Montanha).</td></tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <button class="accordion">MATERIAIS - ARMAS <span>+</span></button>
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Material</th>
+                    <th>Raridade</th>
+                    <th>Efeito</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Sedasombra</td><td>Incomum (+4)</td><td>Vantagem em Esconder-se em penumbra[cite: 48].</td></tr>
+                <tr><td>Quitina</td><td>Raro (+6)</td><td>Aumenta bônus máximo de Destreza em +1[cite: 48].</td></tr>
+                <tr><td>Escama de Dragão</td><td>M. Raro (+8)</td><td>+1 CA e Resistência ao elemento do dragão[cite: 48].</td></tr>
+                <tr><td>Linho Infernal</td><td>Raro (+6)</td><td>Resistência a dano de fogo[cite: 48].</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button class="accordion">MATERIAIS - ESCUDO <span>+</span></button>
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Material</th>
+                    <th>Raridade</th>
+                    <th>Efeito</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Sedasombra</td><td>Incomum (+4)</td><td>Vantagem em Esconder-se em penumbra[cite: 48].</td></tr>
+                <tr><td>Quitina</td><td>Raro (+6)</td><td>Aumenta bônus máximo de Destreza em +1[cite: 48].</td></tr>
+                <tr><td>Escama de Dragão</td><td>M. Raro (+8)</td><td>+1 CA e Resistência ao elemento do dragão[cite: 48].</td></tr>
+                <tr><td>Linho Infernal</td><td>Raro (+6)</td><td>Resistência a dano de fogo[cite: 48].</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button class="accordion">🛠️ COMO CRIAR ARMAS OBRA-PRIMA (OP) — PASSO A PASSO <span>+</span></button>
+    <div class="panel">
+        <ul>
+            <div><strong>1-🧱 Escolha a arma base:</p>
+    </div>
+<div><strong>Primeiro, você pega uma arma normal do Livro do Jogador.</p>
+Exemplo:</p>
+       </div>            
+            <li>Espada longa = 15 PO</li></p>
+
+            <div><strong>2. 📈 Escolha o nível de Obra-Prima (OP)</p>
+    </div>
+<div><strong>Cada arma pode ter níveis de melhoria:</p>
+Exemplo:</p>
+       </div> 
+            <li>OP 1</li>
+            <li>OP 2</li>
+            <li>OP 3</li>
+            <li>etc.</li></p>
+
+<div><strong>⚠️ Importante:</p>
+      
+       </div>
+            <li>Os bônus são cumulativos</li>
+            <li>Quanto maior o nível, mais caro e difícil</li></p>
+
+            <div><strong>3. 💰 Calcule o custo</p>
+    </div>
+<div><strong>O custo é:</p>
+Arma base + custo de cada nível de OP</p>
+Do texto:</p>
+       </div> 
+
+            <li>OP 1 = +250 PO</li>
+            <li>OP 2 = +500 PO</li>
+            <li>(e assim por diante, aumentando por nível)</li></p>
+
+            <div><strong>✅ Exemplo:</p>
+Espada longa OP 2:</p>
+    </div>
+
+            <li>base = 15 PO</li>
+            <li>OP 1 = +250 PO</li>
+            <li>OP 2 = +500 PO</li></p>
+ <div><strong>👉 Total = 765 PO</p>
+
+
+            <div><strong>4. 🎲 Defina a CD de criação</p>
+    </div>
+<div><strong>A dificuldade (CD) aumenta conforme o nível.</p>
+Do texto:</p>
+A CD aumenta em +4 por nível acima do normal</p>
+Ou seja:</p>
+       </div> 
+
+            <li>OP 1 → CD base</li>
+            <li>OP 2 → CD +4</li>
+            <li>OP 3 → CD +8</li>
+            <li>etc.</li><p/>
+
+            <div><strong>5. 🔨 Faça o teste de criação (Ofícios)</p>
+    </div>
+<div><strong>Você usa:</p>
+
+            <li>Perícia de Ofício (ou equivalente)</li>
+            <li>Ferramentas adequadas (ferreiro, armeiro, etc.)</li></p>
+
+<div><strong>Se passar na CD → cria a arma</p>
+Se falhar → perde tempo/material (depende da mesa)
+    </div></p>
+
+            <div><strong>6. ⚙️ Tempo de criação</p>
+
+            <li>Regras padrão de crafting do D&D 5.5 2024</li></p>
+
+ou</p>
+            <li>Tempo proporcional ao custo</li></p>
+
+            <div><strong>7. 🧩 Materiais especiais (opcional)</p>
+    </div>
+<div><strong>Se usar materiais como:</p>
+
+            <li>Mithral</li>
+            <li>Adamante</li></p>
+
+👉 Regras importantes:</p>
+
+            <li>Não acumulam com bônus equivalentes de OP</li>
+            <li>Aumentam a CD em +2 por raridade</li></p>
+
+
+            <div><strong>⚔️ EXEMPLOS PRÁTICOS</p>
+    </div>
+<div><strong>🗡️ Exemplo 1 — Espada Longa OP 1</p>
+            <li>Base: 15 PO</li>
+            <li>OP 1: +250 PO</li></p>
+💰 Total: 265 PO</p>
+👉 CD: base normal</p>
+
+            <div><strong>⚔️ Exemplo 2 — Espada Longa OP 2</p>
+    </div></p>
+            <li>Base: 15 PO</li>
+            <li>OP 1: +250</li>
+            <li>OP 2: +500</li></p>
+💰 Total: 765 PO</p>
+👉 CD: +4</p>
+
+            <div><strong>🛡️ Exemplo 3 — Espada Mithral OP 2</p>
+    </div></p>
+
+            <li>Base: 15 PO</li>
+            <li>OP 1: +250</li>
+            <li>OP 2: +500</li></p>
+💰 Total: 765 PO</p>
+👉CD:</p>
+            <li>+4 (OP 2)</li>
+            <li>+2 (material raro)</li></p>
+
+              👉 CD total: +6 acima da base</p>
+    </div>
+
+            <div><strong>🧠 Regra importante (equilíbrio)</p>
+    </div>
+<div><strong>O próprio texto diz:</p>
+👉 Não misture itens mágicos + OP
+Porque:</p>
+       </div>
+
+            <li>OP fica mais barato</li>
+            <li>Pode quebrar o balanceamento</li></p>
+
+            <div><strong>⚡ RESUMO RÁPIDO (pra usar na mesa)</p>
+       </div>
+
+            <li>Escolhe arma base</li>
+            <li>Escolhe nível OP</li>
+            <li>Soma custos (base + níveis)</li>
+            <li>Calcula CD (+4 por nível)</li>
+            <li>Aplica material (+2 se raro)</li>
+            <li>Faz teste de Ofício</li>
+            <li>Produz arma</li>
+
+
+
+        </ul>
+    </div>
+
+    <button class="accordion">⚙️ 1. CUSTO — COMO FUNCIONA DE VERDADE<span>+</span></button>
+    <div class="panel">
+        <ul>
+                <p><span class="highlight">💰 Estrutura do custo<br>
+                O custo segue essa lógica: <br>
+                <strong>Custo total = arma base + soma dos níveis de OP</strong></p>
+                <p class="warning">👉 Os custos são cumulativos e crescentes</p>
+                <p><span class="highlight">📊 Progressão real:</p>
+                <ul>
+                    <li>OP 1 → +250 PO</li>
+                    <li>OP 2 → +500 PO</li>
+                    <li>OP 3 → +750 PO</li>
+                    <li>OP 4 → +1000 PO (provável padrão)</li>
+                </ul>
+                <p>💡 <strong>Ou seja:</strong> Cada nível adiciona +250 PO a mais que o anterior</p>
+                <div class="formula-box">
+                    🔥 Fórmula prática (Automação):<br>
+                    Custo OP = 250 × nível × (nível + 1) / 2
+                </div>
+                <p><strong>Exemplo OP 3:</strong> 250 × 3 × 4 / 2 = <span class="highlight">1500 PO</p>
+                <p>⚠️ <strong>Impacto no jogo:</strong> OP baixo é acessível; OP alto é caro, mas ainda mais barato que item mágico.</p>
+
+           <div>🎲 2. CD (DIFICULDADE) — COMO ESCALA</p>
+
+                📈 Regra base:<br></p>
+                A CD aumenta em <span class="highlight">+4 por nível de OP</p>
+                <p>📊 Progressão:</span></p>
+        
+                    <li>OP 1 → CD base</li>
+                    <li>OP 2 → +4</li>
+                    <li>OP 3 → +8</li>
+                    <li>OP 4 → +12</li>
+
+                <p>🧠 <strong>Interpretação:</strong> Cria uma curva onde é fácil começar, mas muito difícil chegar em níveis altos, impedindo spam de itens fortes.</p>
+
+
+📊 3. PROGRESSÃO — O CORAÇÃO DO SISTEMA </p>
+🔁 Tudo é cumulativo:</p>
+                <ul>
+                    <li>Custo acumula</li>
+                    <li>CD acumula</li>
+                    <li>Benefícios acumulam</li>
+                </ul>
+                <p>🧩 <strong>Na prática:</strong> Você NÃO cria direto OP 3. Você faz o OP 1, melhora para OP 2 e depois para OP 3. <br>
+                🔥 <strong>Consequência:</strong> Tempo maior, risco maior (mais testes) e investimento contínuo. O item evolui com o personagem.</p>
+
+🪨 4. MATERIAIS ESPECIAIS </p>
+            <div id="s4" class="section-content">
+                <p><span class="highlight">⚙️ Exemplos:</span> Mithral, Adamante.</p>
+                <p class="warning">❗ Regra CRÍTICA: Eles NÃO acumulam com bônus equivalentes de OP.</p>
+                <p>🧠 <strong>Tradução:</strong> Se o material já dá um bônus parecido, você não ganha o bônus duas vezes.</p>
+                <p><span class="highlight">📈 CD com materiais:</span> +2 na CD por raridade.</p>
+                <ul>
+                    <li>Material raro → +2</li>
+                    <li>Muito raro → pode ser +4 (dependendo da mesa)</li>
+                </ul>
+                <p>⚖️ <strong>Impacto:</strong> Você escolhe entre melhorar com OP OU usar material especial, evitando abusar dos dois.</p>
+🔥 5. SISTEMA COMPLETO (VISÃO REAL) </p>
+            <div id="s5" class="section-content">
+                <p><span class="highlight">🧩 Os 4 pilares:</p>
+                <ul>
+                    <li><strong>Economia:</strong> Progressiva, controla o acesso.</li>
+                    <li><strong>Dificuldade:</strong> Escala rápido, evita abuso.</li>
+                    <li><strong>Progressão:</strong> Evolução gradual, dá identidade ao item.</li>
+                    <li><strong>Limite de Poder:</strong> Material ≠ OP stacking livre.</li></p>
+                </ul>
+
+⚔️ EXEMPLO PRÁTICO: Espada OP 3 com Mithral</p>
+                    💰 <strong>Custo:</strong> Base (15) + OP1 (250) + OP2 (500) + OP3 (750) = </p>
+                    🎲 <strong>CD:</strong> OP 3 (+8) + Mithral (+2) = </p>
+                    🧠 <strong>Processo:</strong> Cria normal -> Evolui OP1 -> Evolui OP2 -> Evolui OP3 -> Aplica material.</p>
+</div>
+
+
+        <div class="example-box">
+            <span class="highlight">🧠 RESUMO MENTAL</span>
+            <ul>
+                <li>Cada nível = +250 PO progressivo</li>
+                <li>Cada nível = +4 CD</li>
+                <li>Tudo acumula</li>
+                <li>Material = +CD, mas limita bônus</li>
+                <li>Sistema feito para NÃO quebrar o jogo</li></p>
+
+
+        </ul>
+    
+    </div>
+  
+
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+                this.querySelector('span').innerHTML = "+";
+            } else {
+                panel.style.display = "block";
+                this.querySelector('span').innerHTML = "-";
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

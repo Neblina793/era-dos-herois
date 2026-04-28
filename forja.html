@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Forja - Era dos Heróis</title>
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .simulator-card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            color: var(--gold);
+            text-align: center;
+            text-transform: uppercase;
+            margin-top: 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--gold);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background-color: #000;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .result-box {
+            background-color: #000;
+            border: 1px dashed var(--gold);
+            padding: 20px;
+            text-align: center;
+            margin-top: 25px;
+            border-radius: 5px;
+        }
+
+        .cd-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--gold);
+            display: block;
+        }
+
+        .breakdown {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .footer-note {
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="simulator-card">
+    <h2>Simulador de Forja</h2>
+    
+    <div class="input-group">
+        <label>CD Base do Item (Ex: Espada Curta 10)</label>
+        <input type="number" id="cdBase" value="10" oninput="calcularCD()">
+    </div>
+
+    <div class="input-group">
+        <label>Nível de Obra-Prima (OP)</label>
+        <select id="nivelOP" onchange="calcularCD()">
+            <option value="0">Item Comum (Nível 0)</option>
+            <option value="1">Nível 1 (+0 CD)</option>
+            <option value="2">Nível 2 (+4 CD)</option>
+            <option value="3">Nível 3 (+8 CD)</option>
+            <option value="4">Nível 4 (+12 CD)</option>
+            <option value="5">Nível 5 (+16 CD)</option>
+            <option value="6">Nível 6 (+20 CD)</option>
+            <option value="7">Nível 7 (+24 CD)</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Raridade do Material Especial</label>
+        <select id="raridadeMaterial" onchange="calcularCD()">
+            <option value="0">Material Comum (+0)</option>
+            <option value="2">Incomum (+2)</option>
+            <option value="4">Raro (+4)</option>
+            <option value="6">Muito Raro (+6)</option>
+            <option value="8">Lendário (+8)</option>
+            <option value="10">Artefato / Ultra Raro (+10)</option>
+        </select>
+    </div>
+
+    <div class="result-box">
+        <span style="font-size: 1.1rem;">CD FINAL PARA O TESTE:</span>
+        <span id="cdFinalDisplay" class="cd-value">10</span>
+        <div id="detalhes" class="breakdown">Base 10 + OP 0 + Material 0</div>
+    </div>
+
+    <p class="footer-note">Regra: CD aumenta em +4 por nível de OP (começando no OP 2) e +2 por nível de raridade.</p>
+</div>
+
+<script>
+    function calcularCD() {
+        // Pegar valores
+        const base = parseInt(document.getElementById('cdBase').value) || 0;
+        const opNivel = parseInt(document.getElementById('nivelOP').value);
+        const material = parseInt(document.getElementById('raridadeMaterial').value);
+
+        // Cálculo da CD Final
+        // Conforme a regra: CD aumenta +4 por nível de OP. 
+        // Se OP 1 é a base, o aumento começa no nível 2.
+        const cdFinal = base + opNivel + material;
+
+        // Atualizar Display
+        document.getElementById('cdFinalDisplay').innerText = cdFinal;
+        
+        // Atualizar Detalhes
+        document.getElementById('detalhes').innerText = 
+            `Base ${base} + Modificador OP ${opNivel} + Modificador Material ${material}`;
+    }
+
+    // Inicializar
+    calcularCD();
+</script>
+
+</body>
+</html>
