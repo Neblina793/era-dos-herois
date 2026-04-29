@@ -3,146 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplicativo Desativado</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        /* O ruído de fundo */
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.15;
-        }
-
-        /* Overlay de linhas de TV antiga */
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%, 
-                rgba(0, 0, 0, 0.25) 50%
-            ), linear-gradient(
-                90deg, 
-                rgba(255, 0, 0, 0.06), 
-                rgba(0, 255, 0, 0.02), 
-                rgba(0, 0, 255, 0.06)
-            );
-            background-size: 100% 4px, 3px 100%;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        /* Container da mensagem */
-        .container {
-            position: relative;
-            z-index: 3;
-            text-align: center;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #fff;
-            font-size: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px #ff0000, -2px -2px #0000ff;
-            animation: glitch 0.3s infinite;
-        }
-
-        p {
-            color: #aaa;
-            font-size: 1rem;
-            margin-top: 10px;
-        }
-
-        /* Efeito de glitch no texto */
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
-        /* Vinheta (bordas escuras) */
-        .vignette {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
-            z-index: 4;
-            pointer-events: none;
-        }
-    </style>
+    <title>Era dos Heróis - RPG</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="antialiased">
 
-    <canvas id="noise"></canvas>
-    <div class="scanlines"></div>
-    <div class="vignette"></div>
+    <nav class="fixed w-full z-50 glass py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="text-2xl font-cinzel font-bold gold-gradient tracking-widest uppercase">
+                Era dos <span class="text-white">Heróis</span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font-semibold uppercase tracking-wider">
+                <a href="#home" class="hover:text-yellow-500 transition">Início</a>
+                <a href="#regras" class="hover:text-yellow-500 transition">Regras</a>
+                <a href="#talentos" class="hover:text-yellow-500 transition">Talentos</a>
+                <a href="#divindades" class="hover:text-yellow-500 transition">Divindades</a>
+            </div>
+            <a href="index2.html" class="btn-gold text-black px-6 py-2 rounded-sm font-bold text-xs uppercase tracking-tighter">
+                Prologo
+            </a>
+        </div>
+    </nav>
 
-    <div class="container">
-        <h1>SINAL INTERROMPIDO</h1>
-        <p>Este aplicativo foi desativado pelo administrador.</p>
-    </div>
+    <section id="home" class="hero-bg min-h-[90vh] flex items-center justify-center pt-20">
+        <div class="container mx-auto px-6 text-center z-10">
+            <h2 class="text-yellow-500 font-cinzel text-xl mb-4 tracking-widest uppercase">Bem Vindos</h2>
+            <h1 class="text-5xl md:text-8xl font-cinzel font-bold mb-6 leading-tight uppercase tracking-tighter">Era dos <br> <span class="gold-gradient">Heróis</span></h1>
+            <p class="max-w-2xl mx-auto text-gray-400 mb-10 text-lg">
+                Explore um mundo onde os deuses caminham entre mortais. Baseado no sistema D&D 5.5 2024 com mecânicas únicas e ambientação épica na Grécia Mitológica.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+    <a href="ficha_personagem.html" class="btn-gold text-black px-10 py-4 rounded font-bold uppercase tracking-widest">Criar Herói</a>
+    <a href="talento.html" class="btn-gold text-black px-10 py-4 rounded font-bold uppercase tracking-widest">Talentos</a>
+    <a href="Raça.html" class="btn-gold text-black px-10 py-4 rounded font-bold uppercase tracking-widest">Raças</a>
+    <a href="ascensao.html" class="btn-gold text-black px-10 py-4 rounded font-bold uppercase tracking-widest">Ascensão</a>
+    <a href="item.html" class="btn-gold text-black px-10 py-4 rounded font-bold uppercase tracking-widest">Itens</a>
+    <a href="Taverna.html" class="btn-gold text-black px-10 py-4 rounded font-bold uppercase tracking-widest">Taverna</a>
+    <a href="divindades.html" class="btn-gold text-black px-10 py-4 rounded font-bold uppercase tracking-widest">HQ's</a>
+    <a href="ferreiro.html" class="btn-gold text-black px-10 py-4 rounded font-bold uppercase tracking-widest">Ferreiro</a>
+</div>
+        </div>
+    </section>
 
-    <script>
-        const canvas = document.getElementById('noise');
-        const ctx = canvas.getContext('2d');
+    <div class="section-divider"></div>
 
-        function resize() {
-            canvas.width = window.innerWidth / 2; // Resolução menor para parecer lo-fi
-            canvas.height = window.innerHeight / 2;
-        }
+    <section id="regras" class="py-20 bg-[#0a0a0c] bg-themed-1 relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-cinzel font-bold mb-4">Informações do Sistema</h2>
+                <div class="w-32 h-1 bg-gradient-to-r from-transparent via-yellow-600 to-transparent mx-auto"></div>
+            </div>
 
-        function noise(ctx) {
-            const w = ctx.canvas.width;
-            const h = ctx.canvas.height;
-            const idata = ctx.createImageData(w, h);
-            const buffer32 = new Uint32Array(idata.data.buffer);
-            const len = buffer32.length;
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="glass p-8 rounded-2xl text-center hover:border-yellow-600/50 transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-yellow-500 mb-4 font-cinzel text-4xl font-bold">Sistema</div>
+                    <h3 class="font-bold text-xl mb-2">Base Regrada</h3>
+                    <p class="text-gray-500 text-sm">Utilizamos a estrutura do D&D 5.5 2024.</p>
+                </div>
+                <div class="glass p-8 rounded-2xl text-center hover:border-yellow-600/50 transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-yellow-500 mb-4 font-cinzel text-2xl font-bold">Pontos Base</div>
+                    <h3 class="font-bold text-xl mb-2">Atributos</h3>
+                    <p class="text-gray-500 text-sm">Distribuição padrão de Pontos Base 16,16,14,12,10,10.</p>
+                </div>
+                <div class="glass p-8 rounded-2xl text-center hover:border-yellow-600/50 transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-yellow-500 mb-4 font-cinzel text-4xl font-bold">Estado</div>
+                    <h3 class="font-bold text-xl mb-2">Temporada</h3>
+                    <p class="text-gray-500 text-sm">Rebute da 1ª Temporada.</p>
+                </div>
+                <div class="glass p-8 rounded-2xl text-center hover:border-yellow-600/50 transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-yellow-500 mb-4 font-cinzel text-4xl font-bold">Mitologia</div>
+                    <h3 class="font-bold text-xl mb-2">Cenário</h3>
+                    <p class="text-gray-500 text-sm">Ambientação focada na Grécia Mitológica.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section id="talentos" class="py-20 bg-[#070709] bg-themed-2 relative">
+        <div class="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
             
-            for (let i = 0; i < len; i++) {
-                if (Math.random() < 0.5) buffer32[i] = 0xff000000; // Pixel preto
-                else buffer32[i] = 0xffffffff; // Pixel branco
-            }
+            <div class="glass p-8 rounded-3xl relative overflow-hidden border-l-4 border-l-yellow-500/50">
+                <h3 class="text-2xl font-cinzel font-bold mb-6">Talentos de Combate</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                        <span class="font-semibold">Atacante Selvagem</span>
+                        <span class="text-xs text-gray-400">Sempre que você rola um dado de dano para ataques com armas no seu turno, você pode rolar novamente se o resultado for 1 (deve usar a nova rolagem).</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                        <span class="font-semibold">Duelista Defencivo</span>
+                        <span class="text-xs text-gray-400">Pré-requisito: Destreza 13 ou maior
+
+Quando você estiver empunhando uma arma de acuidade com a qual você seja proficiente e outra criatura atingir você com um ataque corpo-a-corpo, você pode usar sua reação para adicionar seu bônus de proficiência a sua CA para esse ataque, potencialmente fazendo o ataque errar.</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                        <span class="font-semibold">Mestre em Armaduras Pesadas</span>
+                        <span class="text-xs text-gray-400">Talento Geral (Pré-requisito: Nível 4 ou superior, Treina-
+mento com Armadura Pesada)
+Você adquire os seguintes benefícios.
+Aumento no Valor de Atributo. Aumente seu valor de 
+Força ou Constituição em 1, até no máximo 20.
+Redução de Dano. Quando você é atingido por um 
+ataque enquanto está vestido com uma armadura 
+Pesada, qualquer dano Contundente, Cortante e 
+Perfurante causado a você por esse ataque é reduzido 
+em uma quantidade de pontos igual ao seu Bônus de 
+Proficiência.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-8 rounded-3xl border-r-4 border-r-yellow-500/50 relative overflow-hidden">
+                <h3 class="text-2xl font-cinzel font-bold mb-6">Suporte e Magia</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center border-b border-white/5 pb-3 group">
+                        <span class="font-semibold">Atirador de Magia</span>
+                        <span class="text-yellow-500 font-bold bg-yellow-500/10 px-3 py-1 rounded-full text-xs">Pré-requisito: Capacidade de conjurar pelo menos uma magia
+
+Você aprendeu técnicas para aprimorar seus ataques com certos tipos de magia, ganhando os seguintes benefícios:
+
+Quando você conjura uma magia que requer que você realize uma jogada de ataque, o alcance da magia é dobrada.
+
+Seus ataques à distância com magia ignoram meia-cobertura ou três-quartos de cobertura.
+
+Você aprende um truque que requer uma jogada de ataque. Escolha o truque da lista de magias do bardo, bruxo, clérigo, druida, feiticeiro ou mago. Sua habilidade de conjuração para esse truque depende da lista de magia a qual você escolheu o truque: Carisma para bardo, bruxo ou feiticeiro; Sabedoria para clérigo ou druida; ou Inteligência para mago.</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-white/5 pb-3 group">
+                        <span class="font-semibold">Conjurador Belico</span>
+                        <span class="text-yellow-500 font-bold bg-yellow-500/10 px-3 py-1 rounded-full text-xs">Pré-requisito: Talento Geral (Pré-requisito: Nível 4 ou superior, Característica Conjuração ou Magia de Pacto)
+Você adquire os seguintes benefícios.
+Aumento no Valor de Atributo. Aumente seu valor 
+de Inteligência, Sabedoria ou Carisma em 1, até no 
+máximo 20.
+Concentração. Você tem Vantagem em salva-
+guardas de Constituição que realiza para manter a 
+Concentração.
+Magia Reativa. 
+Quando uma criatura provocar um 
+Ataque de Oportunidade a você ao sair do seu alcance, 
+você pode executar uma Reação para conjurar uma 
+magia contra a criatura, em vez de realizar o Ataque de 
+Oportunidade. A magia deve ter um tempo de conju-
+ração de uma ação e deve ter como alvo apenas aquela 
+criatura.
+Componentes Somáticos. Você pode realizar os com-
+ponentes somáticos de magias mesmo quando estiver 
+com armas ou um Escudo em uma ou ambas as mãos.</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-white/5 pb-3 group">
+                        <span class="font-semibold">Sortudo</span>
+                        <span class="text-yellow-500 font-bold bg-yellow-500/10 px-3 py-1 rounded-full text-xs">Pré-requisito: Nenhum
+Pontos de Sorte: Você tem um número de Pontos de Sorte igual ao seu Bônus de Proficiência. Você recupera os pontos em um Descanso Longo.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section id="downloads" class="py-20 bg-[#0a0a0c] bg-themed-3 relative">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h2 class="text-4xl font-cinzel font-bold mb-4">Ferramentas de Jogo</h2>
+            <div class="w-32 h-1 bg-gradient-to-r from-transparent via-yellow-600 to-transparent mx-auto mb-12"></div>
             
-            ctx.putImageData(idata, 0, 0);
-        }
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-b from-white/5 to-transparent p-10 rounded-3xl border border-white/10 hover:border-yellow-500/30 transition-all duration-500 hover:-translate-y-2 shadow-lg shadow-black/50">
+                    <div class="mb-6 inline-block p-4 bg-yellow-500/10 rounded-2xl">
+                        <svg class="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 font-cinzel">Ficha Online</h3>
+                    <p class="text-gray-500 text-sm mb-6">Gerencie seus status e atributos em tempo real.</p>
+                    <a href="ficha_personagem.html" class="block w-full py-3 bg-white/5 hover:bg-white/10 rounded-xl font-bold transition text-center">Acessar</a>
+                </div>
 
-        let frame = 0;
-        function loop() {
-            frame++;
-            if (frame % 2 === 0) { // Gera ruído a cada 2 frames para não sobrecarregar
-                noise(ctx);
-            }
-            requestAnimationFrame(loop);
-        }
+                <div class="bg-gradient-to-b from-yellow-500/10 to-transparent p-10 rounded-3xl border border-yellow-500/20 shadow-lg shadow-yellow-900/10 hover:-translate-y-2 transition-all duration-500">
+                    <div class="mb-6 inline-block p-4 bg-yellow-500/20 rounded-2xl">
+                        <svg class="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 font-cinzel">Mapa Virtual</h3>
+                    <p class="text-gray-500 text-sm mb-6">Sistema de mapa com Fog of War e grid dinâmico.</p>
+                    <a href="Mesa003.html" class="block w-full py-3 btn-gold text-black rounded-xl font-bold transition text-center">VTT</a>
+                </div>
 
-        window.addEventListener('resize', resize);
-        resize();
-        loop();
-    </script>
+                <div class="bg-gradient-to-b from-white/5 to-transparent p-10 rounded-3xl border border-white/10 hover:border-yellow-500/30 transition-all duration-500 hover:-translate-y-2 shadow-lg shadow-black/50">
+                    <div class="mb-6 inline-block p-4 bg-yellow-500/10 rounded-2xl">
+                        <svg class="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 font-cinzel">Grimório</h3>
+                    <p class="text-gray-500 text-sm mb-6">Consulte raças e divindades do cenário.</p>
+                    <a href="grimorio.html" class="block w-full py-3 bg-white/5 hover:bg-white/10 rounded-xl font-bold transition text-center">Ver Mais</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer-glow pt-16 pb-12 bg-[#070709] relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10 text-center">
+            <div class="text-3xl font-cinzel font-bold gold-gradient tracking-widest mb-6 uppercase">
+                Era dos Heróis
+            </div>
+            <p class="max-w-xl mx-auto text-gray-500 text-sm leading-relaxed mb-8">
+                Um projeto épico de RPG de mesa focado na imersão mitológica. <br> Que os deuses guiem seus dados.
+            </p>
+            <div class="pt-8 border-t border-white/5">
+                <p class="text-gray-500 text-sm">Criador: Evandro Neto de Oliveira.</p>
+                <p class="text-gray-500 text-sm">Contato e Suporte: tecnow.ti.suporte@gmail.com</p>
+                <p class="text-gray-500 text-sm">Whatszap: (22) 9 9727 3243.</p>
+                <p class="text-gray-500 text-sm">© 2026 Era dos Heróis. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
