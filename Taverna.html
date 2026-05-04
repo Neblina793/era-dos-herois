@@ -6,325 +6,555 @@
     <title>Mural de Missões - Taverna</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            font-family: 'Cinzel', serif;
-            overflow: hidden;
-        }
-
-        /* Tela de Carregamento */
-        #loading-screen {
-            position: fixed;
-            inset: 0;
-            background: black;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        #loading-screen img {
-            max-width: 250px;
-            border: none;
-        }
-
-        .loading-text {
-            margin-top: 15px;
-            color: #e0c097;
-            font-size: 1.2rem;
-            letter-spacing: 5px;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        /* Conteúdo Principal */
-        #main-content {
-            display: none;
-            width: 100%;
-            height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('003.png');
-            background-size: cover;
-            background-position: center;
-            padding: 40px;
-            overflow-y: auto;
-        }
-
-        .btn-voltar {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(224, 192, 151, 0.1);
-            border: 1px solid #e0c097;
-            color: #e0c097;
-            padding: 10px 20px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: 0.3s;
-            z-index: 10;
-        }
-
-        .btn-voltar:hover {
-            background: #e0c097;
-            color: #000;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        h1 {
-            color: #e0c097;
-            font-size: 3rem;
-            text-shadow: 0 0 15px rgba(224, 192, 151, 0.5);
-            letter-spacing: 10px;
-        }
-
-        /* Mural de Missões */
-        .quest-board {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .quest-paper {
-            background: url('https://www.transparenttextures.com/patterns/paper-fibers.png'), #c5a880;
-            padding: 25px;
-            min-height: 200px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
-            transform: rotate(-1deg);
-            transition: 0.3s;
-            cursor: pointer;
-            position: relative;
-            border: 1px solid #8e735b;
-        }
-
-        .quest-paper:nth-child(even) { transform: rotate(2deg); }
-        .quest-paper:nth-child(3n) { transform: rotate(-2deg); }
-
-        .quest-paper:hover {
-            transform: scale(1.05) rotate(0deg);
-            z-index: 5;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .quest-paper h3 {
-            color: #4a3728;
-            border-bottom: 2px solid #4a3728;
-            margin-bottom: 15px;
-            font-size: 1.4rem;
-        }
-
-        .quest-paper p {
-            color: #5d4637;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            height: 60px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .stamp {
-            position: absolute;
-            bottom: 10px;
-            right: 15px;
-            font-weight: bold;
-            color: #8b0000;
-            opacity: 0.7;
-            border: 3px solid #8b0000;
-            padding: 5px;
-            transform: rotate(-15deg);
-            text-transform: uppercase;
-        }
-
-        /* Modal */
-        #quest-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: #e0c097;
-            width: 100%;
-            max-width: 600px;
-            padding: 40px;
-            border: 10px double #4a3728;
-            color: #4a3728;
-            position: relative;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 2rem;
-            cursor: pointer;
-        }
-
-        .modal-content h2 { font-size: 2rem; margin-bottom: 20px; border-bottom: 3px solid #4a3728; }
-        .modal-content p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; }
-        .reward-box { font-size: 1.3rem; font-weight: bold; color: #8b0000; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; background-color: #000; font-family: 'Cinzel', serif; overflow: hidden; }
+        #loading-screen { position: fixed; inset: 0; background: black; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+        .loading-text { margin-top: 15px; color: #e0c097; font-size: 1.2rem; letter-spacing: 5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        #main-content { display: none; width: 100%; height: 100vh; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('003.png'); background-size: cover; background-position: center; padding: 40px; overflow-y: auto; }
+        .btn-voltar { position: absolute; top: 20px; left: 20px; border: 1px solid #e0c097; color: #e0c097; padding: 10px 20px; text-decoration: none; font-size: 0.8rem; z-index: 10; }
+        header { text-align: center; margin-bottom: 50px; }
+        h1 { color: #e0c097; font-size: 3rem; text-shadow: 0 0 15px rgba(224, 192, 151, 0.5); letter-spacing: 10px; }
+        .quest-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .quest-paper { background: url('https://www.transparenttextures.com/patterns/paper-fibers.png'), #c5a880; padding: 25px; min-height: 200px; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); cursor: pointer; position: relative; border: 1px solid #8e735b; transition: 0.3s; }
+        .quest-paper:hover { transform: scale(1.05); z-index: 5; }
+        .quest-paper h3 { color: #4a3728; border-bottom: 2px solid #4a3728; margin-bottom: 15px; font-size: 1.4rem; }
+        .quest-paper p { color: #5d4637; font-size: 0.9rem; line-height: 1.4; height: 60px; overflow: hidden; }
+        .stamp { position: absolute; bottom: 10px; right: 15px; font-weight: bold; color: #8b0000; opacity: 0.7; border: 3px solid #8b0000; padding: 5px; transform: rotate(-15deg); text-transform: uppercase; }
+        
+        /* MODAL COM ROLAGEM */
+        #quest-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
+        .modal-content { background: #e0c097; width: 100%; max-width: 600px; padding: 40px; border: 10px double #4a3728; color: #4a3728; position: relative; max-height: 90vh; display: flex; flex-direction: column; }
+        .close-modal { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; }
+        #modal-desc { font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; overflow-y: auto; max-height: 350px; padding-right: 15px; }
+        
+        /* Estilo da barra de rolagem no modal */
+        #modal-desc::-webkit-scrollbar { width: 8px; }
+        #modal-desc::-webkit-scrollbar-track { background: rgba(74, 55, 40, 0.1); border-radius: 10px; }
+        #modal-desc::-webkit-scrollbar-thumb { background: #4a3728; border-radius: 10px; }
+        
+        .reward-box { font-size: 1.3rem; font-weight: bold; color: #8b0000; margin-top: auto; padding-top: 15px; border-top: 1px dashed #4a3728; }
     </style>
 </head>
 <body>
-
-    <div id="loading-screen">
-        <img src="20.gif" alt="Carregando">
-        <div class="loading-text">ENTRANDO NA TAVERNA...</div>
-    </div>
-
+    <div id="loading-screen"><div class="loading-text">ABRINDO MURAL...</div></div>
     <div id="main-content">
         <a href="index.html" class="btn-voltar">← VOLTAR</a>
-        
-        <header>
-            <h1>MURAL DE MISSÕES</h1>
-        </header>
-
+        <header><h1>MURAL DE MISSÕES</h1></header>
         <div class="quest-board">
             <div class="quest-paper" onclick="openQuest(1)">
                 <h3>O Touro de Creta</h3>
-                <p>Um touro branco enviado por Poseidon está causando o caos. Domine a fera...</p>
+                <p>Por ordem das autoridades de Creta, sob ameaça crescente às cidades e rotas comerciais, está oficialmente declarada a caçada à criatura conhecida como:
+
+O Touro Branco de Poseidon
+
+Relatos confirmam que a besta surgiu das profundezas — um presente (ou punição) do próprio
+Poseidon.
+
+Desde então, o animal tem devastado campos, destruído vilarejos e dizimado qualquer um que tente enfrentá-lo.
+
+🐂 DESCRIÇÃO DA CRIATURA
+Touro de proporções monstruosas
+Pelagem branca como espuma do mar
+Olhos brilhando com fúria sobrenatural
+Força suficiente para derrubar muralhas
+Pele resistente a lâminas comuns
+
+Testemunhas afirmam que:
+
+“Ele não corre… ele avança como uma onda.”
+
+⚠️ AMEAÇA ATUAL
+
+A criatura foi vista:
+
+Próxima às rotas entre as cidades de Creta
+Destruindo plantações e rebanhos
+Atacando viajantes sem provocação
+
+Diversos guerreiros já tentaram abatê-lo.
+
+Nenhum retornou.
+
+🎯 OBJETIVO
+
+Os interessados devem:
+
+Localizar a criatura
+Dominá-la (preferencial) ou abatê-la (se necessário)
+Trazer prova da captura ou morte
+
+⚠️ IMPORTANTE:
+Há rumores de que a criatura possui origem divina.
+Subestimar isso será fatal.
+
+🪙 RECOMPENSA
+Ouro em quantidade elevada
+Reconhecimento nas cidades de Creta
+Possível favor político ou militar
+
+E algo mais…
+
+Para aquele que conseguir DOMAR a criatura:
+
+Seu nome será lembrado como mais que um guerreiro…
+mas como alguém que enfrentou o poder de um deus… e venceu.
+
+🩸 AVISO FINAL
+
+Esta não é uma caçada comum.
+
+Não é uma criatura comum.
+
+E não é uma missão para os fracos.
+
+Se decidir aceitar…
+
+faça as pazes com seu destino.
+
+Procure o contratante na taverna central ao pôr do sol.
+Leve suas armas… e sua coragem.</p>
                 <div class="stamp">Disponível</div>
             </div>
-
             <div class="quest-paper" onclick="openQuest(3)">
                 <h3>O Voo de Ícaro</h3>
-                <p>Recupere as penas das aves de Estínfalo para que Dédalo possa completar sua invenção...</p>
+                <p>Por ordem de Dédalo, mestre das invenções e criador de maravilhas impossíveis, busca-se um grupo de aventureiros capazes de realizar uma tarefa de extrema importância… e risco.
+
+Uma obra está prestes a ser concluída.
+
+Uma invenção que pode mudar o destino dos homens.
+
+Mas falta um último componente.
+
+🪶 O OBJETIVO
+
+Recuperar as penas das temidas
+Aves de Estínfalo.
+
+Essas criaturas habitam regiões isoladas e perigosas, e não são simples aves.
+
+São monstros.
+
+🐦 DESCRIÇÃO DAS CRIATURAS
+
+Relatos descrevem as Aves de Estínfalo como:
+
+Criaturas com bicos de bronze afiados
+Asas metálicas capazes de lançar penas como lâminas
+Comportamento agressivo e territorial
+Inteligência acima do comum
+
+Dizem que seus céus são silenciosos…
+
+Até que seja tarde demais.
+
+⚠️ PERIGOS DA MISSÃO
+Ataques aéreos em alta velocidade
+Enxames coordenados
+Terrenos de difícil acesso (pântanos, florestas densas, ruínas antigas)
+
+Caçadores inexperientes não sobrevivem.
+
+E mesmo os experientes… raramente retornam ilesos.
+
+🎯 PROPÓSITO
+
+As penas dessas criaturas serão utilizadas por
+Dédalo
+para finalizar sua maior criação:
+
+Um par de asas artificiais.
+
+Uma máquina capaz de permitir ao homem… voar.
+
+🕊️ SOBRE ÍCARO
+
+A invenção não é apenas para estudo.
+
+Ela será usada por
+Ícaro,
+filho de Dédalo.
+
+Um jovem cuja ambição é tão grande quanto o céu que deseja alcançar.
+
+Alguns veem isso como avanço.
+
+Outros…
+
+como desafio aos próprios deuses.
+
+🪙 RECOMPENSA
+Ouro generoso
+Acesso às invenções de Dédalo
+Possibilidade de adquirir artefatos únicos
+
+E talvez…
+
+participar de algo que será lembrado por eras.
+
+🩸 AVISO FINAL
+
+Há aqueles que dizem:
+
+“O homem não foi feito para voar.”
+
+E há aqueles que respondem:
+
+“Ainda.”
+
+Se aceitar essa missão…
+
+saiba que não estará apenas enfrentando monstros.
+
+Estará participando de algo maior.
+
+Algo que pode mudar o mundo…
+
+Ou destruí-lo.
+
+Interessados devem procurar Dédalo em seu ateliê, fora dos muros da cidade, antes do nascer do sol.
+Tragam coragem… e preparem-se para enfrentar os céus.</p>
                 <div class="stamp">Urgente</div>
             </div>
-
             <div class="quest-paper" onclick="openQuest(4)">
                 <h3>O Olho das Graias</h3>
-                <p>As irmãs Graias perderam seu único olho compartilhado. Encontre-o nas cavernas nebulosas...</p>
+                <p>As três irmãs conhecidas como Graias perderam seu único olho compartilhado.
+Sem ele… elas não veem.
+Mas ainda assim… sabem.
+
+E agora, exigem sua devolução.
+
+👁️ SOBRE O OLHO
+
+Relíquia viva, passada entre as irmãs
+
+Permite visão além do comum
+
+Revela mentiras, caminhos ocultos e presenças invisíveis
+
+Este não é um objeto comum.
+É um fragmento de algo antigo.
+Algo que nunca deveria ter sido perdido.
+
+⚠️ LOCALIZAÇÃO
+
+Relatos indicam que o olho foi levado para as profundezas de um local esquecido:
+
+cavernas antigas
+
+túneis submersos
+
+ruínas soterradas pelo tempo
+
+Um lugar onde a luz não alcança.
+
+⚔️ PERIGOS DA MISSÃO
+
+criaturas adaptadas à escuridão total
+
+caminhos instáveis e labirínticos
+
+influência de magia antiga
+
+possível guardião do artefato
+
+Quanto mais fundo você desce… menos o mundo parece o mesmo.
+
+🎯 OBJETIVO
+
+localizar o olho das Graias
+
+recuperá-lo intacto
+
+retorná-lo às suas verdadeiras donas
+
+⚠️ NÃO tente usar o olho sem preparo.
+Ele mostra mais do que deveria.
+
+🪙 RECOMPENSA
+
+ouro em quantidade significativa
+
+segredos proibidos
+
+conhecimento que poucos mortais possuem
+
+As Graias não pagam apenas com riqueza…
+Pagam com respostas.
+
+🩸 AVISO FINAL
+
+As Graias estão instáveis.
+E desesperadas.
+
+Quanto mais tempo sem o olho… mais perigoso se torna encontrá-las.
+
+Aceite esta missão apenas se estiver preparado para enfrentar a escuridão.
+
+Procure o mensageiro das Graias na taverna ao anoitecer.
+Ele saberá quem vocês são.</p>
                 <div class="stamp">Disponível</div>
             </div>
-
             <div class="quest-paper" onclick="openQuest(5)">
                 <h3>O Mel de Aristeu</h3>
-                <p>As abelhas de Aristeu pararam de produzir. Descubra a maldição que aflige o enxame...</p>
+                <p>As abelhas divinas cessaram sua produção.
+O mel sagrado — antes abundante — desapareceu.
+
+Algo está errado.
+
+E o equilíbrio natural… está sendo quebrado.
+
+🌿 SOBRE A MISSÃO
+
+O santuário de Aristeu, guardião das colmeias e protetor dos ciclos naturais, caiu em silêncio.
+
+Nenhum canto.
+Nenhum zumbido.
+Nenhum sinal de vida.
+
+Vocês devem investigar o local e descobrir:
+
+o que aconteceu com as abelhas divinas
+
+por que o mel deixou de ser produzido
+
+e restaurar o fluxo natural… se ainda for possível
+
+🐝 SINAIS ESTRANHOS
+
+Relatos recentes indicam:
+
+colmeias abandonadas
+
+flores apodrecendo antes de florescer
+
+criaturas corrompidas vagando próximas ao santuário
+
+Alguns dizem que a própria natureza… está adoecendo.
+
+⚠️ PERIGOS DA MISSÃO
+
+enxames agressivos e descontrolados
+
+magia natural instável
+
+possíveis entidades corrompidas
+
+território denso e difícil de atravessar
+
+Quando a natureza se revolta… não há lugar seguro.
+
+🎯 OBJETIVO
+
+investigar o santuário de Aristeu
+
+identificar a causa da ruptura
+
+restaurar a produção do mel divino
+
+⚠️ Se a causa não puder ser revertida…
+Elimine-a.
+
+🪙 RECOMPENSA
+
+ouro
+
+acesso a substâncias raras derivadas do mel divino
+
+possíveis bênçãos naturais
+
+Dizem que o mel de Aristeu não apenas cura…
+Mas transforma.
+
+🩸 AVISO FINAL
+
+Sem o mel…
+
+plantações falharão
+
+doenças se espalharão
+
+e o mundo começará a definhar
+
+Esta missão não é apenas importante.
+
+É urgente.
+
+Procure o guardião do santuário na entrada da floresta ao amanhecer.
+Leve respeito… pois a natureza está observando.
+
+</p>
                 <div class="stamp">Disponível</div>
             </div>
-
             <div class="quest-paper" onclick="openQuest(6)">
                 <h3>Sombra de Érebo</h3>
-                <p>Uma escuridão não natural está consumindo as plantações do sul. Elimine os espectros...</p>
+                <p>Algo atravessou o véu.
+
+Sombras que não pertencem a este mundo estão surgindo durante a noite — atravessando paredes, ignorando lâminas e drenando a vida daqueles que encontram.
+
+Vilarejos inteiros vivem em medo constante.
+
+🌫️ A AMEAÇA
+
+Relatos descrevem:
+
+espectros sem forma definida
+
+vozes sussurrando no escuro
+
+desaparecimentos sem sinais de luta
+
+frio intenso mesmo sob o sol
+
+Essas entidades não atacam como criaturas comuns.
+
+Elas… consomem.
+
+⚠️ ORIGEM
+
+Estudiosos acreditam que uma fenda espiritual foi aberta.
+
+Uma ruptura entre o mundo dos vivos e o domínio de
+Érebo — a escuridão primordial.
+
+Algo está mantendo essa fenda aberta.
+
+E deve ser destruído.
+
+⚔️ PERIGOS DA MISSÃO
+
+inimigos intangíveis
+
+corrupção espiritual
+
+perda de sanidade
+
+distorção do ambiente
+
+Nem toda sombra é ausência de luz…
+algumas são presença de algo pior.
+
+🎯 OBJETIVO
+
+localizar a origem da fenda
+
+atravessar ou selar o ponto de ruptura
+
+eliminar o que estiver sustentando a abertura
+
+⚠️ Métodos comuns podem não funcionar.
+Preparem-se para enfrentar o desconhecido.
+
+🪙 RECOMPENSA
+
+ouro
+
+artefatos espirituais
+
+conhecimento proibido sobre o véu
+
+🩸 AVISO FINAL
+
+A cada noite, mais sombras atravessam.
+
+Se nada for feito…
+
+Não haverá mais amanhecer seguro.
+
+Procurem o último sobrevivente de um vilarejo atingido.
+Ele viu… o que ninguém deveria ver.
+
+</p>
                 <div class="stamp">Perigo</div>
             </div>
-
             <div class="quest-paper" onclick="openQuest(7)">
                 <h3>O Sangue da Hidra</h3>
-                <p>Colete uma amostra do veneno da Hidra de Lerna para o alquimista real...</p>
-                <div class="stamp">Urgente</div>
+                <p>Entre no pântano de Lerna e colete um frasco do sangue tóxico de uma Hidra. Cuidado: o veneno é corrosivo.</p>
+                <div class="stamp">Disponível</div>
             </div>
-
             <div class="quest-paper" onclick="openQuest(8)">
                 <h3>Canto das Sereias</h3>
-                <p>Marinheiros estão desaparecendo perto dos recifes. Investigue as vozes misteriosas...</p>
+                <p>Barcos mercantes estão naufragando na Costa das Lamentações. Encontre a ilha das sereias e ponha fim aos seus cânticos mortais.</p>
                 <div class="stamp">Disponível</div>
             </div>
-
             <div class="quest-paper" onclick="openQuest(9)">
                 <h3>Ladrões de Ambrósia</h3>
-                <p>Um carregamento sagrado foi desviado por saqueadores no sopé do Olimpo...</p>
-                <div class="stamp">Urgente</div>
-            </div>
-
-            <div class="quest-paper" onclick="openQuest(10)">
-                <h3>O Sono de Hipnos</h3>
-                <p>Uma vila inteira caiu em um sono profundo. Encontre a flor de lótus negra para acordá-los...</p>
+                <p>Bandidos audazes roubaram uma oferenda de ambrósia destinada aos deuses. Recupere a carga antes que a ira divina caia sobre nós.</p>
                 <div class="stamp">Disponível</div>
             </div>
-        </div>
+            <div class="quest-paper" onclick="openQuest(10)">
+                <h3>O Sono de Hipnos</h3>
+                <p>Uma névoa mágica colocou a vila de Orizon para dormir. Busque o antídoto no Jardim de Hipnos, no Reino dos Sonhos.</p>
+                <div class="stamp">Disponível</div>
+            </div></div>
     </div>
-
     <div id="quest-modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h2 id="modal-title">Título</h2>
-            <p id="modal-desc">Descrição completa</p>
-            <div class="reward-box">Recompensa: <span id="modal-reward">0</span></div>
+            <h2 id="modal-title" style="font-size:2rem; border-bottom:3px solid #4a3728; margin-bottom:20px;"></h2>
+            <p id="modal-desc"></p>
+            <div class="reward-box">Recompensa: <span id="modal-reward"></span></div>
         </div>
     </div>
-
     <script>
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loading-screen').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-            }, 5000);
-        });
-
         const quests = {
-            1: {
-                title: "O Touro de Creta",
-                desc: "Um touro branco enviado por Poseidon está causando o caos. Domine a fera e traga-a viva para o continente.",
-                reward: "750 Dracmas"
-            },
-            3: {
-                title: "O Voo de Ícaro",
-                desc: "Recupere as penas das aves de Estínfalo para que Dédalo possa completar sua maior invenção.",
-                reward: "500 Dracmas"
-            },
-            4: {
-                title: "O Olho das Graias",
-                desc: "As irmãs Graias perderam seu único olho compartilhado. Recupere-o das profundezas das cavernas de gelo antes que elas amaldiçoem a região.",
-                reward: "1200 Dracmas"
-            },
-            5: {
-                title: "O Mel de Aristeu",
-                desc: "As abelhas divinas pararam de produzir mel. Investigue o santuário de Aristeu e purifique a fonte da maldição.",
-                reward: "600 Dracmas"
-            },
-            6: {
-                title: "Sombra de Érebo",
-                desc: "Espectros das sombras estão atravessando o véu e aterrorizando vilarejos. Elimine a origem da fenda espiritual.",
-                reward: "2000 Dracmas"
-            },
-            7: {
-                title: "O Sangue da Hidra",
-                desc: "Entre no pântano de Lerna e colete um frasco do sangue tóxico de uma Hidra. Cuidado: o veneno é corrosivo.",
-                reward: "2500 Dracmas"
-            },
-            8: {
-                title: "Canto das Sereias",
-                desc: "Barcos mercantes estão naufragando na Costa das Lamentações. Encontre a ilha das sereias e ponha fim aos seus cânticos mortais.",
-                reward: "1500 Dracmas"
-            },
-            9: {
-                title: "Ladrões de Ambrósia",
-                desc: "Bandidos audazes roubaram uma oferenda de ambrósia destinada aos deuses. Recupere a carga antes que a ira divina caia sobre nós.",
-                reward: "1800 Dracmas"
-            },
-            10: {
-                title: "O Sono de Hipnos",
-                desc: "Uma névoa mágica colocou a vila de Orizon para dormir. Busque o antídoto no Jardim de Hipnos, no Reino dos Sonhos.",
-                reward: "1300 Dracmas"
-            }
-        };
-
+    "1": {
+        "title": "O Touro de Creta",
+        "desc": "Por ordem das autoridades de Creta, sob ameaça crescente às cidades e rotas comerciais, está oficialmente declarada a caçada à criatura conhecida como:\n\nO Touro Branco de Poseidon\n\nRelatos confirmam que a besta surgiu das profundezas — um presente (ou punição) do próprio\nPoseidon.\n\nDesde então, o animal tem devastado campos, destruído vilarejos e dizimado qualquer um que tente enfrentá-lo.\n\n🐂 DESCRIÇÃO DA CRIATURA\nTouro de proporções monstruosas\nPelagem branca como espuma do mar\nOlhos brilhando com fúria sobrenatural\nForça suficiente para derrubar muralhas\nPele resistente a lâminas comuns\n\nTestemunhas afirmam que:\n\n“Ele não corre… ele avança como uma onda.”\n\n⚠️ AMEAÇA ATUAL\n\nA criatura foi vista:\n\nPróxima às rotas entre as cidades de Creta\nDestruindo plantações e rebanhos\nAtacando viajantes sem provocação\n\nDiversos guerreiros já tentaram abatê-lo.\n\nNenhum retornou.\n\n🎯 OBJETIVO\n\nOs interessados devem:\n\nLocalizar a criatura\nDominá-la (preferencial) ou abatê-la (se necessário)\nTrazer prova da captura ou morte\n\n⚠️ IMPORTANTE:\nHá rumores de que a criatura possui origem divina.\nSubestimar isso será fatal.\n\n🪙 RECOMPENSA\nOuro em quantidade elevada\nReconhecimento nas cidades de Creta\nPossível favor político ou militar\n\nE algo mais…\n\nPara aquele que conseguir DOMAR a criatura:\n\nSeu nome será lembrado como mais que um guerreiro…\nmas como alguém que enfrentou o poder de um deus… e venceu.\n\n🩸 AVISO FINAL\n\nEsta não é uma caçada comum.\n\nNão é uma criatura comum.\n\nE não é uma missão para os fracos.\n\nSe decidir aceitar…\n\nfaça as pazes com seu destino.\n\nProcure o contratante na taverna central ao pôr do sol.\nLeve suas armas… e sua coragem.",
+        "reward": "750 Dracmas",
+        "stamp": "Disponível"
+    },
+    "3": {
+        "title": "O Voo de Ícaro",
+        "desc": "Por ordem de Dédalo, mestre das invenções e criador de maravilhas impossíveis, busca-se um grupo de aventureiros capazes de realizar uma tarefa de extrema importância… e risco.\n\nUma obra está prestes a ser concluída.\n\nUma invenção que pode mudar o destino dos homens.\n\nMas falta um último componente.\n\n🪶 O OBJETIVO\n\nRecuperar as penas das temidas\nAves de Estínfalo.\n\nEssas criaturas habitam regiões isoladas e perigosas, e não são simples aves.\n\nSão monstros.\n\n🐦 DESCRIÇÃO DAS CRIATURAS\n\nRelatos descrevem as Aves de Estínfalo como:\n\nCriaturas com bicos de bronze afiados\nAsas metálicas capazes de lançar penas como lâminas\nComportamento agressivo e territorial\nInteligência acima do comum\n\nDizem que seus céus são silenciosos…\n\nAté que seja tarde demais.\n\n⚠️ PERIGOS DA MISSÃO\nAtaques aéreos em alta velocidade\nEnxames coordenados\nTerrenos de difícil acesso (pântanos, florestas densas, ruínas antigas)\n\nCaçadores inexperientes não sobrevivem.\n\nE mesmo os experientes… raramente retornam ilesos.\n\n🎯 PROPÓSITO\n\nAs penas dessas criaturas serão utilizadas por\nDédalo\npara finalizar sua maior criação:\n\nUm par de asas artificiais.\n\nUma máquina capaz de permitir ao homem… voar.\n\n🕊️ SOBRE ÍCARO\n\nA invenção não é apenas para estudo.\n\nEla será usada por\nÍcaro,\nfilho de Dédalo.\n\nUm jovem cuja ambição é tão grande quanto o céu que deseja alcançar.\n\nAlguns veem isso como avanço.\n\nOutros…\n\ncomo desafio aos próprios deuses.\n\n🪙 RECOMPENSA\nOuro generoso\nAcesso às invenções de Dédalo\nPossibilidade de adquirir artefatos únicos\n\nE talvez…\n\nparticipar de algo que será lembrado por eras.\n\n🩸 AVISO FINAL\n\nHá aqueles que dizem:\n\n“O homem não foi feito para voar.”\n\nE há aqueles que respondem:\n\n“Ainda.”\n\nSe aceitar essa missão…\n\nsaiba que não estará apenas enfrentando monstros.\n\nEstará participando de algo maior.\n\nAlgo que pode mudar o mundo…\n\nOu destruí-lo.\n\nInteressados devem procurar Dédalo em seu ateliê, fora dos muros da cidade, antes do nascer do sol.\nTragam coragem… e preparem-se para enfrentar os céus.",
+        "reward": "500 Dracmas",
+        "stamp": "Urgente"
+    },
+    "4": {
+        "title": "O Olho das Graias",
+        "desc": "As três irmãs conhecidas como Graias perderam seu único olho compartilhado.\nSem ele… elas não veem.\nMas ainda assim… sabem.\n\nE agora, exigem sua devolução.\n\n👁️ SOBRE O OLHO\n\nRelíquia viva, passada entre as irmãs\n\nPermite visão além do comum\n\nRevela mentiras, caminhos ocultos e presenças invisíveis\n\nEste não é um objeto comum.\nÉ um fragmento de algo antigo.\nAlgo que nunca deveria ter sido perdido.\n\n⚠️ LOCALIZAÇÃO\n\nRelatos indicam que o olho foi levado para as profundezas de um local esquecido:\n\ncavernas antigas\n\ntúneis submersos\n\nruínas soterradas pelo tempo\n\nUm lugar onde a luz não alcança.\n\n⚔️ PERIGOS DA MISSÃO\n\ncriaturas adaptadas à escuridão total\n\ncaminhos instáveis e labirínticos\n\ninfluência de magia antiga\n\npossível guardião do artefato\n\nQuanto mais fundo você desce… menos o mundo parece o mesmo.\n\n🎯 OBJETIVO\n\nlocalizar o olho das Graias\n\nrecuperá-lo intacto\n\nretorná-lo às suas verdadeiras donas\n\n⚠️ NÃO tente usar o olho sem preparo.\nEle mostra mais do que deveria.\n\n🪙 RECOMPENSA\n\nouro em quantidade significativa\n\nsegredos proibidos\n\nconhecimento que poucos mortais possuem\n\nAs Graias não pagam apenas com riqueza…\nPagam com respostas.\n\n🩸 AVISO FINAL\n\nAs Graias estão instáveis.\nE desesperadas.\n\nQuanto mais tempo sem o olho… mais perigoso se torna encontrá-las.\n\nAceite esta missão apenas se estiver preparado para enfrentar a escuridão.\n\nProcure o mensageiro das Graias na taverna ao anoitecer.\nEle saberá quem vocês são.",
+        "reward": "1200 Dracmas",
+        "stamp": "Disponível"
+    },
+    "5": {
+        "title": "O Mel de Aristeu",
+        "desc": "As abelhas divinas cessaram sua produção.\nO mel sagrado — antes abundante — desapareceu.\n\nAlgo está errado.\n\nE o equilíbrio natural… está sendo quebrado.\n\n🌿 SOBRE A MISSÃO\n\nO santuário de Aristeu, guardião das colmeias e protetor dos ciclos naturais, caiu em silêncio.\n\nNenhum canto.\nNenhum zumbido.\nNenhum sinal de vida.\n\nVocês devem investigar o local e descobrir:\n\no que aconteceu com as abelhas divinas\n\npor que o mel deixou de ser produzido\n\ne restaurar o fluxo natural… se ainda for possível\n\n🐝 SINAIS ESTRANHOS\n\nRelatos recentes indicam:\n\ncolmeias abandonadas\n\nflores apodrecendo antes de florescer\n\ncriaturas corrompidas vagando próximas ao santuário\n\nAlguns dizem que a própria natureza… está adoecendo.\n\n⚠️ PERIGOS DA MISSÃO\n\nenxames agressivos e descontrolados\n\nmagia natural instável\n\npossíveis entidades corrompidas\n\nterritório denso e difícil de atravessar\n\nQuando a natureza se revolta… não há lugar seguro.\n\n🎯 OBJETIVO\n\ninvestigar o santuário de Aristeu\n\nidentificar a causa da ruptura\n\nrestaurar a produção do mel divino\n\n⚠️ Se a causa não puder ser revertida…\nElimine-a.\n\n🪙 RECOMPENSA\n\nouro\n\nacesso a substâncias raras derivadas do mel divino\n\npossíveis bênçãos naturais\n\nDizem que o mel de Aristeu não apenas cura…\nMas transforma.\n\n🩸 AVISO FINAL\n\nSem o mel…\n\nplantações falharão\n\ndoenças se espalharão\n\ne o mundo começará a definhar\n\nEsta missão não é apenas importante.\n\nÉ urgente.\n\nProcure o guardião do santuário na entrada da floresta ao amanhecer.\nLeve respeito… pois a natureza está observando.\n\n",
+        "reward": "600 Dracmas",
+        "stamp": "Disponível"
+    },
+    "6": {
+        "title": "Sombra de Érebo",
+        "desc": "Algo atravessou o véu.\n\nSombras que não pertencem a este mundo estão surgindo durante a noite — atravessando paredes, ignorando lâminas e drenando a vida daqueles que encontram.\n\nVilarejos inteiros vivem em medo constante.\n\n🌫️ A AMEAÇA\n\nRelatos descrevem:\n\nespectros sem forma definida\n\nvozes sussurrando no escuro\n\ndesaparecimentos sem sinais de luta\n\nfrio intenso mesmo sob o sol\n\nEssas entidades não atacam como criaturas comuns.\n\nElas… consomem.\n\n⚠️ ORIGEM\n\nEstudiosos acreditam que uma fenda espiritual foi aberta.\n\nUma ruptura entre o mundo dos vivos e o domínio de\nÉrebo — a escuridão primordial.\n\nAlgo está mantendo essa fenda aberta.\n\nE deve ser destruído.\n\n⚔️ PERIGOS DA MISSÃO\n\ninimigos intangíveis\n\ncorrupção espiritual\n\nperda de sanidade\n\ndistorção do ambiente\n\nNem toda sombra é ausência de luz…\nalgumas são presença de algo pior.\n\n🎯 OBJETIVO\n\nlocalizar a origem da fenda\n\natravessar ou selar o ponto de ruptura\n\neliminar o que estiver sustentando a abertura\n\n⚠️ Métodos comuns podem não funcionar.\nPreparem-se para enfrentar o desconhecido.\n\n🪙 RECOMPENSA\n\nouro\n\nartefatos espirituais\n\nconhecimento proibido sobre o véu\n\n🩸 AVISO FINAL\n\nA cada noite, mais sombras atravessam.\n\nSe nada for feito…\n\nNão haverá mais amanhecer seguro.\n\nProcurem o último sobrevivente de um vilarejo atingido.\nEle viu… o que ninguém deveria ver.\n\n",
+        "reward": "2000 Dracmas",
+        "stamp": "Perigo"
+    },
+    "7": {
+        "title": "O Sangue da Hidra",
+        "desc": "Entre no pântano de Lerna e colete um frasco do sangue tóxico de uma Hidra. Cuidado: o veneno é corrosivo.",
+        "reward": "2500 Dracmas"
+    },
+    "8": {
+        "title": "Canto das Sereias",
+        "desc": "Barcos mercantes estão naufragando na Costa das Lamentações. Encontre a ilha das sereias e ponha fim aos seus cânticos mortais.",
+        "reward": "1500 Dracmas"
+    },
+    "9": {
+        "title": "Ladrões de Ambrósia",
+        "desc": "Bandidos audazes roubaram uma oferenda de ambrósia destinada aos deuses. Recupere a carga antes que a ira divina caia sobre nós.",
+        "reward": "1800 Dracmas"
+    },
+    "10": {
+        "title": "O Sono de Hipnos",
+        "desc": "Uma névoa mágica colocou a vila de Orizon para dormir. Busque o antídoto no Jardim de Hipnos, no Reino dos Sonhos.",
+        "reward": "1300 Dracmas"
+    }
+};
+        window.addEventListener('load', () => { 
+            setTimeout(() => { 
+                document.getElementById('loading-screen').style.display = 'none'; 
+                document.getElementById('main-content').style.display = 'block'; 
+            }, 1000); 
+        });
         function openQuest(id) {
             const q = quests[id];
             document.getElementById('modal-title').innerText = q.title;
@@ -332,17 +562,8 @@
             document.getElementById('modal-reward').innerText = q.reward;
             document.getElementById('quest-modal').style.display = 'flex';
         }
-
-        function closeModal() {
-            document.getElementById('quest-modal').style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('quest-modal');
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
+        function closeModal() { document.getElementById('quest-modal').style.display = 'none'; }
+        window.onclick = e => { if(e.target == document.getElementById('quest-modal')) closeModal(); }
     </script>
 </body>
 </html>
