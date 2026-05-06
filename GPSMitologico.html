@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Mitológico - Era dos Heróis</title>
+    <style>
+        /* Tema de Cores: Preto e Dourado (Design Profissional de Fantasia) */
+        :root {
+            --bg-principal: #0a0a0a;
+            --bg-card: #121212;
+            --bg-input: #1a1a1a;
+            --dourado: #d4af37;
+            --dourado-brilho: #f3e5ab;
+            --dourado-escuro: #aa841c;
+            --texto-claro: #f0ede5;
+            --texto-escuro: #8c887d;
+            --borda: #2a2415;
+            --borda-brilho: #4a3e20;
+            --perigo: #e74c3c;
+            --seguro: #2ecc71;
+            --font-fantasy: 'Georgia', serif;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto-claro);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            background-image: radial-gradient(circle at center, #151208 0%, #050505 100%);
+        }
+
+        .gps-box {
+            background-color: var(--bg-card);
+            border: 2px solid var(--dourado);
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.15), inset 0 0 10px rgba(212, 175, 55, 0.05);
+            max-width: 900px;
+            width: 100%;
+            padding: 35px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Detalhe ornamental nos cantos */
+        .gps-box::before {
+            content: "";
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 1px solid var(--borda);
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--borda);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        header h1 {
+            font-family: var(--font-fantasy);
+            color: var(--dourado);
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+
+        header p {
+            color: var(--texto-escuro);
+            font-size: 1rem;
+            margin: 8px 0 0 0;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            color: var(--dourado);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            font-family: var(--font-fantasy);
+        }
+
+        select {
+            background-color: var(--bg-input);
+            border: 1px solid var(--borda);
+            color: var(--texto-claro);
+            padding: 14px;
+            font-size: 1rem;
+            border-radius: 6px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        select:focus {
+            border-color: var(--dourado);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+            background-color: #222;
+        }
+
+        /* Seleção de Transporte */
+        .transporte-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .transporte-container {
+                grid-column: span 1;
+            }
+        }
+
+        .transporte-option {
+            position: relative;
+        }
+
+        .transporte-option input[type="radio"] {
+            display: none;
+        }
+
+        .transporte-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--borda);
+            border-radius: 6px;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            user-select: none;
+            color: var(--texto-escuro);
+        }
+
+        .transporte-option input[type="radio"]:checked + .transporte-label {
+            border-color: var(--dourado);
+            background-color: rgba(212, 175, 55, 0.08);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+            color: var(--dourado-brilho);
+        }
+
+        .transporte-label:hover {
+            border-color: var(--borda-brilho);
+            background-color: #202020;
+        }
+
+        .btn-calcular {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--dourado-escuro) 0%, var(--dourado) 50%, var(--dourado-escuro) 100%);
+            color: #000;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border: none;
+            padding: 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            font-family: var(--font-fantasy);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .btn-calcular {
+                grid-column: span 1;
+            }
+        }
+
+        .btn-calcular:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            background: linear-gradient(135deg, var(--dourado) 0%, var(--dourado-brilho) 50%, var(--dourado) 100%);
+        }
+
+        /* Seção de Resultados */
+        .resultado-container {
+            display: none;
+            flex-direction: column;
+            gap: 25px;
+            margin-top: 15px;
+            border-top: 2px solid var(--borda);
+            padding-top: 30px;
+        }
+
+        .resumo-viagem {
+            text-align: center;
+            background-color: rgba(212, 175, 55, 0.03);
+            border: 1px solid var(--borda);
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .resumo-viagem span {
+            color: var(--dourado);
+            font-weight: bold;
+        }
+
+        .rotas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .rotas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .rota-card {
+            background-color: #0d0d0d;
+            border: 1px solid var(--borda);
+            border-radius: 8px;
+            padding: 25px;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .rota-card:hover {
+            border-color: var(--borda-brilho);
+            transform: scale(1.01);
+        }
+
+        .rota-card.segura {
+            border-left: 5px solid var(--seguro);
+        }
+
+        .rota-card.rapida {
+            border-left: 5px solid var(--perigo);
+        }
+
+        .rota-badge {
+            align-self: flex-start;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .segura .rota-badge {
+            background-color: rgba(46, 204, 113, 0.12);
+            color: var(--seguro);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .rapida .rota-badge {
+            background-color: rgba(231, 76, 60, 0.12);
+            color: var(--perigo);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .rota-titulo {
+            font-family: var(--font-fantasy);
+            font-size: 1.4rem;
+            margin: 0 0 10px 0;
+            color: var(--texto-claro);
+        }
+
+        .tempo-viagem {
+            font-size: 2rem;
+            color: var(--dourado);
+            font-weight: bold;
+            margin: 10px 0 15px 0;
+            font-family: var(--font-fantasy);
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
+        }
+
+        .detalhes-texto {
+            font-size: 0.95rem;
+            color: var(--texto-escuro);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .perigos-box {
+            background-color: rgba(231, 76, 60, 0.04);
+            border: 1px dashed rgba(231, 76, 60, 0.25);
+            border-radius: 6px;
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+
+        .perigos-box strong {
+            color: var(--perigo);
+            display: block;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+        }
+
+        .perigos-box p {
+            margin: 0;
+            color: #ffb3b3;
+            line-height: 1.5;
+        }
+
+        .seguro-box {
+            background-color: rgba(46, 204, 113, 0.04);
+            border: 1px dashed rgba(46, 204, 113, 0.25);
+            border-radius: 6px;
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+
+        .seguro-box strong {
+            color: var(--seguro);
+            display: block;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+        }
+
+        .seguro-box p {
+            margin: 0;
+            color: #b3ffcc;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gps-box">
+        <header>
+            <h1>GPS Mitológico</h1>
+            <p>Planejador de Viagens • Era dos Heróis (2ª Temporada)</p>
+        </header>
+
+        <div class="config-grid">
+            <div class="control-group">
+                <label for="partida">Ponto de Partida</label>
+                <select id="partida">
+                    </select>
+            </div>
+
+            <div class="control-group">
+                <label for="chegada">Ponto de Chegada</label>
+                <select id="chegada">
+                    </select>
+            </div>
+
+            <div class="transporte-container">
+                <div class="transporte-option">
+                    <input type="radio" name="transporte" id="pe" value="pe" checked>
+                    <label for="pe" class="transporte-label">
+                        🚶 Ir A Pé
+                    </label>
+                </div>
+                <div class="transporte-option">
+                    <input type="radio" name="transporte" id="cavalo" value="cavalo">
+                    <label for="cavalo" class="transporte-label">
+                        🐎 Ir A Cavalo
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn-calcular" onclick="calcularViagem()">Calcular Rota Mitológica</button>
+        </div>
+
+        <div id="resultado" class="resultado-container">
+            
+            <div class="resumo-viagem">
+                Trajeto de <span id="resumo-origem">Origem</span> até <span id="resumo-destino">Destino</span>
+            </div>
+
+            <div class="rotas-grid">
+                <div class="rota-card rapida">
+                    <div>
+                        <span class="rota-badge">Caminho Selvagem</span>
+                        <h3 class="rota-titulo">Rota Rápida</h3>
+                        <div class="tempo-viagem" id="tempo-rapida">-- dias</div>
+                        <div class="detalhes-texto">
+                            O caminho mais direto em linha reta, atravessando florestas selvagens, mares revoltos ou cadeias montanhosas. Sem escolta ou patrulha de guarda.
+                        </div>
+                    </div>
+                    <div class="perigos-box">
+                        <strong>⚠️ Ameaças no Caminho:</strong>
+                        <p id="perigos-texto">--</p>
+                    </div>
+                </div>
+
+                <div class="rota-card segura">
+                    <div>
+                        <span class="rota-badge">Estrada Imperial</span>
+                        <h3 class="rota-titulo">Rota Segura</h3>
+                        <div class="tempo-viagem" id="tempo-segura">-- dias</div>
+                        <div class="detalhes-texto">
+                            Desvia de áreas de alto risco contornando o continente pelas estradas vigiadas, rotas comerciais consolidadas ou escolta de frotas oficiais do império de Alexandre, o Grande.
+                        </div>
+                    </div>
+                    <div class="seguro-box">
+                        <strong>🛡️ Nível de Segurança: Máximo</strong>
+                        <p>Livre de emboscadas de monstros, saques e surpresas indesejadas. Viagem pacífica indicada para transporte comercial ou escolta.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // BANCO DE DADOS OFICIAL - AS 29 MARCAÇÕES REAIS DO SEU MAPA
+        const locais = {
+            "coliseu_do_imperador": { nome: "Coliseu do Imperador", x: 23.763020833333336, y: 83.49609375, regiao: "imperial" },
+            "forja_de_hefesto": { nome: "🔥 Forja de Hefesto", x: 9.635416666666668, y: 80.6640625, regiao: "vulcanica" },
+            "creta": { nome: "🏝️ Creta", x: 45.33420130610466, y: 78.61328125, regiao: "maritima" },
+            "esparta": { nome: "⚔️ Esparta", x: 39.19270833333333, y: 82.51953125, regiao: "militar" },
+            "corintos": { nome: "💰 Corintos", x: 42.25260416666667, y: 71.38671875, regiao: "civilizada" },
+            "tebas": { nome: "🧠 Tebas", x: 50.911458333333336, y: 78.125, regiao: "civilizada" },
+            "temicera": { nome: "🏝️ Temicera", x: 49.54427083333333, y: 55.56640625, regiao: "amazonas" },
+            "atenas": { nome: "🏛️ Atenas", x: 23.2421875, y: 53.80859375, regiao: "civilizada" },
+            "templo_de_atena": { nome: "🏛️ Templo de Atena", x: 25.846354166666668, y: 58.10546875, regiao: "sagrada" },
+            "templo_de_zeus": { nome: "⚡ Templo de Zeus", x: 28.645833333333332, y: 51.46484375, regiao: "sagrada" },
+            "templo_de_apolo_oraculo_de_delfos": { nome: "☀️ Templo de Apolo (Oraculo de Delfos)", x: 25.911458333333332, y: 68.06640625, regiao: "sagrada" },
+            "delfos": { nome: "🔮 Delfos", x: 31.25, y: 62.59765625, regiao: "sagrada" },
+            "meteora": { nome: "☁️ Meteora", x: 24.609375, y: 44.04296875, regiao: "montanhosa" },
+            "coliseu_olimpico": { nome: "🏟️ Coliseu Olímpico", x: 18.815104166666664, y: 50.29296875, regiao: "imperial" },
+            "palacio_de_alexandre_o_grande": { nome: "🏛️ Palácio de Alexandre o Grande", x: 28.450520833333332, y: 15.33203125, regiao: "imperial" },
+            "templo_de_ares": { nome: "⚔️ Templo de Ares", x: 14.453125, y: 26.46484375, regiao: "sagrada" },
+            "exercito_imperial": { nome: "⚔️ Exército Imperial", x: 19.3359375, y: 18.65234375, regiao: "imperial" },
+            "anfiteatro_de_dionisio": { nome: "🎭 Anfiteatro de Dionísio", x: 29.817708333333332, y: 37.98828125, regiao: "civilizada" },
+            "kruma": { nome: "🌑🔥 Kruma", x: 36.45833333333333, y: 34.9609375, regiao: "militar" },
+            "alexandria": { nome: "🏛️📜 Alexandria", x: 43.48958333333333, y: 45.37760466337204, regiao: "civilizada" },
+            "troia": { nome: "🏛️🔥 Troia", x: 47.52604166666667, y: 27.05078125, regiao: "militar" },
+            "ilha_de_nekroth": { nome: "🌑🪦 Ilha de Nekroth", x: 59.505208333333336, y: 45.3125, regiao: "sombria" },
+            "necropolis": { nome: "🪦🌑 Necrópolis", x: 58.854166666666664, y: 50.09765625, regiao: "sombria" },
+            "ilhas_de_galapagus": { nome: "🌿🌍 Ilhas de Galapagus", x: 55.034722884496055, y: 66.6015625, regiao: "maritima" },
+            "itaca": { nome: "🏝️🛡️ Ítaca", x: 60.980902736385666, y: 89.94140625, regiao: "maritima" },
+            "ilha_dos_ciclopes": { nome: "🗿🔥 Ilha dos Ciclopes", x: 7.486979166666667, y: 67.48046875, regiao: "maritima" },
+            "trinacia": { nome: "☀️🐂 Trinácia", x: 40.0390625, y: 56.15234375, regiao: "maritima" },
+            "esqueria": { nome: "🌊✨ Esquéria", x: 58.83246511220932, y: 34.5703125, regiao: "maritima" },
+            "ilha_de_karceros": { nome: "⛓️🔥 Ilha de Karceros", x: 26.5625, y: 89.16015625, regiao: "maritima" }
+        };
+
+        // Classificação regional dos perigos do seu cenário
+        const perigosRegiao = {
+            "civilizada": "Furtos de estradas, emboscadas de desertores de Atenas e pequenos bandoleiros oportunistas.",
+            "sagrada": "Sentinelas divinas ancestrais de mármore, anomalias de energia arcana descontroladas e provações divinas de força.",
+            "imperial": "Patrulhas agressivas do império exigindo passes de trânsito, coletores de impostos de Alexandria armados e mercenários.",
+            "vulcanica": "Feras de magma da Forja de Hefesto, gases asfixiantes, colapso de terreno e calor sufocante impiedoso.",
+            "sombria": "Aparições sombrias de Nekroth que absorvem a energia vital, mortos-vivos famintos na neblina cinzenta e espectros do submundo.",
+            "maritima": "Piratas saqueadores, sereias hostis que atraem marinheiros para as rochas, tormentas súbitas e feras marinhas colossais.",
+            "militar": "Guerreiros implacáveis de patrulha espartana ou troiana, armadilhas pesadas de fronteira e feras de guerra treinadas.",
+            "amazonas": "Sentinelas Amazonas nas matas de Temicera armadas com arcos longos e feras indomadas das matas tropicais.",
+            "montanhosa": "Wyverns territoriais nas fendas rochosas de Meteora, deslizamentos de rocha e frio extremo de altitude."
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const partida = document.getElementById('partida');
+            const chegada = document.getElementById('chegada');
+
+            // Ordena alfabeticamente para um visual organizado no menu
+            const chavesOrdenadas = Object.keys(locais).sort((a, b) => 
+                locais[a].nome.localeCompare(locais[b].nome)
+            );
+
+            chavesOrdenadas.forEach(chave => {
+                let opt1 = document.createElement('option');
+                opt1.value = chave;
+                opt1.textContent = locais[chave].nome;
+                partida.appendChild(opt1);
+
+                let opt2 = document.createElement('option');
+                opt2.value = chave;
+                opt2.textContent = locais[chave].nome;
+                chegada.appendChild(opt2);
+            });
+
+            // Seleção padrão limpa e funcional
+            partida.value = "atenas";
+            chegada.value = "esparta";
+        });
+
+        function calcularViagem() {
+            const origem = document.getElementById('partida').value;
+            const destino = document.getElementById('chegada').value;
+            const transporte = document.querySelector('input[name="transporte"]:checked').value;
+
+            if (origem === destino) {
+                alert("O ponto de partida não pode ser o mesmo do ponto de chegada!");
+                return;
+            }
+
+            const p1 = locais[origem];
+            const p2 = locais[destino];
+
+            // Distância matemática usando o teorema de Pitágoras em relação aos pixels absolutos do seu mapa
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const distanciaPixel = Math.sqrt(dx * dx + dy * dy);
+
+            // Escala de tempo com base no transporte
+            let fatorVelocidade = 0.35; // Fator para escala "a pé"
+            if (transporte === "cavalo") {
+                fatorVelocidade = 0.175; // Cavalos viajam duas vezes mais rápido
+            }
+
+            // Cálculo das rotas
+            const diasRapida = distanciaPixel * fatorVelocidade;
+            const diasSegura = diasRapida * 1.5; // Desvios seguros aumentam o trajeto em 50%
+
+            // Renderizar na tela de forma legível
+            document.getElementById('tempo-rapida').textContent = formatarTempo(diasRapida);
+            document.getElementById('tempo-segura').textContent = formatarTempo(diasSegura);
+
+            document.getElementById('resumo-origem').textContent = p1.nome;
+            document.getElementById('resumo-destino').textContent = p2.nome;
+
+            // Determinar o perigo dinâmico
+            const perigoDaRegiao = perigosRegiao[p2.regiao] || "Criaturas de estrada selvagens e imprevistos climáticos.";
+            document.getElementById('perigos-texto').textContent = perigoDaRegiao;
+
+            // Exibir a caixa de resultados
+            document.getElementById('resultado').style.display = 'flex';
+        }
+
+        function formatarTempo(diasTotais) {
+            if (diasTotais < 1) {
+                const horas = Math.round(diasTotais * 24);
+                return `${horas} ${horas === 1 ? 'Hora' : 'Horas'}`;
+            }
+            const diasInteiros = Math.floor(diasTotais);
+            const horasRestantes = Math.round((diasTotais - diasInteiros) * 24);
+
+            if (horasRestantes === 0) {
+                return diasInteiros === 1 ? '1 Dia de Viagem' : `${diasInteiros} Dias de Viagem`;
+            }
+            return `${diasInteiros}d ${horasRestantes}h de Viagem`;
+        }
+    </script>
+</body>
+</html>
