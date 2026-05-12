@@ -3,122 +3,176 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tabuleiro RPG — Ultimate Pro</title>
+  <title>Tabuleiro RPG — Ultimate V0.18</title>
   <style>
     :root {
       --bg: #05070a; --panel: #101425; --accent: #6ea8fe;
-      --bad: linear-gradient(180deg, #ff4d4d 0%, #b30000 100%); 
       --good: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%); 
       --temp: linear-gradient(180deg, #f1c40f 0%, #f39c12 100%);
-      --cell: 48;
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; background: var(--bg); color: #e8edff; font-family: sans-serif; overflow: hidden; }
     .app { display: flex; height: 100%; }
     
-    /* Sidebar */
     .sidebar { width: 300px; background: var(--panel); padding: 15px; border-right: 1px solid #1b2550; overflow-y: auto; z-index: 500; }
     .layer-group { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #1b2550; }
-    input, button, select { background: #0a0e1a; color: white; border: 1px solid #1b2550; padding: 7px; border-radius: 4px; font-size: 12px; width: 100%; margin-bottom: 5px; }
-    button { cursor: pointer; font-weight: bold; }
+    h2 { font-size: 13px; color: var(--accent); margin: 10px 0; text-transform: uppercase; border-bottom: 1px solid #1b2550; padding-bottom: 4px; }
+    input, button { background: #0a0e1a; color: white; border: 1px solid #1b2550; padding: 7px; border-radius: 4px; font-size: 11px; width: 100%; margin-bottom: 5px; }
+    button { cursor: pointer; font-weight: bold; transition: 0.2s; }
     button:hover { background: var(--accent); color: #000; }
-    .btn-active { background: var(--accent) !important; color: #000 !important; }
+    button.active { background: #ff4d4d !important; color: white; }
 
-    /* Board */
-    .board-wrap { flex: 1; position: relative; overflow: hidden; background: #000; }
+    .board-wrap { flex: 1; position: relative; overflow: hidden; background: #000; cursor: crosshair; }
     .world { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+    .map-layer { position: absolute; z-index: 10; pointer-events: none; }
+    #layer1 { pointer-events: all !important; z-index: 15; }
+    .resizable { border: 2px dashed var(--accent); pointer-events: all !important; cursor: nwse-resize; }
+
+    .token { position: absolute; cursor: move; display: flex; flex-direction: column; align-items: center; z-index: 100; transition: opacity 0.4s; }
+    .token-dead { opacity: 0.5 !important; }
+    .token-img-wrap { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .token-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; transition: transform 0.2s; }
     
-    /* Camadas */
-    .map-layer { position: absolute; z-index: 1; pointer-events: none; }
-    .map-layer img { display: block; }
-    .resizable { border: 2px dashed var(--accent); pointer-events: all !important; }
-    
-    /* Selection Box */
-    #selection-box { position: absolute; border: 1px solid var(--accent); background: rgba(110,168,254,0.2); pointer-events: none; display: none; z-index: 1000; }
+    .skull-overlay { position: absolute; font-size: 40px; z-index: 110; display: none; pointer-events: none; animation: pulse 2s infinite; }
+    .token-dead .skull-overlay { display: flex; }
+    @keyframes pulse { 0%, 100% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
 
-    /* Ruler */
-    #ruler-line { position: absolute; height: 2px; background: var(--accent); transform-origin: 0 50%; pointer-events: none; z-index: 900; display: none; }
-    #ruler-text { position: absolute; background: #000; padding: 2px 5px; border-radius: 4px; font-size: 12px; color: var(--accent); pointer-events: none; z-index: 901; display: none; border: 1px solid var(--accent); }
+    .hp-container { width: 100%; height: 6px; background: #000; margin-top: 4px; border-radius: 3px; overflow: hidden; display: flex; border: 1px solid #333; }
+    .hp-fill { height: 100%; background: var(--good); transition: width 0.3s; }
+    .temp-fill { height: 100%; background: var(--temp); transition: width 0.3s; }
 
-    /* Tokens */
-    .token { position: absolute; cursor: move; display: flex; flex-direction: column; align-items: center; transition: transform 0.2s; z-index: 100; }
-    .token-selected { filter: drop-shadow(0 0 5px var(--accent)); }
-    .token-img-wrap { position: relative; width: 100%; height: 100%; }
-    .token-img { width: 100%; height: 100%; object-fit: contain; }
-    
-    /* Status Icons */
-    .status-container { position: absolute; top: 0; right: 0; display: flex; flex-wrap: wrap; gap: 2px; width: 40%; pointer-events: none; }
-    .status-icon { background: rgba(0,0,0,0.7); border-radius: 50%; padding: 2px; font-size: 10px; }
+    #grid-svg, #wall-svg { position: absolute; top: -5000px; left: -5000px; width: 10000px; height: 10000px; pointer-events: none; }
+    #grid-svg { z-index: 20; pointer-events: none; }
+    #wall-svg { z-index: 30; pointer-events: none; }
+      #fogCanvas {
+          position: absolute;
+          top: -5000px;
+          left: -5000px;
+          z-index: 5;
+          pointer-events: none;
+          z-index: 5;
+      }
+      #lightCanvas {
+          position: absolute;
+          top: -5000px;
+          left: -5000px;
+          z-index: 6;
+          pointer-events: none;
+          z-index: 5;
+      }
+      .resizer {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 15px;
+          height: 15px;
+          background: #6ea8fe;
+          cursor: nwse-resize;
+          z-index: 20;
+      }
 
-    /* Context Menu */
-    #ctx-menu { position: fixed; display: none; background: #0a0e1a; border: 1px solid var(--accent); border-radius: 8px; padding: 5px; z-index: 2000; min-width: 170px; }
-    #ctx-menu button { text-align: left; background: transparent; border: none; padding: 8px; width: 100%; }
-    #ctx-menu button:hover { background: #1b2550; }
+    #ruler-line { position: absolute; height: 2px; background: var(--accent); transform-origin: 0 50%; z-index: 900; display: none; }
+    #ruler-text { position: absolute; background: #000; padding: 2px 5px; font-size: 12px; color: var(--accent); z-index: 901; display: none; border: 1px solid var(--accent); }
+    .fixed-light-icon { position: absolute; z-index: 105; font-size: 20px; transform: translate(-50%, -50%); pointer-events: none; }
 
-    #grid-svg { position: absolute; top: -5000px; left: -5000px; width: 10000px; height: 10000px; pointer-events: none; z-index: 20; }
-    #fogCanvas { position: absolute; top: -5000px; left: -5000px; z-index: 40; pointer-events: none; }
+    #ctx-menu { position: fixed; display: none; background: #0a0e1a; border: 1px solid var(--accent); border-radius: 8px; padding: 5px; z-index: 2000; min-width: 160px; }
+    #ctx-menu button { text-align: left; background: transparent; border: none; border-bottom: 1px solid #1b2550; width: 100%; padding: 8px; }
+      .world-obj {
+          position: absolute;
+          cursor: grab;
+      }
+
+          .world-obj:active {
+              cursor: grabbing;
+          }
+
+      .resizer {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 15px;
+          height: 15px;
+          background: var(--accent);
+          cursor: nwse-resize;
+          border-radius: 2px;
+          z-index: 10;
+      }
   </style>
 </head>
 <body>
 
 <div id="ctx-menu">
-  <div id="ctx-name" style="text-align:center; padding: 5px; color: var(--accent); border-bottom: 1px solid #333">Nome</div>
-  <button onclick="changeHP(true)">➕ Curar</button>
-  <button onclick="changeHP(false)">➖ Dano</button>
-  <button onclick="toggleStatusPrompt()">🎭 Adicionar Status</button>
-  <button onclick="toggleAura()">✨ Alternar Aura</button>
-  <button onclick="toggleFlip()">↔️ Inverter</button>
-  <button onclick="deleteSelected()" style="color: #ff4d4d">❌ Remover (Del)</button>
+  <div id="ctx-name" style="text-align:center; padding: 5px; color: var(--accent); font-weight: bold; border-bottom: 1px solid var(--accent)">Opções</div>
+  <button onclick="changeStat('hp')">❤️ Vida (Dano/Cura)</button>
+  <button onclick="changeStat('temp')">🛡️ Vida Temp</button>
+  <button onclick="addStatus()">🎭 Add Status</button>
+  <button onclick="clearStatus()">🧹 Limpar Status</button>
+  <button onclick="setSize()">📏 Tamanho</button>
+  <button onclick="toggleAura()">💡 Aura de Luz</button>
+  <button onclick="rotateToken()">🔄 Girar Item</button>
+  <button onclick="deleteSelected()" style="color:red">❌ Remover</button>
 </div>
 
 <div class="app">
-  <aside class="sidebar">
-    <h2>Mesa</h2>
-    <div class="layer-group">
-      <button onclick="saveGame()">💾 Salvar Local</button>
-      <button onclick="exportJSON()">📤 Exportar Mesa</button>
-      <button onclick="document.getElementById('importInput').click()">📥 Importar</button>
-      <input type="file" id="importInput" style="display:none" onchange="importJSON(event)">
-    </div>
+    <aside class="sidebar" id="sidebar">
+        <h2>Mestre</h2>
+        <div class="layer-group">
+            <button onclick="abrirMesa()" style="background:var(--accent); color:#000">📺 Tela do Jogador</button>
+            <button onclick="exportJSON()">📤 Exportar Projeto</button>
+            <input type="file" id="importInput" style="display:none" onchange="importJSON(event)">
+            <button onclick="document.getElementById('importInput').click()">📥 Importar Projeto</button>
+        </div>
 
-    <h2>Mapas</h2>
-    <div class="layer-group">
-      <input type="file" onchange="handleMap(event, 0)">
-      <button onclick="toggleMapResize(0)">📏 Ajustar Mapa 1</button>
-      <input type="file" onchange="handleMap(event, 1)">
-      <button onclick="toggleMapResize(1)">📏 Ajustar Mapa 2</button>
-    </div>
+        <h2>Grade (Grid)</h2>
+        <div class="layer-group">
+            <input type="number" id="gridSize" value="48" onchange="updateGrid()">
+            <button onclick="toggleGridVisible()" id="gridBtn">👁️ Ocultar Grade</button>
+        </div>
 
-    <h2>Herói / NPC</h2>
-    <div class="layer-group">
-      <input type="text" id="tName" placeholder="Nome">
-      <input type="number" id="tHP" value="20" placeholder="HP">
-      <input type="file" id="tImg">
-      <button onclick="addNewToken()" style="background: var(--good)">Criar Token</button>
-    </div>
+        <h2>Mapas e Camadas</h2>
+        <div class="layer-group">
+            <label>Fundo:</label>
+            <input type="file" onchange="handleMap(event, 0)">
+            <button onclick="toggleMapResize(0)">📏 Ajustar Fundo</button>
+            <label>Objeto (Capa 2):</label>
+            <input type="file" onchange="handleMap(event, 1)">
+            <button onclick="toggleMapResize(1)">📏 Ajustar Objeto</button>
+        </div>
 
-    <h2>Névoa</h2>
-    <div class="layer-group">
-      <button onclick="toggleFog()">Ativar/Desativar</button>
-      <button id="brushBtn" onclick="toggleBrush()">🖌️ Pincel</button>
-      <button onclick="state.fogDynamic = !state.fogDynamic" id="dynFogBtn">Auto-Revelar: OFF</button>
-    </div>
+        <h2>Sistemas</h2>
+        <div class="layer-group">
+            <button onclick="setTool('wall')" id="wallBtn">🧱 Desenhar Parede</button>
+            <button onclick="setTool('light')" id="lightBtn">🕯️ Luz Fixa</button>
+            <button onclick="toggleLightSystem()" id="darkBtn">🌑 Escuridão: OFF</button>
+            <button onclick="toggleFog()">🌫️ Névoa</button>
+            <button onclick="state.walls = []; state.lights = []; sync(); renderAll();" style="color:red">🗑️ Limpar Desenhos</button>
+        </div>
 
-    <h2>Config</h2>
-    <div class="layer-group">
-      <input type="number" id="gridSize" value="48" onchange="updateGrid()">
-      <button onclick="toggleGrid()">Grade ON/OFF</button>
-    </div>
-  </aside>
+        <h2>Novo Token</h2>
+        <div class="layer-group">
+            <input type="text" id="tName" placeholder="Nome">
+            <input type="number" id="tHP" value="20" placeholder="Vida">
+            <input type="file" id="tImg">
+            <button onclick="addNewToken()" style="background: #2ecc71; color: #000">Criar Token</button>
+        </div>
+
+        <h2>Novo Objeto</h2>
+        <div class="layer-group">
+            <input type="file" id="objImg">
+            <button onclick="addNewObject()" style="background: #6ea8fe; color: #000">Adicionar Objeto</button>
+        </div>
+    </aside>
 
   <main class="board-wrap" id="boardWrap">
-    <div id="selection-box"></div>
     <div id="ruler-line"></div>
-    <div id="ruler-text">0m</div>
+    <div id="ruler-text"></div>
     <div id="board" class="world">
       <div id="layer0" class="map-layer"></div>
       <div id="layer1" class="map-layer"></div>
+      <svg id="wall-svg"></svg>
+      <div id="lightsIconsContainer"></div>
       <canvas id="fogCanvas" width="10000" height="10000"></canvas>
+      <canvas id="lightCanvas" width="10000" height="10000"></canvas>
       <svg id="grid-svg"></svg>
       <div id="tokensContainer"></div>
     </div>
@@ -126,289 +180,370 @@
 </div>
 
 <script>
-  const state = {
-    zoom: 1, pan: {x:0, y:0}, cell: 48,
-    tokens: {}, selectedIds: [], 
-    fogActive: false, brushMode: false, fogDynamic: false,
-    history: []
-  };
+    let state = {
+        cell: 48, tokens: {}, objects: {}, maps: [null, null], mapSizes: [{ w: 'auto' }, { w: 'auto' }],
+        fogActive: false, lightActive: false, gridVisible: true, walls: [], lights: [], lastId: null
+    };
 
-  const board = document.getElementById('board');
-  const boardWrap = document.getElementById('boardWrap');
-  const fogCanvas = document.getElementById('fogCanvas');
-  const fogCtx = fogCanvas.getContext('2d');
-  const rulerLine = document.getElementById('ruler-line');
-  const rulerText = document.getElementById('ruler-text');
+    let localCam = { zoom: 1, pan: { x: 0, y: 0 } };
+    let isPlayer = new URLSearchParams(window.location.search).get('role') === 'player';
+    let currentTool = 'move';
+    let wallStart = null;
+    let isPanning = false;
+    let startPan = { x: 0, y: 0 };
 
-  // --- Inicialização ---
-  function init() {
-    fogCtx.fillStyle = 'black';
-    fogCtx.fillRect(0, 0, 10000, 10000);
-    updateGrid();
-    loadLocal();
-  }
+    const bc = new BroadcastChannel('rpg_ultimate_channel');
+    const lightCtx = lightCanvas.getContext('2d');
 
-  // --- Câmera e Mouse ---
-  let isPanning = false, isSelecting = false, startPos = {x:0, y:0};
-  
-  boardWrap.onmousedown = (e) => {
-    if (e.button === 2 || e.button === 1) {
-      isPanning = true;
-      startPos = {x: e.clientX - state.pan.x, y: e.clientY - state.pan.y};
-    } else if (e.button === 0 && !e.target.closest('.token')) {
-      isSelecting = true;
-      startPos = {x: e.clientX, y: e.clientY};
-      clearSelection();
+    bc.onmessage = (ev) => {
+        Object.assign(state, JSON.parse(ev.data));
+        renderAll();
+    };
+
+    function sync() { bc.postMessage(JSON.stringify(state)); }
+    function abrirMesa() { window.open(window.location.href + "?role=player", '_blank'); }
+
+    // --- Câmera e Mouse ---
+    boardWrap.onmousedown = (e) => {
+        if (e.button === 2 || e.button === 1) {
+            isPanning = true;
+            startPan = { x: e.clientX - localCam.pan.x, y: e.clientY - localCam.pan.y };
+        } else if (e.button === 0 && !isPlayer) {
+            const rect = board.getBoundingClientRect();
+            const wx = (e.clientX - rect.left) / localCam.zoom - 5000, wy = (e.clientY - rect.top) / localCam.zoom - 5000;
+            if (currentTool === 'wall') wallStart = { x: wx, y: wy };
+            if (currentTool === 'light') { state.lights.push({ x: wx, y: wy }); sync(); renderAll(); }
+        }
+    };
+
+    window.onmousemove = (e) => {
+        if (isPanning) {
+            localCam.pan.x = e.clientX - startPan.x;
+            localCam.pan.y = e.clientY - startPan.y;
+            applyCam();
+        }
+    };
+
+    window.onmouseup = (e) => {
+        isPanning = false;
+        if (currentTool === 'wall' && wallStart) {
+            const rect = board.getBoundingClientRect();
+            state.walls.push({ x1: wallStart.x, y1: wallStart.y, x2: (e.clientX - rect.left) / localCam.zoom - 5000, y2: (e.clientY - rect.top) / localCam.zoom - 5000 });
+            wallStart = null; sync(); renderAll();
+        }
+    };
+
+    boardWrap.onwheel = (e) => {
+        e.preventDefault();
+        const oldZ = localCam.zoom;
+        localCam.zoom *= e.deltaY > 0 ? 0.9 : 1.1;
+        const r = boardWrap.getBoundingClientRect();
+        localCam.pan.x = (e.clientX - r.left) - ((e.clientX - r.left) - localCam.pan.x) * (localCam.zoom / oldZ);
+        localCam.pan.y = (e.clientY - r.top) - ((e.clientY - r.top) - localCam.pan.y) * (localCam.zoom / oldZ);
+        applyCam();
+    };
+
+    function applyCam() { board.style.transform = `translate(${localCam.pan.x}px, ${localCam.pan.y}px) scale(${localCam.zoom})`; }
+    boardWrap.oncontextmenu = (e) => e.preventDefault();
+
+    // --- Colisão ---
+    function checkCollision(nx, ny, ox, oy) {
+        for (let w of state.walls) {
+            if (intersect(nx + 24, ny + 24, ox + 24, oy + 24, w.x1, w.y1, w.x2, w.y2)) return true;
+        }
+        return false;
     }
-  };
-
-  window.onmousemove = (e) => {
-    if (isPanning) {
-      state.pan.x = e.clientX - startPos.x;
-      state.pan.y = e.clientY - startPos.y;
-      applyTransform();
-    } else if (isSelecting) {
-      drawSelectionBox(e);
+    function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+        const det = (x2 - x1) * (y4 - y3) - (x4 - x3) * (y2 - y1);
+        if (det === 0) return false;
+        const l = ((y4 - y3) * (x4 - x1) + (x3 - x4) * (y4 - y1)) / det;
+        const g = ((y1 - y2) * (x4 - x1) + (x2 - x1) * (y4 - y1)) / det;
+        return (0 < l && l < 1) && (0 < g && g < 1);
     }
-  };
 
-  window.onmouseup = () => {
-    isPanning = false;
-    if (isSelecting) finishSelection();
-    isSelecting = false;
-    document.getElementById('selection-box').style.display = 'none';
-  };
+    // --- Objetos ---
+    function deleteSelected() {
+        if (!state.lastId) return;
+        // Se o ID começar com "obj-", apaga dos objetos, senão apaga dos tokens
+        if (state.lastId.toString().startsWith('obj-')) {
+            delete state.objects[state.lastId];
+        } else {
+            delete state.tokens[state.lastId];
+        }
+        state.lastId = null;
+        sync(); renderAll();
+    }
 
-  function applyTransform() {
-    board.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
-  }
-
-  boardWrap.onwheel = (e) => {
-    e.preventDefault();
-    const oldZoom = state.zoom;
-    state.zoom *= e.deltaY > 0 ? 0.9 : 1.1;
-    const rect = boardWrap.getBoundingClientRect();
-    const mX = e.clientX - rect.left, mY = e.clientY - rect.top;
-    state.pan.x = mX - (mX - state.pan.x) * (state.zoom / oldZoom);
-    state.pan.y = mY - (mY - state.pan.y) * (state.zoom / oldZoom);
-    applyTransform();
-  };
-
-  // --- Tokens e Movimentação ---
-  function addNewToken(data = null) {
-    const id = data?.id || "t-" + Date.now();
-    if (data) {
-      state.tokens[id] = data;
-    } else {
-      const img = document.getElementById('tImg').files[0];
-      if (!img) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        state.tokens[id] = {
-          id, name: document.getElementById('tName').value || "NPC",
-          hp: parseInt(document.getElementById('tHP').value), maxHP: parseInt(document.getElementById('tHP').value),
-          x: 100, y: 100, size: 1, img: e.target.result, status: [], flipped: false, aura: false
+    function addNewObject() {
+        const f = document.getElementById('objImg').files[0], r = new FileReader();
+        if (!f) return;
+        r.onload = (e) => {
+            const id = "obj-" + Date.now();
+            state.objects[id] = { id, x: 100, y: 100, w: 100, h: 100, img: e.target.result, aura: false, rotation: 0 };
+            sync(); renderAll();
         };
+        r.readAsDataURL(f);
+    }
+
+    // --- Renderização ---
+    function renderAll() {
+        renderObjects();
         renderTokens();
-      };
-      reader.readAsDataURL(img);
-      return;
+        renderWalls();
+        renderLights();
+        updateMapDisplay();
+        updateGridUI();
+        document.getElementById('darkBtn').innerText = `🌑 Escuridão: ${state.lightActive ? 'ON' : 'OFF'}`;
+        document.getElementById('gridBtn').innerText = state.gridVisible ? '👁️ Ocultar Grade' : '👁️ Mostrar Grade';
     }
-    renderTokens();
-  }
 
-  function renderTokens() {
-    const container = document.getElementById('tokensContainer');
-    container.innerHTML = '';
-    Object.values(state.tokens).forEach(t => {
-      const div = document.createElement('div');
-      div.className = `token ${state.selectedIds.includes(t.id) ? 'token-selected' : ''}`;
-      div.id = t.id;
-      const dim = t.size * state.cell;
-      div.style.cssText = `width:${dim}px; height:${dim}px; left:${t.x}px; top:${t.y}px;`;
-      
-      div.innerHTML = `
-        <div class="status-container">${t.status.map(s => `<span class="status-icon">${s}</span>`).join('')}</div>
-        <div class="token-img-wrap" style="transform: ${t.flipped ? 'scaleX(-1)' : 'scaleX(1)'}">
-            ${t.aura ? `<div style="position:absolute; inset:-10px; border-radius:50%; background:rgba(110,168,254,0.3); z-index:-1; filter:blur(5px)"></div>` : ''}
-            <img src="${t.img}" class="token-img" draggable="false">
-        </div>
-        <div style="background:rgba(0,0,0,0.8); width:100%; height:4px; margin-top:2px; border-radius:2px">
-            <div style="background:#2ecc71; height:100%; width:${(t.hp/t.maxHP)*100}%"></div>
-        </div>
-        <div style="font-size:10px; white-space:nowrap">${t.name}</div>
-      `;
+    function renderTokens() {
+        const container = document.getElementById('tokensContainer');
+        container.innerHTML = '';
+        Object.values(state.tokens).forEach(t => {
+            const dim = t.size * state.cell;
+            const div = document.createElement('div');
+            div.className = `token ${t.hp <= 0 ? 'token-dead' : ''}`;
+            div.style.cssText = `width:${dim}px; height:${dim}px; left:${t.x}px; top:${t.y}px;`;
+            div.innerHTML = `<div class="skull-overlay">💀</div>
+        <div style="position:absolute; top:-18px">${t.status.join('')}</div>
+        <div class="token-img-wrap"><img src="${t.img}" class="token-img" style="transform: rotate(${t.rotation || 0}deg)"></div>
+        <div class="hp-container"><div class="hp-fill" style="width:${(t.hp / t.maxHP) * 100}%"></div></div>
+        <div style="font-size:11px; margin-top:2px; font-weight:bold">${t.name}</div>`;
 
-      div.onmousedown = (e) => {
-        if (e.button !== 0) return;
-        e.stopPropagation();
-        if (!e.ctrlKey && !state.selectedIds.includes(t.id)) clearSelection();
-        if (!state.selectedIds.includes(t.id)) state.selectedIds.push(t.id);
-        
-        let startX = e.clientX, startY = e.clientY;
-        const initialX = t.x, initialY = t.y;
+            div.onmousedown = (e) => {
+                if (e.button !== 0 || currentTool !== 'move') return;
+                e.stopPropagation();
+                let sX = e.clientX, sY = e.clientY, iX = t.x, iY = t.y;
+                const move = (m) => {
+                    let dx = (m.clientX - sX) / localCam.zoom, dy = (m.clientY - sY) / localCam.zoom;
+                    if (!checkCollision(iX + dx, iY + dy, t.x, t.y)) {
+                        t.x = iX + dx; t.y = iY + dy;
+                        div.style.left = t.x + 'px'; div.style.top = t.y + 'px';
+                        updateRuler(iX + dim / 2, iY + dim / 2, t.x + dim / 2, t.y + dim / 2);
+                        if (state.lightActive) renderLights();
+                    }
+                };
+                const up = () => {
+                    t.x = Math.round(t.x / state.cell) * state.cell; t.y = Math.round(t.y / state.cell) * state.cell;
+                    document.getElementById('ruler-line').style.display = 'none'; document.getElementById('ruler-text').style.display = 'none';
+                    sync(); renderAll(); window.removeEventListener('mousemove', move);
+                };
+                window.addEventListener('mousemove', move);
+                window.addEventListener('mouseup', up, { once: true });
+            };
 
-        showRuler(true);
+            div.oncontextmenu = (e) => {
+                if (isPlayer) return; e.preventDefault(); e.stopPropagation();
+                state.lastId = t.id;
+                const m = document.getElementById('ctx-menu');
+                m.style.display = 'block'; m.style.left = e.clientX + 'px'; m.style.top = e.clientY + 'px';
+                document.getElementById('ctx-name').innerText = t.name;
+            };
+            container.appendChild(div);
+        });
+    }
 
-        const onMove = (m) => {
-          const dx = (m.clientX - startX) / state.zoom;
-          const dy = (m.clientY - startY) / state.zoom;
-          
-          state.selectedIds.forEach(sid => {
-            const tok = state.tokens[sid];
-            const el = document.getElementById(sid);
-            el.style.left = (tok.x + dx) + 'px';
-            el.style.top = (tok.y + dy) + 'px';
-          });
+    function renderWalls() {
+        const svg = document.getElementById('wall-svg');
+        svg.innerHTML = '';
+        if (isPlayer) return;
+        state.walls.forEach(w => {
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", w.x1 + 5000); line.setAttribute("y1", w.y1 + 5000);
+            line.setAttribute("x2", w.x2 + 5000); line.setAttribute("y2", w.y2 + 5000);
+            line.setAttribute("stroke", "red"); line.setAttribute("stroke-width", "3");
+            svg.appendChild(line);
+        });
+    }
 
-          updateRuler(initialX + (dim/2), initialY + (dim/2), (t.x + dx) + (dim/2), (t.y + dy) + (dim/2));
+    function renderObjects() {
+        const container = document.getElementById('layer1');
+        container.querySelectorAll('.world-obj').forEach(n => n.remove());
+
+        Object.values(state.objects).forEach(obj => {
+            const div = document.createElement('div');
+            div.className = 'world-obj';
+            div.style.cssText = `left:${obj.x}px; top:${obj.y}px; width:${obj.w}px; height:${obj.h}px; z-index:100;`;
+
+            div.innerHTML = `
+            <img src="${obj.img}" style="width:100%; height:100%; pointer-events:none; transform: rotate(${obj.rotation || 0}deg)">
+            <div class="resizer"></div>
+        `;
+
+            div.onmousedown = (e) => {
+                if (isPlayer) return;
+                e.stopPropagation();
+                let sX = e.clientX, sY = e.clientY, iW = obj.w, iH = obj.h, iX = obj.x, iY = obj.y;
+                const isResizing = e.target.classList.contains('resizer');
+
+                const move = (m) => {
+                    let dx = (m.clientX - sX) / localCam.zoom;
+                    let dy = (m.clientY - sY) / localCam.zoom;
+                    if (isResizing) {
+                        obj.w = Math.max(30, iW + dx);
+                        obj.h = Math.max(30, iH + dy);
+                    } else {
+                        obj.x = iX + dx; obj.y = iY + dy;
+                    }
+                    renderAll();
+                };
+
+                const up = () => {
+                    window.removeEventListener('mousemove', move);
+                    window.removeEventListener('mouseup', up);
+                    sync();
+                };
+                window.addEventListener('mousemove', move);
+                window.addEventListener('mouseup', up);
+            };
+
+            div.oncontextmenu = (e) => {
+                if (isPlayer) return;
+                e.preventDefault(); e.stopPropagation();
+                state.lastId = obj.id; // IMPORTANTE: Identifica o objeto para o menu
+                const m = document.getElementById('ctx-menu');
+                m.style.display = 'block'; m.style.left = e.clientX + 'px'; m.style.top = e.clientY + 'px';
+                document.getElementById('ctx-name').innerText = "Objeto";
+            };
+            container.appendChild(div);
+        });
+    }
+
+    function renderLights() {
+        lightCtx.clearRect(0, 0, 10000, 10000);
+        const container = document.getElementById('lightsIconsContainer');
+        container.innerHTML = '';
+        if (!state.lightActive) return;
+
+        if (!isPlayer) {
+            state.lights.forEach(l => {
+                const icon = document.createElement('div'); icon.className = 'fixed-light-icon';
+                icon.style.left = (l.x + 5000) + 'px'; icon.style.top = (l.y + 5000) + 'px'; icon.innerText = '🕯️';
+                container.appendChild(icon);
+            });
+        }
+
+        if (isPlayer) {
+            lightCtx.fillStyle = "rgba(0,0,0,0.92)"; lightCtx.fillRect(0, 0, 10000, 10000);
+            lightCtx.globalCompositeOperation = 'destination-out';
+            Object.values(state.tokens).forEach(t => { if (t.aura) drawLight(t.x + 5000 + (state.cell / 2), t.y + 5000 + (state.cell / 2), 250); });
+            state.lights.forEach(l => drawLight(l.x + 5000, l.y + 5000, 200));
+            Object.values(state.objects).forEach(obj => {
+                if (obj.aura) drawLight(obj.x + 5000 + (obj.w / 2), obj.y + 5000 + (obj.h / 2), Math.max(obj.w, obj.h) * 1.5);
+            });
+            lightCtx.globalCompositeOperation = 'source-over';
+        }
+    }
+
+    function drawLight(x, y, r) {
+        const g = lightCtx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, 'white'); g.addColorStop(1, 'transparent');
+        lightCtx.fillStyle = g; lightCtx.beginPath(); lightCtx.arc(x, y, r, 0, Math.PI * 2); lightCtx.fill();
+    }
+
+    // --- Funções de Interface ---
+    function updateGrid() { state.cell = parseInt(document.getElementById('gridSize').value); sync(); renderAll(); }
+    function toggleGridVisible() { state.gridVisible = !state.gridVisible; sync(); renderAll(); }
+    function updateGridUI() {
+        const svg = document.getElementById('grid-svg');
+        svg.style.display = state.gridVisible ? 'block' : 'none';
+        svg.innerHTML = `<defs><pattern id="grid" width="${state.cell}" height="${state.cell}" patternUnits="userSpaceOnUse"><path d="M ${state.cell} 0 L 0 0 0 ${state.cell}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)" />`;
+    }
+
+    function handleMap(e, i) { const r = new FileReader(); r.onload = (ev) => { state.maps[i] = ev.target.result; sync(); renderAll(); }; r.readAsDataURL(e.target.files[0]); }
+    function updateMapDisplay() {
+        state.maps.forEach((src, i) => {
+            const l = document.getElementById('layer' + i);
+            if (src) {
+                let img = l.querySelector('img') || document.createElement('img');
+                if (!img.parentNode) l.appendChild(img);
+                img.src = src; img.style.width = state.mapSizes[i].w || 'auto';
+            }
+        });
+    }
+    function toggleMapResize(i) { const l = document.getElementById('layer' + i); l.classList.toggle('resizable'); if (!l.classList.contains('resizable')) { state.mapSizes[i].w = l.querySelector('img').clientWidth + 'px'; sync(); } }
+
+    function addNewToken() {
+        const f = document.getElementById('tImg').files[0], r = new FileReader();
+        if (!f) return;
+        r.onload = (e) => {
+            const id = "t-" + Date.now();
+            const hp = parseInt(document.getElementById('tHP').value) || 20;
+            state.tokens[id] = { id, name: tName.value || 'NPC', hp: hp, maxHP: hp, x: 100, y: 100, size: 1, img: e.target.result, status: [], aura: false, rotation: 0 };
+            sync(); renderAll();
         };
-
-        const onUp = (m) => {
-          const dx = (m.clientX - startX) / state.zoom;
-          const dy = (m.clientY - startY) / state.zoom;
-          
-          state.selectedIds.forEach(sid => {
-            state.tokens[sid].x = Math.round((state.tokens[sid].x + dx) / state.cell) * state.cell;
-            state.tokens[sid].y = Math.round((state.tokens[sid].y + dy) / state.cell) * state.cell;
-          });
-          
-          if(state.fogDynamic) revealFog(t.x, t.y);
-          showRuler(false);
-          renderTokens();
-          window.removeEventListener('mousemove', onMove);
-        };
-
-        window.addEventListener('mousemove', onMove);
-        window.addEventListener('mouseup', onUp, {once:true});
-      };
-
-      div.oncontextmenu = (e) => {
-        e.preventDefault(); e.stopPropagation();
-        showContextMenu(e, t);
-      };
-
-      container.appendChild(div);
-    });
-  }
-
-  // --- Régua ---
-  function showRuler(show) {
-    rulerLine.style.display = show ? 'block' : 'none';
-    rulerText.style.display = show ? 'block' : 'none';
-  }
-
-  function updateRuler(x1, y1, x2, y2) {
-    const worldX1 = x1 * state.zoom + state.pan.x;
-    const worldY1 = y1 * state.zoom + state.pan.y;
-    const worldX2 = x2 * state.zoom + state.pan.x;
-    const worldY2 = y2 * state.zoom + state.pan.y;
-
-    const distPx = Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
-    const distMeters = ((distPx / state.cell) * 1.5).toFixed(1);
-
-    rulerLine.style.width = Math.sqrt(Math.pow(worldX2-worldX1, 2) + Math.pow(worldY2-worldY1, 2)) + 'px';
-    rulerLine.style.left = worldX1 + 'px';
-    rulerLine.style.top = worldY1 + 'px';
-    rulerLine.style.transform = `rotate(${Math.atan2(worldY2-worldY1, worldX2-worldX1)}rad)`;
-    
-    rulerText.style.left = worldX2 + 'px';
-    rulerText.style.top = (worldY2 - 20) + 'px';
-    rulerText.innerText = distMeters + "m";
-  }
-
-  // --- Seleção ---
-  function drawSelectionBox(e) {
-    const box = document.getElementById('selection-box');
-    box.style.display = 'block';
-    const left = Math.min(startPos.x, e.clientX);
-    const top = Math.min(startPos.y, e.clientY);
-    const width = Math.abs(startPos.x - e.clientX);
-    const height = Math.abs(startPos.y - e.clientY);
-    box.style.left = left + 'px';
-    box.style.top = top + 'px';
-    box.style.width = width + 'px';
-    box.style.height = height + 'px';
-  }
-
-  function finishSelection() {
-    const box = document.getElementById('selection-box').getBoundingClientRect();
-    Object.values(state.tokens).forEach(t => {
-      const el = document.getElementById(t.id).getBoundingClientRect();
-      if (el.left >= box.left && el.right <= box.right && el.top >= box.top && el.bottom <= box.bottom) {
-        if (!state.selectedIds.includes(t.id)) state.selectedIds.push(t.id);
-      }
-    });
-    renderTokens();
-  }
-
-  function clearSelection() { state.selectedIds = []; renderTokens(); }
-
-  // --- Névoa ---
-  function toggleFog() { 
-    state.fogActive = !state.fogActive; 
-    fogCanvas.style.display = state.fogActive ? 'block' : 'none'; 
-  }
-
-  function revealFog(x, y) {
-    fogCtx.globalCompositeOperation = 'destination-out';
-    fogCtx.beginPath();
-    fogCtx.arc(x + 5000 + (state.cell/2), y + 5000 + (state.cell/2), state.cell * 2.5, 0, Math.PI*2);
-    fogCtx.fill();
-  }
-
-  // --- Sistema de Arquivos ---
-  function saveGame() {
-    localStorage.setItem('rpg_save', JSON.stringify(state));
-    alert("Salvo!");
-  }
-
-  function loadLocal() {
-    const saved = localStorage.getItem('rpg_save');
-    if (saved) {
-      const data = JSON.parse(saved);
-      Object.assign(state, data);
-      renderTokens();
-      applyTransform();
+        r.readAsDataURL(f);
     }
-  }
 
-  function exportJSON() {
-    const blob = new Blob([JSON.stringify(state)], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'mesa_rpg.json'; a.click();
-  }
-
-  // --- Funções Auxiliares ---
-  function updateGrid() {
-    state.cell = parseInt(document.getElementById('gridSize').value);
-    document.getElementById('grid-svg').innerHTML = `<defs><pattern id="grid" width="${state.cell}" height="${state.cell}" patternUnits="userSpaceOnUse"><path d="M ${state.cell} 0 L 0 0 0 ${state.cell}" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)" />`;
-  }
-
-  function showContextMenu(e, t) {
-    const menu = document.getElementById('ctx-menu');
-    menu.style.display = 'block';
-    menu.style.left = e.clientX + 'px';
-    menu.style.top = e.clientY + 'px';
-    document.getElementById('ctx-name').innerText = t.name;
-    state.lastRightClickId = t.id;
-  }
-
-  window.onkeydown = (e) => {
-    if (e.key === "Delete") {
-      state.selectedIds.forEach(id => delete state.tokens[id]);
-      clearSelection();
+    function exportJSON() {
+        const b = new Blob([JSON.stringify(state)], { type: 'application/json' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'mesa_rpg.json'; a.click();
     }
-    if (e.ctrlKey && e.key === "z") {
-       // Lógica simples de desfazer pode ser expandida aqui
+    function importJSON(e) {
+        const reader = new FileReader();
+        reader.onload = (ev) => { Object.assign(state, JSON.parse(ev.target.result)); renderAll(); sync(); };
+        reader.readAsText(e.target.files[0]);
     }
-  };
 
-  window.onclick = () => document.getElementById('ctx-menu').style.display = 'none';
-  window.oncontextmenu = (e) => e.preventDefault();
+    function setTool(t) {
+        currentTool = (currentTool === t) ? 'move' : t;
+        document.getElementById('wallBtn').classList.toggle('active', currentTool === 'wall');
+        document.getElementById('lightBtn').classList.toggle('active', currentTool === 'light');
+    }
 
-  init();
+    function changeStat(type) {
+        const t = state.tokens[state.lastId];
+        if (!t) return;
+        const v = prompt("Valor:");
+        if (v) { t.hp = parseInt(v); sync(); renderAll(); }
+    }
+    function addStatus() { const t = state.tokens[state.lastId]; if (t) { const s = prompt("Emoji:"); if (s) { t.status.push(s); sync(); renderAll(); } } }
+    function clearStatus() { const t = state.tokens[state.lastId]; if (t) { t.status = []; sync(); renderAll(); } }
+    function setSize() { const t = state.tokens[state.lastId]; if (t) { t.size = parseFloat(prompt("Tamanho:", 1)); sync(); renderAll(); } }
+
+    function toggleAura() {
+        if (!state.lastId) return;
+        const target = state.tokens[state.lastId] || state.objects[state.lastId];
+        if (target) { target.aura = !target.aura; sync(); renderAll(); }
+    }
+
+    function deleteSelected() {
+        if (!state.lastId) return;
+        // Verifica se o ID clicado é de um objeto ou de um token
+        if (state.lastId.startsWith('obj-')) {
+            delete state.objects[state.lastId];
+        } else {
+            delete state.tokens[state.lastId];
+        }
+        state.lastId = null;
+        sync(); renderAll();
+    }
+
+    function toggleLightSystem() { state.lightActive = !state.lightActive; sync(); renderAll(); }
+    function toggleFog() { state.fogActive = !state.fogActive; sync(); renderAll(); }
+
+    function updateRuler(x1, y1, x2, y2) {
+        const l = document.getElementById('ruler-line'), t = document.getElementById('ruler-text');
+        l.style.display = t.style.display = 'block';
+        const d = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        l.style.width = (d * localCam.zoom) + 'px'; l.style.left = (x1 * localCam.zoom + localCam.pan.x) + 'px'; l.style.top = (y1 * localCam.zoom + localCam.pan.y) + 'px';
+        l.style.transform = `rotate(${Math.atan2(y2 - y1, x2 - x1)}rad)`;
+        t.style.left = (x2 * localCam.zoom + localCam.pan.x) + 'px'; t.style.top = (y2 * localCam.zoom + localCam.pan.y) + 'px';
+        t.innerText = ((d / state.cell) * 1.5).toFixed(1) + 'm';
+    }
+
+    function rotateToken() {
+        const target = state.tokens[state.lastId] || state.objects[state.lastId];
+        if (!target) return;
+        const angle = prompt("Girar quantos graus? (Ex: 90, 180, -90)", target.rotation || 0);
+        if (angle !== null) {
+            target.rotation = parseInt(angle);
+            sync(); renderAll();
+        }
+    }
+
+    window.onclick = () => document.getElementById('ctx-menu').style.display = 'none';
+    if (isPlayer) document.getElementById('sidebar').style.display = 'none';
+    renderAll();
 </script>
-</body>
-</html>
