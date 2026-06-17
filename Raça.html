@@ -1,677 +1,661 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linhagens do Olimpo | Vandim VTT</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --gold: #d4af37;
-            --dark-bg: #0b0b0f;
-            --card-bg: rgba(22, 22, 30, 0.9);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linhagens do Olimpo · ERA DOS HERÓIS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* PAGE-SPECIFIC OVERRIDES */
+    .race-header{text-align:center;padding:30px 10px 10px;position:relative}
+    .race-title{
+      font-size:28px;color:var(--gold);letter-spacing:4px;
+      text-shadow:4px 4px 0 var(--red-dark),8px 8px 0 #000;
+      margin-bottom:8px;
+    }
+    .race-subtitle{
+      color:var(--ink-dim);font-family:'VT323',monospace;font-size:22px;
+      letter-spacing:2px;margin-bottom:20px;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--dark-bg);
-            color: #e2e8f0;
-            margin: 0;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+    /* RACE CARD */
+    .race-card{
+      background:rgba(0,0,0,.7);
+      border:4px solid var(--ink);
+      padding:0;margin:28px 0;
+      box-shadow:0 0 0 4px #000,8px 8px 0 var(--red-dark),8px 8px 0 4px #000;
+      position:relative;
+    }
+    .race-card-header{
+      background:var(--red);color:#fff;
+      padding:12px 18px;
+      display:flex;align-items:center;gap:12px;
+      border-bottom:3px solid var(--ink);
+    }
+    .race-card-header h2{
+      font-size:16px;letter-spacing:3px;margin:0;
+      text-shadow:2px 2px 0 #000;
+    }
+    .race-card-body{padding:20px}
 
-        #bg-canvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at center, #1a1a2e 0%, #0b0b0f 100%);
-        }
+    /* LORE TEXT */
+    .lore-text{
+      font-family:'VT323',monospace;font-size:19px;
+      color:var(--ink);line-height:1.6;
+      background:rgba(255,255,255,.03);
+      border:2px solid rgba(255,255,255,.08);
+      padding:14px 16px;margin-bottom:18px;
+    }
 
-        /* TELA DE LOADING LIMPA */
-        #loader {
-            position: fixed;
-            inset: 0;
-            background: var(--dark-bg);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1s ease-out;
-        }
+    /* STAT TAGS */
+    .stat-tags{
+      display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;
+    }
+    .stat-tag{
+      background:#000;border:2px solid var(--gold);
+      padding:6px 12px;font-size:9px;color:var(--gold);
+      letter-spacing:1px;
+    }
 
-        .loader-gif { width: 200px; background: transparent; border: none; }
+    /* ABILITY BOX */
+    .ability-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;
+      margin-bottom:18px;
+    }
+    .ability-box{
+      background:#000;border:3px solid var(--ink);
+      padding:14px;
+      box-shadow:4px 4px 0 var(--red-dark);
+    }
+    .ability-box h4{
+      color:var(--gold);font-size:11px;margin-bottom:8px;
+      letter-spacing:1px;border-bottom:2px dashed var(--ink-dim);
+      padding-bottom:6px;
+    }
+    .ability-box p,.ability-box li{
+      font-family:'VT323',monospace;font-size:17px;color:var(--ink);
+      margin:2px 0;
+    }
 
-        .loading-text {
-            margin-top: 20px;
-            font-family: 'Cinzel', serif;
-            color: var(--gold);
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            animation: pulse 1.5s infinite;
-        }
+    /* VARIANT SECTION */
+    .variant-section-title{
+      color:var(--gold);font-size:13px;letter-spacing:2px;
+      margin:22px 0 14px;padding-bottom:8px;
+      border-bottom:2px dashed var(--gold-dark);
+      text-shadow:2px 2px 0 #000;
+    }
+    .variant-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;
+    }
+    .variant-box{
+      border-left:4px solid var(--gold);
+      background:rgba(246,192,38,.04);
+      padding:14px;
+    }
+    .variant-box h4{
+      color:#fff;font-size:11px;margin-bottom:6px;letter-spacing:1px;
+    }
+    .variant-box p{
+      font-family:'VT323',monospace;font-size:17px;color:var(--ink);
+      line-height:1.5;margin:2px 0;
+    }
+    .variant-box .rule-line{
+      font-family:'VT323',monospace;font-size:16px;
+      color:var(--ink-dim);margin:2px 0;
+    }
+
+    /* TARTARIANOS COLOR OVERRIDES */
+    .race-tartarianos .race-card-header{background:#7a1414}
+    .race-tartarianos .race-card{border-color:#d62828}
+    .race-tartarianos .variant-box{border-left-color:#d62828;background:rgba(214,40,40,.05)}
+    .race-tartarianos .ability-box h4{color:#ff6b6b}
+    .race-tartarianos .variant-section-title{color:#ff6b6b;border-bottom-color:#7a1414}
+
+    /* AETHERION COLOR OVERRIDES */
+    .race-aetherion .race-card-header{background:#1a3a7a}
+    .race-aetherion .race-card{border-color:#2a6bd6}
+    .race-aetherion .variant-box{border-left-color:#2a6bd6;background:rgba(42,107,214,.05)}
+    .race-aetherion .ability-box h4{color:#7ab8ff}
+    .race-aetherion .variant-section-title{color:#7ab8ff;border-bottom-color:#1a3a7a}
+
+    /* MEGALION COLOR OVERRIDES */
+    .race-megalion .race-card-header{background:#3a3a3a}
+    .race-megalion .race-card{border-color:#888}
+    .race-megalion .variant-box{border-left-color:#888;background:rgba(136,136,136,.05)}
+    .race-megalion .ability-box h4{color:#ccc}
+    .race-megalion .variant-section-title{color:#ccc;border-bottom-color:#555}
+
+    /* NAV RACE LINKS */
+    .race-nav{
+      display:flex;flex-wrap:wrap;justify-content:center;gap:6px;
+      padding:14px 12px 6px;
+    }
+    .race-nav-item{
+      color:var(--ink);text-decoration:none;
+      padding:8px 12px;
+      border:2px solid var(--ink);
+      background:#000;
+      font-size:9px;
+      display:inline-flex;align-items:center;gap:6px;
+      box-shadow:3px 3px 0 var(--red-dark);
+      transition:transform .1s,background .1s;
+    }
+    .race-nav-item:hover{
+      background:var(--gold);color:#000;
+      transform:translate(-2px,-2px);
+      box-shadow:5px 5px 0 var(--gold-dark);
+    }
 
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        .container { position: relative; z-index: 10; }
-        h1, h2, h3, h4 { font-family: 'Cinzel', serif; text-transform: uppercase; }
-        
-        .raca-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            backdrop-filter: blur(10px);
-            border-left: 4px solid var(--gold);
-            padding: 2rem;
-            margin-bottom: 3rem;
+        .btn-nav {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(11, 11, 15, 0.9);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            z-index: 1000;
+            padding: 10px;
+            text-align: center;
+            backdrop-filter: blur(5px);
         }
 
-        .btn-voltar {
-            display: inline-block;
-            margin-bottom: 2rem;
-            padding: 10px 20px;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            font-family: 'Cinzel', serif;
-            text-decoration: none;
-            transition: 0.3s;
-            background: rgba(0,0,0,0.5);
-        }
-        .btn-voltar:hover { background: var(--gold); color: black; }
 
-        .habilidade-box {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 1rem;
-            border-radius: 4px;
-            margin-top: 1rem;
-        }
+    /* RESPONSIVE */
+    @media(max-width:680px){
+      .race-title{font-size:18px}
+      .race-card-header h2{font-size:12px}
+      .ability-grid,.variant-grid{grid-template-columns:1fr}
+    }
 
-        .variante-box {
-            border-left: 2px solid var(--gold);
-            background: rgba(212, 175, 55, 0.05);
-            padding: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease-out;
-        }
-        .fade-in-section.visible { opacity: 1; transform: translateY(0); }
-
-        .tag-info { font-weight: bold; color: var(--gold); font-size: 0.8rem; margin-right: 15px; }
-    </style>
+    /* SPRITE CONTAINERS */
+    .race-sprite,
+    .ability-sprite{
+      display:inline-block;
+      width:64px;
+      height:64px;
+      margin:8px auto;
+      padding:4px;
+      background:rgba(0,0,0,.5);
+      border:2px solid var(--ink-dim);
+      box-shadow:2px 2px 0 var(--shadow);
+      image-rendering:pixelated;
+      image-rendering:crisp-edges;
+    }
+    .race-card-header .race-sprite{
+      margin-right:12px;
+      border-color:var(--gold);
+    }
+    .ability-box .ability-sprite,
+    .variant-box .ability-sprite{
+      float:right;
+      margin:0 0 8px 12px;
+    }
+  </style>
 </head>
 <body>
+  <!-- CRT + VIGNETTE -->
+  <div class="crt"></div>
+  <div class="vignette"></div>
 
-    <canvas id="bg-canvas"></canvas>
-
-    <div id="loader">
-        <img src="meiomonstro.gif" alt="Carregando..." class="loader-gif">
-        <div class="loading-text">Lendo os Pergaminhos...</div>
+  <!-- BOOT SCREEN -->
+  <div id="boot">
+    <div class="boot-inner">
+      <p class="boot-line">&gt; INSERINDO CARTUCHO...</p>
+      <p class="boot-line">&gt; CARREGANDO PERGAMINHO DO ORÁCULO...</p>
+      <p class="boot-line">&gt; CONVOCANDO MUSAS...</p>
+      <p class="boot-line blink">&gt; PRESS START</p>
     </div>
-
-    <div id="main-content" class="container mx-auto px-4 py-12 max-w-5xl opacity-0">
-        
-        <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
-
-        <header class="text-center mb-16">
-            <h1 class="text-5xl text-gold mb-2">Linhagens Sagradas</h1>
-            <p class="text-gray-400 font-light tracking-widest">As raças que moldam o destino do Olimpo</p>
-        </header>
-
-        <div class="raca-card fade-in-section">
-            <h2 class="text-3xl text-gold mb-2">🐺 Therionitas</h2>
-            <p class="italic text-gray-400 mb-6">Descendentes de cruzamentos antigos entre humanoides e criaturas primordiais como minotauros, hidras e quimeras, os Meio Monstros carregam em seus corpos a marca de uma herança instável e frequentemente temida.
-Devido à sua aparência — muitas vezes grotesca, imponente ou simplesmente “errada” aos olhos comuns — são vistos com desconfiança imediata nas cidades civilizadas. Ao longo das gerações, isso levou à formação de bandos isolados, geralmente localizados em regiões selvagens, florestas densas ou territórios de difícil acesso.
-Esses bandos não são apenas agrupamentos sociais, mas estruturas de sobrevivência. Cada membro possui uma função clara: caçadores, sentinelas, protetores. A desconfiança externa moldou uma cultura interna baseada em lealdade absoluta e resposta violenta a ameaças.
-Apesar disso, nem todos os Meio Monstros rejeitam a civilização. Alguns poucos tentam viver entre humanos — quase sempre como mercenários, gladiadores ou caçadores — funções onde sua natureza é útil o suficiente para ser tolerada.</p>
-            
-            <div class="flex flex-wrap mb-6">
-                <span class="tag-info">📊 TIPO: Besta</span>
-                <span class="tag-info">📏 TAMANHO: P, M ou G</span>
-                <span class="tag-info">🚶 DESLOCAMENTO: 9m</span>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="habilidade-box">
-                    <h4 class="text-gold mb-2 text-sm">🌑 Essência Bestial</h4>
-                    <p class="text-xs text-gray-300">• Visão no escuro 18m</p>
-                    <p class="text-xs text-gray-300">• Vantagem em Percepção (olfato/audição)</p>
-                    <p class="text-xs text-gray-300">• Resistência a um tipo: ácido, frio, fogo, elétrico ou veneno.</p>
-                </div>
-                <div class="habilidade-box">
-                    <h4 class="text-gold mb-2 text-sm">🧠 Instinto Predador</h4>
-                    <p class="text-xs text-gray-300">Proficiência em: Atletismo, Intimidação ou Sobrevivência.</p>
-                </div>
-            </div>
-
-            <h3 class="text-xl text-gold mt-8 mb-4 border-b border-gold/20 pb-2">🧬 Forma Monstruosa (Escolha 1)</h3>
-            <div class="grid md:grid-cols-2 gap-4 text-xs">
-                <div class="variante-box">
-                    <b class="text-white block mb-1">🐂 Chifres (Minotauro)</b>
-                    Você desenvolve chifres letais, que podem ser utilizados como arma natural.
-
-Ataque Natural. Seus chifres são considerados uma arma natural que causa 1d8 + seu modificador de Força de dano perfurante em caso de acerto.
-
-Se você se mover pelo menos 6 metros em linha reta imediatamente antes de atingir uma criatura com este ataque no mesmo turno, o ataque causa +1d6 de dano perfurante adicional, e o alvo deve realizar um teste de resistência de Força.
-
-CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.
-
-Falha. A criatura fica Caída.
-                </div>
-                <div class="variante-box">
-                    <b class="text-white block mb-1">🐍 Corpo Serpentino (Hidra)</b>
-Sua fisiologia se adapta a toxinas e regenera agressivamente.
-
-Você possui resistência a dano de veneno e vantagem em testes de resistência contra a condição Envenenado.
-
-Além disso, uma vez por turno, quando você acerta um ataque físico, o alvo sofre +1d6 de dano de veneno adicional. Esse dano aumenta conforme seu nível, seguindo a progressão de truques.
-                </div>
-                <div class="variante-box">
-                    <b class="text-white block mb-1">🦁 Garras Predatórias (Quimera)</b>
-Suas mãos se transformam em garras predatórias.
-
-Ataque Natural. Suas garras são consideradas uma arma natural que causa 1d6 + seu modificador de Força ou Destreza de dano cortante.
-
-Se você acertar uma criatura com dois ataques no mesmo turno, o segundo acerto causa +1d6 de dano cortante adicional, escalando conforme um truque.
-                </div>
-                <div class="variante-box">
-                    <b class="text-white block mb-1">🐗 Couraça Natural</b>
-Sua pele se torna espessa e resistente como a de uma criatura selvagem.
-
-Enquanto não estiver vestindo armadura pesada, você recebe +1 na Classe de Armadura.
-
-Além disso, você possui resistência a dano contundente, perfurante e cortante.
-                </div>
-                <div class="variante-box">
-                    <b class="text-white block mb-1">🦅 Asas de Grifo</b>
-Você desenvolve asas capazes de sustentar voo.
-
-Você adquire um deslocamento de voo de 9 metros.
-Você não pode utilizar esse deslocamento enquanto estiver vestindo armadura pesada.
-                </div>
-                <div class="variante-box">
-                    <b class="text-white block mb-1">🔥 Sopro Bestial (Quimera)</b>
-Você pode expelir energia destrutiva em um padrão cônico.
-
-Ação. Você exala um sopro em um cone de 4,5 metros.
-
-Criaturas na área devem realizar um teste de resistência de Destreza.
-
-CD do Teste. 8 + seu bônus de proficiência + seu modificador de Constituição.
-
-Dano. 2d6 de dano ácido.
-
-Sucesso. A criatura sofre metade do dano.
-
-O alcance do cone aumenta em 1,5 metro conforme escala de truques, e o dano também aumenta conforme essa progressão.
-
-Usos. Você pode usar esta habilidade um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos após um descanso longo.
-                </div>
-                <div class="variante-box" style="grid-column: span 2;">
-                    <b class="text-white block mb-1">🩸 Regeneração de Hidra</b>
-Sua vitalidade é extremamente resiliente.
-
-No início de cada um de seus turnos, você recupera uma quantidade de pontos de vida igual ao seu bônus de proficiência.
-
-Se você tiver sofrido dano de fogo desde o seu último turno, esta habilidade não funciona naquele turno.
-                </div>
-            </div>
-        </div>
-
-        <div class="raca-card fade-in-section" style="border-left-color: #922610;">
-            <h2 class="text-3xl text-red-600 mb-2">🔥 Tartarianos</h2>
-            <p class="italic text-gray-400 mb-6">Marcados pela influência do Tártaro — plano de punição, corrupção e aprisionamento — esses indivíduos carregam uma herança que inspira medo imediato.
-Diferente dos Descendentes do Éter, sua marca raramente é sutil. Olhos escurecidos, sombras que se movem de forma antinatural, presença opressiva — são sinais comuns.
-Nas cidades, são tratados com hostilidade aberta ou vigilância constante. Em muitos casos:
-São impedidos de entrar
-São monitorados por autoridades
-Ou forçados a provar sua “inocência” continuamente
-Essa rejeição molda profundamente sua psicologia. Alguns abraçam a corrupção, tornando-se exatamente o que o mundo espera deles. Outros resistem, vivendo em constante conflito interno.
-Pequenos grupos desses indivíduos às vezes se formam, mas raramente são estáveis — a própria natureza do Tártaro incentiva isolamento, paranoia e domínio.
-Tensão central:
-Destino imposto vs. escolha individual.</p>
-            
-            <div class="grid md:grid-cols-2 gap-4 mb-6">
-                <div class="habilidade-box">
-                    <h4 class="text-red-500 mb-2 text-sm">🌑 Essência do Abismo</h4>
-                    <p class="text-xs text-gray-300">• Tipo: Humanoide.</p>
-                    <p class="text-xs text-gray-300">• Resistencias: Você possui resistência a dano necrótico e psíquico.</p>
-                    <p class="text-xs text-gray-300">• Visão das Profundezas (18m)</p>
-                    <p class="text-xs text-gray-300">• Deslocamento: Seu deslocamento base de caminhada é de 9 metros.</p>
-                </div>
-                <div class="habilidade-box">
-                    <h4 class="text-red-500 mb-2 text-sm">🧠 Natureza Sombria</h4>
-                    <p class="text-xs text-gray-300">•Proficiência em: Intimidação ou Religião.</p>
-                    <p class="text-xs text-gray-300">•Mente Inabalável: Você possui vantagem em testes de resistência contra a condição Amedrontado.</p>
-                    <p class="text-xs text-gray-300">•Aprimoramento: Você ganha proficiência em um atributo adicional à sua escolha.</p>
-                </div>
-            </div>
-
-            <div class="variante-box border-red-800">
-                <b class="text-red-400 block mb-1">👁 Visão das Profundezas</b>
-                <p class="text-xs">Sua mera existência impõe terror aos inimigos.
-
-Ação. Criaturas hostis à sua escolha em um raio de 4,5 metros devem realizar um teste de resistência de Sabedoria.
-
-CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.
-
-Falha. A criatura fica Amedrontada por 2 turnos.
-
-Usos. Igual ao seu bônus de proficiência, recuperados após um descanso longo.</p>
-            </div>
-
-            <div class="variante-box border-red-800">
-                <b class="text-red-400 block mb-1">👁‍🗨 Presença Opressiva</b>
-                <p class="text-xs">Sua mera existência impõe terror aos inimigos.
-
-Ação. Criaturas hostis à sua escolha em um raio de 4,5 metros devem realizar um teste de resistência de Sabedoria.
-
-CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.
-
-Falha. A criatura fica Amedrontada por 2 turnos.
-
-Usos. Igual ao seu bônus de proficiência, recuperados após um descanso longo.</p>
-            </div>
-            
-            <div class="variante-box border-red-800 mt-2">
-                <b class="text-red-400 block mb-1">🕳 Marca do Abismo</b>
-                <p class="text-xs">Você marca seus inimigos com energia do Tártaro.
-
-Ao acertar um ataque físico, você pode fazer com que o alvo sofra dano necrótico adicional igual a metade do seu bônus de proficiência (arredondado para cima).
-
-Este efeito permanece ativo por 5 turnos.
-
-Usos. Igual ao seu bônus de proficiência.</p>
-            </div>
-
-            <h3 class="text-xl text-red-600 mt-8 mb-4 border-b border-red-900/20 pb-2">🔥 Variantes do Tártaro (Escolha 1)</h3>
-            <div class="grid md:grid-cols-2 gap-4 text-xs">
-                <div class="variante-box border-red-600">
-                    <b class="text-white">⛓ Prisão Absoluta</b>
-                    <p>Você aprisiona seus inimigos com correntes abissais.
-
-Quando você acerta uma criatura com um ataque, ela deve realizar um teste de resistência de Força.
-
-CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.
-
-Falha. A criatura fica Contida por 2 turnos.
-
-Usos. Igual ao seu bônus de proficiência.</p>
-                </div>
-                <div class="variante-box border-red-600">
-                    <b class="text-white">🌪 Colapso Mental</b>
-                    <p>Você fragmenta a mente do alvo com energia psíquica.
-
-Quando você acerta uma criatura com um ataque, ela deve realizar um teste de resistência de Sabedoria.
-
-CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.
-
-Falha. A criatura sofre:
-
-Desvantagem em jogadas de ataque
-
-Não pode usar reações
-
-
-Duração: 2 turnos.
-
-Usos. Igual ao seu bônus de proficiência.</p>
-                </div>
-                <div class="variante-box border-red-600">
-                    <b class="text-white">☠ Sussurro do Abismo (Subst. Marca)</b>
-                    <p>Você deteriora a capacidade de combate do inimigo.
-
-Quando você acerta uma criatura com um ataque, ela deve realizar um teste de resistência de Sabedoria.
-
-CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.
-
-No final de cada turno da criatura, ela repete o teste.
-
-Falha. A criatura sofre uma penalidade de 1d4 em jogadas de ataque e testes de habilidade.
-
-Duração: até 1 minuto.
-
-Usos. Metade do seu bônus de proficiência (arredondado para baixo).</p>
-                </div>
-
-                <div class="variante-box border-red-600">
-                    <b class="text-white">🌘 Forma Intangível</b>
-                    <p>Você abandona parcialmente o plano material.
-
-Ação Bônus. Você assume uma forma intangível.
-
-Durante essa forma:
-
-Você possui resistência a todo dano
-
-Pode atravessar criaturas e objetos como se fossem terreno difícil
-
-Não pode ser Agarrado
-
-
-Duração: 1 turno.
-
-Usos. Metade do seu bônus de proficiência.</p>
-                </div>
-
-                <div class="variante-box border-red-600">
-                    <b class="text-white">⚖ Julgamento Inevitável</b>
-                    <p>Você impõe uma sentença absoluta sobre inimigos enfraquecidos.
-
-Quando você acerta uma criatura que esteja com metade ou menos dos pontos de vida, ela não pode recuperar pontos de vida.
-
-Duração: 2 turnos.
-
-Este efeito é passivo e não possui limite de uso.
-</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="raca-card fade-in-section" style="border-left-color: #3a86ff;">
-            <h2 class="text-3xl text-blue-400 mb-2">✨ Aetherion</h2>
-            <p class="italic text-gray-400 mb-6">Os Aetherianos são indivíduos cuja linhagem foi tocada pela energia divina oriunda do Olimpo. Essa conexão pode vir de bênçãos antigas, sangue celestial diluído ou eventos sobrenaturais que marcaram seus ancestrais.
-Fisicamente, tendem a apresentar traços sutis, porém perceptíveis: olhos brilhantes, aura leve, presença calmante ou perturbadora — dependendo da perspectiva de quem os observa.
-Paradoxalmente, mesmo carregando poder associado ao divino, não são amplamente aceitos nas cidades. Isso ocorre por dois fatores principais:
-Medo do desconhecido divino: não pertencem à hierarquia religiosa tradicional
-Desconfiança institucional: igrejas e ordens veem esses indivíduos como “não autorizados”
-Assim, muitos vivem à margem da sociedade, atuando como curandeiros errantes, protetores silenciosos ou figuras quase míticas em vilarejos afastados.
-Entre eles, existe uma crença recorrente:
-que são fragmentos vivos de algo maior, ainda não plenamente compreendido.
-Tensão central:
-Propósito divino vs. rejeição mortal.</p>
-
-            <div class="flex flex-wrap mb-6">
-                <span class="tag-info">📊 TIPO: Humanoides</span>
-                <span class="tag-info">📏 TAMANHO: P, M</span>
-                <span class="tag-info">🚶 DESLOCAMENTO: 9m</span>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-4 text-xs mb-6">
-                <div class="habilidade-box">
-                    <h4 class="text-blue-300 mb-2 text-sm">🌟 Essência Celestial</h4>
-                    <p>• Resistencia:Você possui resistência a dano radiante e necrótico.</p>
-                    <p>• Intuição Elevada:Você possui vantagem em testes de Sabedoria (Intuição).</p>
-                    <p>• Aprimoramento:Você ganha proficiência em um atributo adicional à sua escolha.</p>
-                </div>
-                <div class="habilidade-box">
-                    <h4 class="text-blue-300 mb-2 text-sm">👁 Visão Celestial</h4>
-                    <p>Você enxerga além do plano material.
-
-Você possui visão no escuro até 18 metros. Além disso, você pode perceber criaturas invisíveis a até 3 metros de você.</p>
-                </div>
-                <div class="habilidade-box">
-                    <h4 class="text-blue-300 mb-2 text-sm">💫 Luz Primordial</h4>
-                    <p>Você canaliza energia pura do Éter.
-
-Ação Bônus. Você pode ativar este poder e escolher um dos efeitos:
-
-Você recupera 1d6 + seu bônus de proficiência pontos de vida
-
-OU obtém vantagem no próximo ataque, teste ou teste de resistência que realizar
-
-
-O valor de cura aumenta conforme seu nível:
-2d6 no nível 5, 3d6 no nível 11, e 4d6 no nível 17.
-
-Usos. Igual ao seu bônus de proficiência.</p>
-                </div>
-            </div>
-
-            <h3 class="text-xl text-blue-400 mb-4 border-b border-blue-900/20 pb-2">✨ Variantes do Éter</h3>
-            <div class="grid md:grid-cols-2 gap-4 text-xs">
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">☀️ Centelha do Éter.</b>
-                    <p>Sua energia permeia seus ataques.
-
-Ao acertar um ataque físico, você pode fazer com que ele cause dano radiante adicional igual a metade do seu bônus de proficiência (arredondado para cima).
-
-Este efeito dura 5 turnos.
-
-Usos. Metade do seu bônus de proficiência.</p>
-                </div>
-            </div>
-                
-            <h3 class="text-xl text-blue-400 mb-4 border-b border-blue-900/20 pb-2">Poderes do Éter
-
-Escolha duas opções.</h3>
-            <div class="grid md:grid-cols-2 gap-4 text-xs">
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">🌈 Teleporte Prismático</b>
-                    <p>Ação Bônus. Você se teleporta para um espaço desocupado a até 9 metros.
-
-Criaturas a até 1,5 metro do ponto de chegada devem realizar um teste de resistência de Sabedoria.
-
-Falha. A criatura sofre desvantagem em suas jogadas de ataque até o final do próximo turno.</p>
-                </div>
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">🔆 Luz Reveladora</b>
-                    <p>Quando você acerta um ataque, o alvo deve realizar um teste de resistência de Constituição.
-
-Falha. A criatura não pode se tornar invisível e ataques contra ela têm vantagem.
-
-Duração: 2 turnos.</p>
-                </div>
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">🛡 Égide Radiante</b>
-                    <p>Reação. Quando uma criatura aliada a até 1,5 metro de você sofre dano, você pode reduzir esse dano em uma quantidade igual a:
-
-1d10 + seu bônus de proficiência + seu nível
-</p>
-                </div>
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">✨ Inspiração Elevada</b>
-                    <p>Ao acertar um ataque, você pode conceder a um aliado um bônus de 1d4 em jogadas de ataque e testes de resistência.
-
-Duração: 2 turnos.</p>
-                </div>
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">🌠 Olhar do Éter</b>
-                    <p>Ação. Uma criatura deve realizar um teste de resistência de Sabedoria.
-
-Falha. A criatura sofre desvantagem em jogadas de ataque por 2 turnos.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="raca-card fade-in-section" style="border-left-color: #777;">
-            <h2 class="text-3xl text-gray-300 mb-2">🪨 Megalion</h2>
-            <p class="italic text-gray-400 mb-6">Os Gigantes não são apenas uma linhagem — são um recurso estratégico.
-Historicamente, o império dominante reconheceu cedo o potencial físico dessa raça e instituiu um sistema sistemático de exploração. Crianças gigantes são frequentemente:
-Separadas de seus pais ainda jovens
-Treinadas para combate ou trabalho forçado
-Transformadas em armas vivas ou “cães de caça” imperiais
-Esse processo não é aleatório — é estruturado, burocrático e sustentado por ideologia:
-gigantes são ensinados desde cedo que seu valor está em servir.
-Como resultado, existem três perfis predominantes:
-Quebrados: aceitam sua condição e servem sem questionar
-Funcionais: servem, mas mantêm identidade própria
-Rebeldes: fogem ou resistem ao sistema
-Comunidades livres de gigantes são extremamente raras, e quando existem, são alvo direto do império.
-Tensão central:
-Servidão imposta vs. liberdade conquistada.</p>
-
-            <div class="flex flex-wrap mb-6">
-                <span class="tag-info">📊 TIPO: Humanoides</span>
-                <span class="tag-info">📏 TAMANHO: M, G</span>
-                <span class="tag-info">🚶 DESLOCAMENTO: 10,5m</span>
-            </div>
-
-            <div class="bg-black/40 p-6 border border-white/10 rounded mb-6">
-                <h4 class="text-gold mb-3">🔄 Forma Colossal (Ação Bônus)</h4>
-                <div class="grid md:grid-cols-2 gap-6 text-sm">
-                    <div>
-                        <b class="text-white">Você manifesta o verdadeiro poder dos gigantes.
-
-Ação Bônus. Você assume uma forma ampliada.
-
-Duração: 10 minutos.
-
-Durante esse tempo:
-
-Você é considerado como uma criatura de uma categoria de tamanho maior
-
-Seu alcance corpo a corpo aumenta em 1,5 metro
-
-Seu deslocamento aumenta em 3 metros
-
-Você possui vantagem em testes de Força
-
-
-Usos. Igual ao seu bônus de proficiência.
-
-
-                    </div>
-                </div>
-            </div>
-
-            <h3 class="text-xl text-blue-400 mb-4 border-b border-blue-900/20 pb-2">Características Colossais
-
-Escolha uma das opções abaixo</h3>
-            <div class="grid md:grid-cols-2 gap-4 text-xs">
-                <div class="variante-box border-blue-400">
-                    <b class="text-gold block mb-1">🧬 Ataques Colossais</b>
-Enquanto estiver sob efeito da Forma Colossal:
-
-Seus ataques causam +1d4 de dano físico adicional, exceto com armas leves
-
-O dano de suas armas aumenta em uma categoria, seguindo progressão semelhante à do monge, até o máximo de d10.
-                </div>
-                <div class="habilidade-box">
-                    <b class="text-gold block mb-1">🛡 Pele de Colosso/b>
-Seu corpo resiste a impactos massivos.
-
-Você reduz o dano recebido em uma quantidade igual ao seu bônus de proficiência.
-                </div>
-                <div class="habilidade-box">
-                    <b class="text-gold block mb-1">🌍 Passos Tremores</b>
-Você impacta o solo com força destrutiva.
-
-Ação Bônus. Uma criatura à sua escolha deve realizar um teste de resistência de Destreza.
-
-CD do Teste. 8 + seu bônus de proficiência + seu modificador de Força.
-
-Falha. A criatura fica Caída.
-
-Usos. Igual ao seu bônus de proficiência.
-                </div>
-
-            </div>
-
-            <h3 class="text-xl text-blue-400 mb-4 border-b border-blue-900/20 pb-2">Decadência do Gigante
-
-Escolha uma das opções abaixo.</h3>
-            <div class="grid md:grid-cols-2 gap-4 text-xs">
-          </div>
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">🪨 Gigante da Pedra.</b>
-                    <p>Você possui vantagem em testes e resistências contra ser derrubado ou empurrado
-
-Você ignora terreno difícil</p>
-
-          </div>
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">☁️ Gigante das Nuvens</b>
-                    <p>Criaturas inimigas a até 1,5 metro de você:
-
-Têm seu deslocamento reduzido pela metade
-
-Não podem usar a ação Desengajar
-
-Sempre provocam ataques de oportunidade ao sair do seu alcance</p>
-
-          </div>
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">🔥 Gigante do Fogo</b>
-                    <p>Quando uma criatura atinge você com um ataque corpo a corpo, ela sofre dano de fogo igual à metade do seu bônus de proficiência (arredondado para cima)
-
-Seus ataques corpo a corpo causam +1 de dano de fogo adicional</p>
-
-
-          </div>
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">🌩 Gigante da Tempestade</b>
-                    <p>Uma vez por turno, ao acertar um ataque, você causa dano elétrico adicional igual à metade do seu bônus de proficiência (arredondado para cima)
-
-Você possui resistência contra efeitos que exigem testes de resistência para evitar a condição Atordoado</p>
-
-          </div>
-                <div class="variante-box border-blue-400">
-                    <b class="text-white">⛰ Gigante da Colina</b>
-                    <p>Você ignora as propriedades Pesada e Duas Mãos de armas
-
-Possui vantagem em testes de Força (Atletismo)
-
-É considerado como uma criatura de tamanho maior para efeitos de empurrar e agarrar</p>
-
-
-            </div>
-
-
-            </div>
-
-
-
-        </div>
-
-        <footer class="text-center text-gray-600 mt-20 pb-10">
-            <p>© 2026 Desemvolvido por Evandro Neto</p>
-        </footer>
+  </div>
+
+  <!-- HUD -->
+  <header class="hud">
+    <div class="hud-left">
+      <span class="hp">HP <span class="bar"><i style="width:88%"></i></span> 88/100</span>
+      <span class="mp">MP <span class="bar mp-bar"><i style="width:62%"></i></span> 62/100</span>
     </div>
+    <div class="hud-center">★ LINHAGENS ★</div>
+    <div class="hud-right">
+      <span>NÍVEL 5</span>
+      <span>XP 1240</span>
+      <span class="coins">◎ 320</span>
+    </div>
+    <nav class="btn-nav">
+        <a href="index.html" class="border border-[#d4af37] text-[#d4af37] px-6 py-1 uppercase text-sm hover:bg-[#d4af37] hover:text-black transition">← Voltar ao Início</a>
+    </nav>
 
-    <script>
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+  </header>
 
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
-            for(let i=0; i<80; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2,
-                    speed: Math.random() * 0.5
-                });
-            }
-        }
+  </nav>
 
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(212, 175, 55, 0.3)";
-            particles.forEach(p => {
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
-                p.y -= p.speed; if(p.y < 0) p.y = canvas.height;
-            });
-            requestAnimationFrame(draw);
-        }
+  <!-- MENU DE RAÇAS -->
+  <nav class="race-nav">
+    <a href="#therionitas" class="race-nav-item">🐺 THERIONITAS</a>
+    <a href="#tartarianos" class="race-nav-item">🔥 TARTARIANOS</a>
+    <a href="#aetherion" class="race-nav-item">✨ AETHERION</a>
+    <a href="#megalion" class="race-nav-item">🪨 MEGALION</a>
+  </nav>
 
-        window.addEventListener('resize', initCanvas);
-        initCanvas(); draw();
+  <main>
+    <!-- HEADER -->
+    <section class="race-header">
+      <h1 class="race-title">LINHAGENS SAGRADAS</h1>
+      <p class="race-subtitle">~ as raças que moldam o destino do Olimpo ~</p>
+    </section>
 
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loader = document.getElementById('loader');
-                const content = document.getElementById('main-content');
-                loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    content.classList.remove('opacity-0');
-                    content.classList.add('transition-opacity', 'duration-1000', 'opacity-100');
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-                    }, { threshold: 0.1 });
-                    document.querySelectorAll('.fade-in-section').forEach(s => observer.observe(s));
-                }, 1000);
-            }, 5000); 
-        });
-    </script>
+    <!-- ==================== THERIONITAS ==================== -->
+    <section id="therionitas" class="screen">
+      <div class="race-card">
+        <div class="race-card-header">
+          <img src="img/sprites/therionitas.png" alt="Therionitas" class="race-sprite">
+          <h2>🐺 THERIONITAS</h2>
+        </div>
+        <div class="race-card-body">
+          <div class="lore-text">Descendentes de cruzamentos antigos entre humanoides e criaturas primordiais como minotauros, hidras e quimeras, os Meio Monstros carregam em seus corpos a marca de uma herança instável e frequentemente temida. Devido à sua aparência — muitas vezes grotesca, imponente ou simplesmente "errada" aos olhos comuns — são vistos com desconfiança imediata nas cidades civilizadas. Ao longo das gerações, isso levou à formação de bandos isolados, geralmente localizados em regiões selvagens, florestas densas ou territórios de difícil acesso. Esses bandos não são apenas agrupamentos sociais, mas estruturas de sobrevivência. Cada membro possui uma função clara: caçadores, sentinelas, protetores. A desconfiança externa moldou uma cultura interna baseada em lealdade absoluta e resposta violenta a ameaças. Apesar disso, nem todos os Meio Monstros rejeitam a civilização. Alguns poucos tentam viver entre humanos — quase sempre como mercenários, gladiadores ou caçadores — funções onde sua natureza é útil o suficiente para ser tolerada.</div>
+
+          <div class="stat-tags">
+            <span class="stat-tag">📊 TIPO: Besta</span>
+            <span class="stat-tag">📏 TAMANHO: P, M ou G</span>
+            <span class="stat-tag">🚶 DESLOCAMENTO: 9m</span>
+          </div>
+
+          <div class="ability-grid">
+            <div class="ability-box">
+              <img src="img/sprites/essencia_bestial.png" alt="Essência Bestial" class="ability-sprite" onerror="this.style.display='none'">
+              <img src="img/sprites/essencia_bestial.png" alt="ESSÊNCIA BESTIAL" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🌑 ESSÊNCIA BESTIAL</h4>
+              <p>• Visão no escuro 18m</p>
+              <p>• Vantagem em Percepção (olfato/audição)</p>
+              <p>• Resistência a um tipo: ácido, frio, fogo, elétrico ou veneno.</p>
+            </div>
+            <div class="ability-box">
+              <img src="img/sprites/instinto_predador.png" alt="INSTINTO PREDADOR" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🧠 INSTINTO PREDADOR</h4>
+              <p>Proficiência em: Atletismo, Intimidação ou Sobrevivência.</p>
+            </div>
+          </div>
+
+          <h3 class="variant-section-title">🧬 FORMA MONSTRUOSA (Escolha 1)</h3>
+          <div class="variant-grid">
+            <div class="variant-box">
+              <img src="img/sprites/chifres.png" alt="Chifres" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🐂 CHIFRES (MINOTAURO)</h4>
+              <p>Você desenvolve chifres letais, que podem ser utilizados como arma natural.</p>
+              <p class="rule-line">Ataque Natural. Seus chifres são considerados uma arma natural que causa 1d8 + seu modificador de Força de dano perfurante em caso de acerto.</p>
+              <p class="rule-line">Se você se mover pelo menos 6 metros em linha reta imediatamente antes de atingir uma criatura com este ataque no mesmo turno, o ataque causa +1d6 de dano perfurante adicional, e o alvo deve realizar um teste de resistência de Força.</p>
+              <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.</p>
+              <p class="rule-line">Falha. A criatura fica Caída.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/corpo_serpentino.png" alt="CORPO SERPENTINO" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🐍 CORPO SERPENTINO (HIDRA)</h4>
+              <p>Sua fisiologia se adapta a toxinas e regenera agressivamente.</p>
+              <p class="rule-line">Você possui resistência a dano de veneno e vantagem em testes de resistência contra a condição Envenenado.</p>
+              <p class="rule-line">Além disso, uma vez por turno, quando você acerta um ataque físico, o alvo sofre +1d6 de dano de veneno adicional. Esse dano aumenta conforme seu nível, seguindo a progressão de truques.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/garras.png" alt="GARRAS PREDATÓRIAS" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🦁 GARRAS PREDATÓRIAS (QUIMERA)</h4>
+              <p>Suas mãos se transformam em garras predatórias.</p>
+              <p class="rule-line">Ataque Natural. Suas garras são consideradas uma arma natural que causa 1d6 + seu modificador de Força ou Destreza de dano cortante.</p>
+              <p class="rule-line">Se você acertar uma criatura com dois ataques no mesmo turno, o segundo acerto causa +1d6 de dano cortante adicional, escalando conforme um truque.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/couraca.png" alt="COURAÇA NATURAL" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🐗 COURAÇA NATURAL</h4>
+              <p>Sua pele se torna espessa e resistente como a de uma criatura selvagem.</p>
+              <p class="rule-line">Enquanto não estiver vestindo armadura pesada, você recebe +1 na Classe de Armadura.</p>
+              <p class="rule-line">Além disso, você possui resistência a dano contundente, perfurante e cortante.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/asas_grifo.png" alt="ASAS DE GRIFO" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🦅 ASAS DE GRIFO</h4>
+              <p>Você desenvolve asas capazes de sustentar voo.</p>
+              <p class="rule-line">Você adquire um deslocamento de voo de 9 metros.</p>
+              <p class="rule-line">Você não pode utilizar esse deslocamento enquanto estiver vestindo armadura pesada.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/sopro.png" alt="SOPRO BESTIAL" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🔥 SOPRO BESTIAL (QUIMERA)</h4>
+              <p>Você pode expelir energia destrutiva em um padrão cônico.</p>
+              <p class="rule-line">Ação. Você exala um sopro em um cone de 4,5 metros.</p>
+              <p class="rule-line">Criaturas na área devem realizar um teste de resistência de Destreza.</p>
+              <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de Constituição.</p>
+              <p class="rule-line">Dano. 2d6 de dano ácido.</p>
+              <p class="rule-line">Sucesso. A criatura sofre metade do dano.</p>
+              <p class="rule-line">O alcance do cone aumenta em 1,5 metro conforme escala de truques, e o dano também aumenta conforme essa progressão.</p>
+              <p class="rule-line">Usos. Você pode usar esta habilidade um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos após um descanso longo.</p>
+            </div>
+            <div class="variant-box" style="grid-column:1/-1">
+              <img src="img/sprites/regeneracao.png" alt="REGENERAÇÃO DE HIDRA" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🩸 REGENERAÇÃO DE HIDRA</h4>
+              <p>Sua vitalidade é extremamente resiliente.</p>
+              <p class="rule-line">No início de cada um de seus turnos, você recupera uma quantidade de pontos de vida igual ao seu bônus de proficiência.</p>
+              <p class="rule-line">Se você tiver sofrido dano de fogo desde o seu último turno, esta habilidade não funciona naquele turno.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TARTARIANOS ==================== -->
+    <section id="tartarianos" class="screen race-tartarianos">
+      <div class="race-card">
+        <div class="race-card-header">
+          <img src="img/sprites/tartarianos.png" alt="Tartarianos" class="race-sprite">
+          <h2>🔥 TARTARIANOS</h2>
+        </div>
+        <div class="race-card-body">
+          <div class="lore-text">Marcados pela influência do Tártaro — plano de punição, corrupção e aprisionamento — esses indivíduos carregam uma herança que inspira medo imediato. Diferente dos Descendentes do Éter, sua marca raramente é sutil. Olhos escurecidos, sombras que se movem de forma antinatural, presença opressiva — são sinais comuns. Nas cidades, são tratados com hostilidade aberta ou vigilância constante. Em muitos casos: São impedidos de entrar, são monitorados por autoridades, ou forçados a provar sua "inocência" continuamente. Essa rejeição molda profundamente sua psicologia. Alguns abraçam a corrupção, tornando-se exatamente o que o mundo espera deles. Outros resistem, vivendo em constante conflito interno. Pequenos grupos desses indivíduos às vezes se formam, mas raramente são estáveis — a própria natureza do Tártaro incentiva isolamento, paranoia e domínio. Tensão central: Destino imposto vs. escolha individual.</div>
+
+          <div class="ability-grid">
+            <div class="ability-box">
+              <img src="img/sprites/essencia_abismo.png" alt="ESSÊNCIA DO ABISMO" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🌑 ESSÊNCIA DO ABISMO</h4>
+              <p>• Tipo: Humanoide.</p>
+              <p>• Resistências: Você possui resistência a dano necrótico e psíquico.</p>
+              <p>• Visão das Profundezas (18m)</p>
+              <p>• Deslocamento: Seu deslocamento base de caminhada é de 9 metros.</p>
+            </div>
+            <div class="ability-box">
+              <img src="img/sprites/natureza_sombria.png" alt="NATUREZA SOMBRIA" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🧠 NATUREZA SOMBRIA</h4>
+              <p>• Proficiência em: Intimidação ou Religião.</p>
+              <p>• Mente Inabalável: Você possui vantagem em testes de resistência contra a condição Amedrontado.</p>
+              <p>• Aprimoramento: Você ganha proficiência em um atributo adicional à sua escolha.</p>
+            </div>
+          </div>
+
+          <h3 class="variant-section-title">👁 PODERES INATOS</h3>
+          <div class="variant-grid">
+            <div class="variant-box">
+              <img src="img/sprites/visao_profundezas.png" alt="Visão das Profundezas" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>👁 VISÃO DAS PROFUNDEZAS</h4>
+              <p>Sua mera existência impõe terror aos inimigos.</p>
+              <p class="rule-line">Ação. Criaturas hostis à sua escolha em um raio de 4,5 metros devem realizar um teste de resistência de Sabedoria.</p>
+              <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.</p>
+              <p class="rule-line">Falha. A criatura fica Amedrontada por 2 turnos.</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência, recuperados após um descanso longo.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/presenca_opressiva.png" alt="PRESENÇA OPRESSIVA" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>👁‍🗨 PRESENÇA OPRESSIVA</h4>
+              <p>Sua mera existência impõe terror aos inimigos.</p>
+              <p class="rule-line">Ação. Criaturas hostis à sua escolha em um raio de 4,5 metros devem realizar um teste de resistência de Sabedoria.</p>
+              <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.</p>
+              <p class="rule-line">Falha. A criatura fica Amedrontada por 2 turnos.</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência, recuperados após um descanso longo.</p>
+            </div>
+            <div class="variant-box" style="grid-column:1/-1">
+              <img src="img/sprites/marca_abismo.png" alt="MARCA DO ABISMO" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🕳 MARCA DO ABISMO</h4>
+              <p>Você marca seus inimigos com energia do Tártaro.</p>
+              <p class="rule-line">Ao acertar um ataque físico, você pode fazer com que o alvo sofra dano necrótico adicional igual a metade do seu bônus de proficiência (arredondado para cima).</p>
+              <p class="rule-line">Este efeito permanece ativo por 5 turnos.</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência.</p>
+            </div>
+          </div>
+
+          <h3 class="variant-section-title">🔥 VARIANTES DO TÁRTARO (Escolha 1)</h3>
+          <div class="variant-grid">
+            <div class="variant-box">
+              <img src="img/sprites/prisao_absoluta.png" alt="PRISÃO ABSOLUTA" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>⛓ PRISÃO ABSOLUTA</h4>
+              <p>Você aprisiona seus inimigos com correntes abissais.</p>
+              <p class="rule-line">Quando você acerta uma criatura com um ataque, ela deve realizar um teste de resistência de Força.</p>
+              <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.</p>
+              <p class="rule-line">Falha. A criatura fica Contida por 2 turnos.</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/colapso_mental.png" alt="COLAPSO MENTAL" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🌪 COLAPSO MENTAL</h4>
+              <p>Você fragmenta a mente do alvo com energia psíquica.</p>
+              <p class="rule-line">Quando você acerta uma criatura com um ataque, ela deve realizar um teste de resistência de Sabedoria.</p>
+              <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.</p>
+              <p class="rule-line">Falha. A criatura sofre: Desvantagem em jogadas de ataque. Não pode usar reações.</p>
+              <p class="rule-line">Duração: 2 turnos.</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/sussurro_abismo.png" alt="SUSSURRO DO ABISMO" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>☠ SUSSURRO DO ABISMO (Subst. Marca)</h4>
+              <p>Você deteriora a capacidade de combate do inimigo.</p>
+              <p class="rule-line">Quando você acerta uma criatura com um ataque, ela deve realizar um teste de resistência de Sabedoria.</p>
+              <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.</p>
+              <p class="rule-line">No final de cada turno da criatura, ela repete o teste.</p>
+              <p class="rule-line">Falha. A criatura sofre uma penalidade de 1d4 em jogadas de ataque e testes de habilidade.</p>
+              <p class="rule-line">Duração: até 1 minuto.</p>
+              <p class="rule-line">Usos. Metade do seu bônus de proficiência (arredondado para baixo).</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/forma_intangivel.png" alt="FORMA INTANGÍVEL" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🌘 FORMA INTANGÍVEL</h4>
+              <p>Você abandona parcialmente o plano material.</p>
+              <p class="rule-line">Ação Bônus. Você assume uma forma intangível.</p>
+              <p class="rule-line">Durante essa forma: Você possui resistência a todo dano. Pode atravessar criaturas e objetos como se fossem terreno difícil. Não pode ser Agarrado.</p>
+              <p class="rule-line">Duração: 1 turno.</p>
+              <p class="rule-line">Usos. Metade do seu bônus de proficiência.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/julgamento.png" alt="JULGAMENTO INEVITÁVEL" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>⚖ JULGAMENTO INEVITÁVEL</h4>
+              <p>Você impõe uma sentença absoluta sobre inimigos enfraquecidos.</p>
+              <p class="rule-line">Quando você acerta uma criatura que esteja com metade ou menos dos pontos de vida, ela não pode recuperar pontos de vida.</p>
+              <p class="rule-line">Duração: 2 turnos.</p>
+              <p class="rule-line">Este efeito é passivo e não possui limite de uso.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== AETHERION ==================== -->
+    <section id="aetherion" class="screen race-aetherion">
+      <div class="race-card">
+        <div class="race-card-header">
+          <img src="img/sprites/aetherion.png" alt="Aetherion" class="race-sprite">
+          <h2>✨ AETHERION</h2>
+        </div>
+        <div class="race-card-body">
+          <div class="lore-text">Os Aetherianos são indivíduos cuja linhagem foi tocada pela energia divina oriunda do Olimpo. Essa conexão pode vir de bênçãos antigas, sangue celestial diluído ou eventos sobrenaturais que marcaram seus ancestrais. Fisicamente, tendem a apresentar traços sutis, porém perceptíveis: olhos brilhantes, aura leve, presença calmante ou perturbadora — dependendo da perspectiva de quem os observa. Paradoxalmente, mesmo carregando poder associado ao divino, não são amplamente aceitos nas cidades. Isso ocorre por dois fatores principais: Medo do desconhecido divino: não pertencem à hierarquia religiosa tradicional. Desconfiança institucional: igrejas e ordens veem esses indivíduos como "não autorizados". Assim, muitos vivem à margem da sociedade, atuando como curandeiros errantes, protetores silenciosos ou figuras quase míticas em vilarejos afastados. Entre eles, existe uma crença recorrente: que são fragmentos vivos de algo maior, ainda não plenamente compreendido. Tensão central: Propósito divino vs. rejeição mortal.</div>
+
+          <div class="stat-tags">
+            <span class="stat-tag">📊 TIPO: Humanoides</span>
+            <span class="stat-tag">📏 TAMANHO: P, M</span>
+            <span class="stat-tag">🚶 DESLOCAMENTO: 9m</span>
+          </div>
+
+          <h3 class="variant-section-title">✨ HABILIDADES RACIAIS</h3>
+          <div class="ability-grid">
+            <div class="ability-box">
+              <img src="img/sprites/essencia_celestial.png" alt="ESSÊNCIA CELESTIAL" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🌟 ESSÊNCIA CELESTIAL</h4>
+              <p>• Resistência: Você possui resistência a dano radiante e necrótico.</p>
+              <p>• Intuição Elevada: Você possui vantagem em testes de Sabedoria (Intuição).</p>
+              <p>• Aprimoramento: Você ganha proficiência em um atributo adicional à sua escolha.</p>
+            </div>
+            <div class="ability-box">
+              <img src="img/sprites/visao_celestial.png" alt="VISÃO CELESTIAL" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>👁 VISÃO CELESTIAL</h4>
+              <p>Você enxerga além do plano material.</p>
+              <p>Você possui visão no escuro até 18 metros. Além disso, você pode perceber criaturas invisíveis a até 3 metros de você.</p>
+            </div>
+            <div class="ability-box">
+              <img src="img/sprites/luz_primordial.png" alt="LUZ PRIMORDIAL" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>💫 LUZ PRIMORDIAL</h4>
+              <p>Você canaliza energia pura do Éter.</p>
+              <p class="rule-line">Ação Bônus. Você pode ativar este poder e escolher um dos efeitos:</p>
+              <p class="rule-line">• Você recupera 1d6 + seu bônus de proficiência pontos de vida</p>
+              <p class="rule-line">• OU obtém vantagem no próximo ataque, teste ou teste de resistência que realizar</p>
+              <p class="rule-line">O valor de cura aumenta conforme seu nível: 2d6 no nível 5, 3d6 no nível 11, e 4d6 no nível 17.</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência.</p>
+            </div>
+          </div>
+
+          <h3 class="variant-section-title">✨ VARIANTES DO ÉTER</h3>
+          <div class="variant-grid">
+            <div class="variant-box">
+              <img src="img/sprites/centelha.png" alt="CENTELHA DO ÉTER" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>☀️ CENTELHA DO ÉTER</h4>
+              <p>Sua energia permeia seus ataques.</p>
+              <p class="rule-line">Ao acertar um ataque físico, você pode fazer com que ele cause dano radiante adicional igual a metade do seu bônus de proficiência (arredondado para cima).</p>
+              <p class="rule-line">Este efeito dura 5 turnos.</p>
+              <p class="rule-line">Usos. Metade do seu bônus de proficiência.</p>
+            </div>
+          </div>
+
+          <h3 class="variant-section-title">💫 PODERES DO ÉTER (Escolha 2)</h3>
+          <div class="variant-grid">
+            <div class="variant-box">
+              <img src="img/sprites/teleporte.png" alt="TELEPORTE PRISMÁTICO" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🌈 TELEPORTE PRISMÁTICO</h4>
+              <p class="rule-line">Ação Bônus. Você se teleporta para um espaço desocupado a até 9 metros.</p>
+              <p class="rule-line">Criaturas a até 1,5 metro do ponto de chegada devem realizar um teste de resistência de Sabedoria.</p>
+              <p class="rule-line">Falha. A criatura sofre desvantagem em suas jogadas de ataque até o final do próximo turno.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/luz_reveladora.png" alt="LUZ REVELADORA" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🔆 LUZ REVELADORA</h4>
+              <p class="rule-line">Quando você acerta um ataque, o alvo deve realizar um teste de resistência de Constituição.</p>
+              <p class="rule-line">Falha. A criatura não pode se tornar invisível e ataques contra ela têm vantagem.</p>
+              <p class="rule-line">Duração: 2 turnos.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/egide.png" alt="Égide Radiante" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🛡 ÉGIDE RADIANTE</h4>
+              <p class="rule-line">Reação. Quando uma criatura aliada a até 1,5 metro de você sofre dano, você pode reduzir esse dano em uma quantidade igual a:</p>
+              <p class="rule-line">1d10 + seu bônus de proficiência + seu nível</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/inspiracao.png" alt="INSPIRAÇÃO ELEVADA" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>✨ INSPIRAÇÃO ELEVADA</h4>
+              <p class="rule-line">Ao acertar um ataque, você pode conceder a um aliado um bônus de 1d4 em jogadas de ataque e testes de resistência.</p>
+              <p class="rule-line">Duração: 2 turnos.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/olhar_eter.png" alt="OLHAR DO ÉTER" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🌠 OLHAR DO ÉTER</h4>
+              <p class="rule-line">Ação. Uma criatura deve realizar um teste de resistência de Sabedoria.</p>
+              <p class="rule-line">Falha. A criatura sofre desvantagem em jogadas de ataque por 2 turnos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== MEGALION ==================== -->
+    <section id="megalion" class="screen race-megalion">
+      <div class="race-card">
+        <div class="race-card-header">
+          <img src="img/sprites/megalion.png" alt="Megalion" class="race-sprite">
+          <h2>🪨 MEGALION</h2>
+        </div>
+        <div class="race-card-body">
+          <div class="lore-text">Os Gigantes não são apenas uma linhagem — são um recurso estratégico. Historicamente, o império dominante reconheceu cedo o potencial físico dessa raça e instituiu um sistema sistemático de exploração. Crianças gigantes são frequentemente: Separadas de seus pais ainda jovens. Treinadas para combate ou trabalho forçado. Transformadas em armas vivas ou "cães de caça" imperiais. Esse processo não é aleatório — é estruturado, burocrático e sustentado por ideologia: gigantes são ensinados desde cedo que seu valor está em servir. Como resultado, existem três perfis predominantes: Quebrados: aceitam sua condição e servem sem questionar. Funcionais: servem, mas mantêm identidade própria. Rebeldes: fogem ou resistem ao sistema. Comunidades livres de gigantes são extremamente raras, e quando existem, são alvo direto do império. Tensão central: Servidão imposta vs. liberdade conquistada.</div>
+
+          <div class="stat-tags">
+            <span class="stat-tag">📊 TIPO: Humanoides</span>
+            <span class="stat-tag">📏 TAMANHO: M, G</span>
+            <span class="stat-tag">🚶 DESLOCAMENTO: 10,5m</span>
+          </div>
+
+          <h3 class="variant-section-title">🔄 FORMA COLOSSAL (Ação Bônus)</h3>
+          <div class="ability-grid">
+            <div class="ability-box" style="grid-column:1/-1">
+              <img src="img/sprites/forma_colossal.png" alt="Forma Colossal" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🔄 MANIFESTAÇÃO GIGANTE</h4>
+              <p>Você manifesta o verdadeiro poder dos gigantes.</p>
+              <p class="rule-line">Ação Bônus. Você assume uma forma ampliada.</p>
+              <p class="rule-line">Duração: 10 minutos.</p>
+              <p class="rule-line">Durante esse tempo:</p>
+              <p class="rule-line">• Você é considerado como uma criatura de uma categoria de tamanho maior</p>
+              <p class="rule-line">• Seu alcance corpo a corpo aumenta em 1,5 metro</p>
+              <p class="rule-line">• Seu deslocamento aumenta em 3 metros</p>
+              <p class="rule-line">• Você possui vantagem em testes de Força</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência.</p>
+            </div>
+          </div>
+
+          <h3 class="variant-section-title">🧬 CARACTERÍSTICAS COLOSSAIS (Escolha 1)</h3>
+          <div class="variant-grid">
+            <div class="variant-box">
+              <img src="img/sprites/ataques_colossais.png" alt="ATAQUES COLOSSAIS" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🧬 ATAQUES COLOSSAIS</h4>
+              <p class="rule-line">Enquanto estiver sob efeito da Forma Colossal:</p>
+              <p class="rule-line">• Seus ataques causam +1d4 de dano físico adicional, exceto com armas leves</p>
+              <p class="rule-line">• O dano de suas armas aumenta em uma categoria, seguindo progressão semelhante à do monge, até o máximo de d10.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/pele_colosso.png" alt="PELE DE COLOSSO" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🛡 PELE DE COLOSSO</h4>
+              <p>Seu corpo resiste a impactos massivos.</p>
+              <p class="rule-line">Você reduz o dano recebido em uma quantidade igual ao seu bônus de proficiência.</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/passos_tremores.png" alt="PASSOS TREMORES" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🌍 PASSOS TREMORES</h4>
+              <p>Você impacta o solo com força destrutiva.</p>
+              <p class="rule-line">Ação Bônus. Uma criatura à sua escolha deve realizar um teste de resistência de Destreza.</p>
+              <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de Força.</p>
+              <p class="rule-line">Falha. A criatura fica Caída.</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência.</p>
+            </div>
+          </div>
+
+          <h3 class="variant-section-title">⛰ DECADÊNCIA DO GIGANTE (Escolha 1)</h3>
+          <div class="variant-grid">
+            <div class="variant-box">
+              <img src="img/sprites/gigante_pedra.png" alt="GIGANTE DA PEDRA" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🪨 GIGANTE DA PEDRA</h4>
+              <p class="rule-line">• Você possui vantagem em testes e resistências contra ser derrubado ou empurrado</p>
+              <p class="rule-line">• Você ignora terreno difícil</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/gigante_nuvens.png" alt="GIGANTE DAS NUVENS" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>☁️ GIGANTE DAS NUVENS</h4>
+              <p>Criaturas inimigas a até 1,5 metro de você:</p>
+              <p class="rule-line">• Têm seu deslocamento reduzido pela metade</p>
+              <p class="rule-line">• Não podem usar a ação Desengajar</p>
+              <p class="rule-line">• Sempre provocam ataques de oportunidade ao sair do seu alcance</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/gigante_fogo.png" alt="GIGANTE DO FOGO" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🔥 GIGANTE DO FOGO</h4>
+              <p class="rule-line">• Quando uma criatura atinge você com um ataque corpo a corpo, ela sofre dano de fogo igual à metade do seu bônus de proficiência (arredondado para cima)</p>
+              <p class="rule-line">• Seus ataques corpo a corpo causam +1 de dano de fogo adicional</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/gigante_tempestade.png" alt="GIGANTE DA TEMPESTADE" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>🌩 GIGANTE DA TEMPESTADE</h4>
+              <p class="rule-line">• Uma vez por turno, ao acertar um ataque, você causa dano elétrico adicional igual à metade do seu bônus de proficiência (arredondado para cima)</p>
+              <p class="rule-line">• Você possui resistência contra efeitos que exigem testes de resistência para evitar a condição Atordoado</p>
+            </div>
+            <div class="variant-box">
+              <img src="img/sprites/gigante_colina.png" alt="GIGANTE DA COLINA" class="ability-sprite" onerror="this.style.display='none'">
+              <h4>⛰ GIGANTE DA COLINA</h4>
+              <p class="rule-line">• Você ignora as propriedades Pesada e Duas Mãos de armas</p>
+              <p class="rule-line">• Possui vantagem em testes de Força (Atletismo)</p>
+              <p class="rule-line">• É considerado como uma criatura de tamanho maior para efeitos de empurrar e agarrar</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>★ ERA DOS HERÓIS ★ · "que os deuses guiem seus dados"</p>
+    <p class="copyleft">
+      Criador: Evandro Neto de Oliveira · WhatsApp: (22) 9 9727 3243<br>
+      © 2026 Era dos Heróis · Todos os direitos reservados.
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
