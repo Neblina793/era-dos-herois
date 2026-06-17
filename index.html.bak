@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERA DOS HERÓIS · RPG D&D 5e · Mitologia Grega</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- CRT SCANLINES + VIGNETTE -->
+  <div class="crt"></div>
+  <div class="vignette"></div>
+
+  <!-- BOOT SCREEN -->
+  <div id="boot">
+    <div class="boot-inner">
+      <p class="boot-line">&gt; INSERINDO CARTUCHO...</p>
+      <p class="boot-line">&gt; CARREGANDO PERGAMINHO DO ORÁCULO...</p>
+      <p class="boot-line">&gt; CONVOCANDO MUSAS...</p>
+      <p class="boot-line blink">&gt; PRESS START</p>
+    </div>
+  </div>
+
+  <!-- HUD TOPO -->
+  <header class="hud">
+    <div class="hud-left">
+      <span class="hp">HP <span class="bar"><i style="width:88%"></i></span> 88/100</span>
+      <span class="mp">MP <span class="bar mp-bar"><i style="width:62%"></i></span> 62/100</span>
+    </div>
+    <div class="hud-center">★ ERA DOS HERÓIS ★</div>
+    <div class="hud-right">
+      <span>NÍVEL 5</span>
+      <span>XP 1240</span>
+      <span class="coins">◎ 320</span>
+    </div>
+  </header>
+
+  <!-- MENU NAVEGAÇÃO -->
+  <nav class="menu">
+    <a href="#inicio" class="menu-item active"><span class="cursor">▶</span> INÍCIO</a>
+    <a href="#mundo"  class="menu-item"><span class="cursor">▶</span> O MUNDO</a>
+    <a href="#herois" class="menu-item"><span class="cursor">▶</span> HERÓIS</a>
+    <a href="#sessoes" class="menu-item"><span class="cursor">▶</span> SESSÕES</a>
+  </nav>
+
+  <main>
+    <!-- ============== INÍCIO ============== -->
+    <section id="inicio" class="screen">
+      <div class="title-art">
+        <h1 class="game-title">
+          <span class="t-line t1">ERA DOS</span>
+          <span class="t-line t2 glow">HERÓIS</span>
+        </h1>
+        <p class="subtitle">~ uma campanha de D&amp;D 5e na Hélade ~</p>
+        <div class="d20-wrap">
+          <div class="d20" aria-label="dado d20">
+            <div class="d20-face">20</div>
+          </div>
+        </div>
+        <div class="press-start blink">PRESS START</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">▼ PRÓLOGO ▼</div>
+        <p class="typewriter">Os deuses do Olimpo despertaram de um sono de mil eras. Titãs rompem suas correntes no Tártaro, a Hidra envenena os rios da Lérnia e o Minotauro vagueia além do labirinto. A profecia da Pítia é clara: novos heróis devem se erguer — ou a Hélade cairá em treva eterna.</p>
+        <div class="cta-row">
+          <a href="#herois" class="btn-pixel">⚔ ESCOLHER HERÓI</a>
+          <a href="#mundo"  class="btn-pixel ghost">☉ EXPLORAR MAPA</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== O MUNDO ============== -->
+    <section id="mundo" class="screen">
+      <h2 class="screen-title">▣ O MUNDO · A HÉLADE ▣</h2>
+
+      <div class="map-grid">
+        <button class="region r-olimpo"  data-region="olimpo">OLIMPO</button>
+        <button class="region r-atenas"  data-region="atenas">ATENAS</button>
+        <button class="region r-creta"   data-region="creta">CRETA</button>
+        <button class="region r-esparta" data-region="esparta">ESPARTA</button>
+        <button class="region r-delfos"  data-region="delfos">DELFOS</button>
+        <button class="region r-tartaro" data-region="tartaro">TÁRTARO</button>
+      </div>
+
+      <div id="region-info" class="panel info-panel">
+        <div class="panel-title">▼ SELECIONE UMA REGIÃO ▼</div>
+        <p>Use o cursor sobre o mapa para revelar os domínios dos deuses, monstros e mortais.</p>
+      </div>
+
+      <div class="lore-grid">
+        <article class="card-pixel">
+          <header>⚡ ZEUS</header>
+          <p>Senhor do Olimpo, guardião dos juramentos. Concede magias de Tempestade aos clérigos fiéis.</p>
+        </article>
+        <article class="card-pixel">
+          <header>🦉 ATENA</header>
+          <p>Deusa da sabedoria e da estratégia. Patrona de magos investigadores e paladinos justos.</p>
+        </article>
+        <article class="card-pixel">
+          <header>☠ HADES</header>
+          <p>Soberano do Mundo Inferior. Bruxos do Pacto Sombrio negociam poder por almas.</p>
+        </article>
+        <article class="card-pixel">
+          <header>🌊 POSEIDON</header>
+          <p>Deus dos mares e dos terremotos. Druidas das marés invocam tridentes etéreos.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============== HERÓIS ============== -->
+    <section id="herois" class="screen">
+      <h2 class="screen-title">▣ ESCOLHA SEU HERÓI ▣</h2>
+      <p class="hint">▲▼ navegue · ⓐ confirme · classes adaptadas do D&amp;D 5e</p>
+
+      <div class="hero-grid">
+        <article class="hero-card" data-class="hoplita">
+          <div class="hero-sprite hoplita"></div>
+          <h3>HOPLITA</h3>
+          <p class="hero-sub">Guerreiro · STR 17</p>
+          <ul class="stats">
+            <li>HP <i class="b"><i style="width:90%"></i></i></li>
+            <li>ATK <i class="b"><i style="width:80%"></i></i></li>
+            <li>DEF <i class="b"><i style="width:85%"></i></i></li>
+            <li>MAG <i class="b"><i style="width:15%"></i></i></li>
+          </ul>
+          <p class="lore">Lança de bronze e escudo redondo. Mestre da Falange.</p>
+        </article>
+
+        <article class="hero-card" data-class="oraculo">
+          <div class="hero-sprite oraculo"></div>
+          <h3>ORÁCULO</h3>
+          <p class="hero-sub">Mago · INT 18</p>
+          <ul class="stats">
+            <li>HP <i class="b"><i style="width:35%"></i></i></li>
+            <li>ATK <i class="b"><i style="width:25%"></i></i></li>
+            <li>DEF <i class="b"><i style="width:30%"></i></i></li>
+            <li>MAG <i class="b"><i style="width:98%"></i></i></li>
+          </ul>
+          <p class="lore">Lê o futuro nos vapores de Delfos. Lança Raios de Apolo.</p>
+        </article>
+
+        <article class="hero-card" data-class="amazona">
+          <div class="hero-sprite amazona"></div>
+          <h3>AMAZONA</h3>
+          <p class="hero-sub">Patrulheira · DEX 18</p>
+          <ul class="stats">
+            <li>HP <i class="b"><i style="width:65%"></i></i></li>
+            <li>ATK <i class="b"><i style="width:75%"></i></i></li>
+            <li>DEF <i class="b"><i style="width:55%"></i></i></li>
+            <li>MAG <i class="b"><i style="width:40%"></i></i></li>
+          </ul>
+          <p class="lore">Arqueira das estepes do Termodonte. Companheira: leoa.</p>
+        </article>
+
+        <article class="hero-card" data-class="aedo">
+          <div class="hero-sprite aedo"></div>
+          <h3>AEDO</h3>
+          <p class="hero-sub">Bardo · CHA 17</p>
+          <ul class="stats">
+            <li>HP <i class="b"><i style="width:50%"></i></i></li>
+            <li>ATK <i class="b"><i style="width:40%"></i></i></li>
+            <li>DEF <i class="b"><i style="width:45%"></i></i></li>
+            <li>MAG <i class="b"><i style="width:80%"></i></i></li>
+          </ul>
+          <p class="lore">Lira nas mãos, canta feitos heroicos. Inspira aliados.</p>
+        </article>
+
+        <article class="hero-card" data-class="clerigo">
+          <div class="hero-sprite clerigo"></div>
+          <h3>SACERDOTE</h3>
+          <p class="hero-sub">Clérigo · WIS 17</p>
+          <ul class="stats">
+            <li>HP <i class="b"><i style="width:70%"></i></i></li>
+            <li>ATK <i class="b"><i style="width:55%"></i></i></li>
+            <li>DEF <i class="b"><i style="width:70%"></i></i></li>
+            <li>MAG <i class="b"><i style="width:75%"></i></i></li>
+          </ul>
+          <p class="lore">Servo dos deuses olímpicos. Cura feridas e expulsa não-mortos.</p>
+        </article>
+
+        <article class="hero-card" data-class="centauro">
+          <div class="hero-sprite centauro"></div>
+          <h3>CENTAURO</h3>
+          <p class="hero-sub">Bárbaro · CON 18</p>
+          <ul class="stats">
+            <li>HP <i class="b"><i style="width:95%"></i></i></li>
+            <li>ATK <i class="b"><i style="width:85%"></i></i></li>
+            <li>DEF <i class="b"><i style="width:60%"></i></i></li>
+            <li>MAG <i class="b"><i style="width:20%"></i></i></li>
+          </ul>
+          <p class="lore">Selvagem da Tessália. Entra em fúria báquica em combate.</p>
+        </article>
+      </div>
+
+      <!-- ROLAGEM DE DADOS -->
+      <div class="dice-station panel">
+        <div class="panel-title">▼ MESA DE ROLAGEM ▼</div>
+        <p class="hint">Teste sua sorte na mesa do Mestre. Role um d20.</p>
+        <div class="roller">
+          <button id="roll-d20" class="btn-pixel">▶ ROLAR D20</button>
+          <div id="roll-result" class="roll-result">--</div>
+          <div id="roll-msg" class="roll-msg">aguardando rolagem...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== SESSÕES ============== -->
+    <section id="sessoes" class="screen">
+      <h2 class="screen-title">▣ CALENDÁRIO DE SESSÕES ▣</h2>
+
+      <ul class="session-list">
+        <li class="session">
+          <span class="session-date">28<br><b>JUN</b></span>
+          <div class="session-body">
+            <h3>SESSÃO 07 · A HIDRA DE LERNA</h3>
+            <p>Os heróis adentram o pântano para enfrentar a serpente de nove cabeças. Recompensa: pergaminho de Bola de Fogo.</p>
+            <span class="tag">ARCO: TRABALHOS DE HÉRACLES</span>
+          </div>
+          <span class="status open">▶ ABERTA</span>
+        </li>
+        <li class="session">
+          <span class="session-date">12<br><b>JUL</b></span>
+          <div class="session-body">
+            <h3>SESSÃO 08 · O LABIRINTO DE CNOSSOS</h3>
+            <p>Dédalo abriu as portas. No centro, o Minotauro espreita. Tragam fio suficiente para retornar.</p>
+            <span class="tag">DUNGEON · 6h</span>
+          </div>
+          <span class="status open">▶ ABERTA</span>
+        </li>
+        <li class="session">
+          <span class="session-date">26<br><b>JUL</b></span>
+          <div class="session-body">
+            <h3>SESSÃO 09 · O ORÁCULO DE DELFOS</h3>
+            <p>Uma profecia será revelada — e ela mudará o destino do grupo. Sessão de roleplay puro.</p>
+            <span class="tag">INTRIGA · RP</span>
+          </div>
+          <span class="status soon">◆ EM BREVE</span>
+        </li>
+        <li class="session">
+          <span class="session-date">09<br><b>AGO</b></span>
+          <div class="session-body">
+            <h3>SESSÃO 10 · DESCIDA AO TÁRTARO</h3>
+            <p>O grupo cruza o Estige guiado por Caronte. Cuidado com o que enviou para o submundo.</p>
+            <span class="tag">BOSS · CAMPANHA</span>
+          </div>
+          <span class="status locked">✖ BLOQUEADA</span>
+        </li>
+      </ul>
+
+      <div class="panel">
+        <div class="panel-title">▼ INFORMAÇÕES DA MESA ▼</div>
+        <div class="info-grid">
+          <div><b>SISTEMA</b><br>D&amp;D 5e (adaptado)</div>
+          <div><b>MESTRE</b><br>O Aedo Anônimo</div>
+          <div><b>JOGADORES</b><br>4 / 5 (1 vaga!)</div>
+          <div><b>PLATAFORMA</b><br>Foundry VTT + Discord</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© ERA DOS HERÓIS · "ΟΙ ΗΡΩΕΣ ΟΥ ΤΕΘΝΑΣΙΝ" · os heróis não morrem</p>
+    <p class="copyleft">RPG amador inspirado em D&amp;D 5e (Wizards of the Coast) e na mitologia grega clássica.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
