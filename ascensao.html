@@ -1,1380 +1,617 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Ascensão | Era dos Heróis</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --gold: #d4af37;
-            --dark-bg: #0b0b0f;
-            --card-bg: rgba(22, 22, 30, 0.9);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Ascensão · ERA DOS HERÓIS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* PAGE-SPECIFIC OVERRIDES */
+    .ascensao-header{text-align:center;padding:30px 10px 10px;position:relative}
+    .ascensao-title{
+      font-size:28px;color:var(--gold);letter-spacing:4px;
+      text-shadow:4px 4px 0 var(--red-dark),8px 8px 0 #000;
+      margin-bottom:8px;
+    }
+    .ascensao-subtitle{
+      color:var(--ink-dim);font-family:'VT323',monospace;font-size:22px;
+      letter-spacing:2px;margin-bottom:20px;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--dark-bg);
-            color: #e2e8f0;
-            margin: 0;
-            overflow-x: hidden; /* Importante para o canvas de fundo */
-        }
+    /* STAGE CARD */
+    .stage-card{
+      background:rgba(0,0,0,.7);
+      border:4px solid var(--ink);
+      padding:0;margin:28px 0;
+      box-shadow:0 0 0 4px #000,8px 8px 0 var(--red-dark),8px 8px 0 4px #000;
+      position:relative;
+    }
+    .stage-card-header{
+      background:var(--red);color:#fff;
+      padding:12px 18px;
+      display:flex;align-items:center;gap:12px;
+      border-bottom:3px solid var(--ink);
+    }
+    .stage-card-header h2{
+      font-size:14px;letter-spacing:2px;margin:0;
+      text-shadow:2px 2px 0 #000;
+    }
+    .stage-card-body{padding:20px}
 
-        h1, h2, h3 { font-family: 'Cinzel', serif; text-transform: uppercase; color: var(--gold); }
+    /* STAGE TAG */
+    .stage-tag{
+      display:inline-block;
+      padding:4px 12px;
+      font-size:9px;
+      font-weight:bold;
+      margin-bottom:10px;
+      color:#fff;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      border:2px solid #000;
+    }
 
-        /* Estilo para o Canvas de Fundo Animado */
-        #bg-canvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; /* Fica atrás de tudo */
-            background: radial-gradient(circle at center, #1a1a2e 0%, #0b0b0f 100%);
-        }
+    /* ABILITY BOX */
+    .ability-box{
+      background:#000;border:3px solid var(--ink);
+      padding:14px;margin-bottom:12px;
+      box-shadow:4px 4px 0 var(--red-dark);
+    }
+    .ability-box h4{
+      color:var(--gold);font-size:11px;margin-bottom:8px;
+      letter-spacing:1px;border-bottom:2px dashed var(--ink-dim);
+      padding-bottom:6px;
+    }
+    .ability-box p{
+      font-family:'VT323',monospace;font-size:17px;color:var(--ink);
+      margin:4px 0;line-height:1.5;
+    }
 
-        #loader {
-            position: fixed;
-            inset: 0;
-            background: var(--dark-bg);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1s ease-out;
-        }
+    /* STAGE COLORS */
+    .stage-1 .stage-card-header{background:#555}
+    .stage-1 .stage-tag{background:#555}
+    .stage-2 .stage-card-header{background:#2a6bd6}
+    .stage-2 .stage-tag{background:#2a6bd6}
+    .stage-3 .stage-card-header{background:#4ac34a}
+    .stage-3 .stage-tag{background:#4ac34a}
+    .stage-4 .stage-card-header{background:#f6c026;color:#000}
+    .stage-4 .stage-tag{background:#f6c026;color:#000}
+    .stage-5 .stage-card-header{background:#e6a157}
+    .stage-5 .stage-tag{background:#e6a157}
+    .stage-6 .stage-card-header{background:#7a4ad6}
+    .stage-6 .stage-tag{background:#7a4ad6}
+    .stage-7 .stage-card-header{background:#d62828}
+    .stage-7 .stage-tag{background:#d62828}
 
-        .loading-text {
-            margin-top: 20px;
-            font-family: 'Cinzel', serif;
-            color: var(--gold);
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            animation: pulse 1.5s infinite;
-        }
+    /* SCORE SECTION */
+    .score-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;
+      margin-bottom:18px;
+    }
+    .score-box{
+      background:#000;border:3px solid var(--ink);
+      padding:14px;
+      box-shadow:4px 4px 0 var(--red-dark);
+    }
+    .score-box h4{
+      font-size:11px;margin-bottom:8px;
+      letter-spacing:1px;border-bottom:2px dashed var(--ink-dim);
+      padding-bottom:6px;
+    }
+    .score-box ul{list-style:none;padding:0}
+    .score-box li{
+      font-family:'VT323',monospace;font-size:17px;color:var(--ink);
+      margin:4px 0;
+    }
+    .score-box li span{color:var(--gold);font-weight:bold}
 
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    /* RESPONSIVE */
+    @media(max-width:680px){
+      .ascensao-title{font-size:18px}
+      .stage-card-header h2{font-size:11px}
+    }
 
-        .btn-nav {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            background: rgba(11, 11, 15, 0.9);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-            z-index: 1000;
-            padding: 10px;
-            text-align: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .ascensao-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            backdrop-filter: blur(10px); /* Efeito de vidro */
-        }
-
-        .tag-estagio {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: white;
-            text-transform: uppercase;
-        }
-
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; font-size: 0.85rem; }
-        th, td { border: 1px solid rgba(212, 175, 55, 0.2); padding: 10px; text-align: left; }
-        th { background: rgba(212, 175, 55, 0.1); color: var(--gold); }
-
-        /* Classes para Animação de Fade-In ao Rolar */
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease-out;
-        }
-        .fade-in-section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+    /* SPRITE */
+    .stage-sprite{
+      display:inline-block;
+      width:64px;height:64px;
+      margin:8px auto;
+      padding:4px;
+      background:rgba(0,0,0,.5);
+      border:2px solid var(--gold);
+      box-shadow:2px 2px 0 var(--shadow);
+      image-rendering:pixelated;
+      image-rendering:crisp-edges;
+    }
+  </style>
 </head>
 <body>
+  <!-- CRT + VIGNETTE -->
+  <div class="crt"></div>
+  <div class="vignette"></div>
 
-    <canvas id="bg-canvas"></canvas>
-
-    <div id="loader">
-        <img src="20.gif" alt="Carregando..." style="width: 200px; background: transparent;">
-        <div class="loading-text">Traçando o Destino...</div>
+  <!-- BOOT SCREEN -->
+  <div id="boot">
+    <div class="boot-inner">
+      <p class="boot-line">&gt; INSERINDO CARTUCHO...</p>
+      <p class="boot-line">&gt; CARREGANDO PERGAMINHO DO ORÁCULO...</p>
+      <p class="boot-line">&gt; CONVOCANDO MUSAS...</p>
+      <p class="boot-line blink">&gt; PRESS START</p>
     </div>
-
-    <nav class="btn-nav">
-        <a href="index.html" class="border border-[#d4af37] text-[#d4af37] px-6 py-1 uppercase text-sm hover:bg-[#d4af37] hover:text-black transition">← Voltar ao Início</a>
-    </nav>
-
-    <main id="main-content" class="container mx-auto px-4 pt-24 pb-12 max-w-4xl opacity-0 transition-opacity duration-1000">
-        <header class="text-center mb-12 fade-in-section">
-            <h1 class="text-4xl md:text-6xl mb-2">Sistema de Ascensão</h1>
-            <p class="text-gray-500 italic tracking-widest">A jornada da mortalidade à semi-divindade</p>
-        </header>
-        
-<div class="grid gap-6">
-            
-            <div class="ascensao-card fade-in-section border-l-4 border-gray-500">
-                <span class="estagio-tag bg-gray-500 text-white">Estágio 1 — Mortal Comum (1–14)</span>
-                <p class="text-sm text-gray-300 mb-4">Nenhuma influência divina. Apenas feitos humanos normais.</p>
-                <p class="text-xs italic text-gray-500">Narrativa: Os Deuses ignoram sua existência no Olimpo.</p>
-            </div>
-
-        <section class="mb-12 fade-in-section">
-            <div class="ascensao-card border-l-4 border-blue-500">
-                <span class="tag-estagio bg-blue-500">Estágio 2 — Marcado pelo Destino (15-29)</span>
-                <p class="text-sm text-gray-400 mb-6 italic">Ao atingir este estágio, você escolhe uma das habilidades abaixo:</p>
-                
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Favorecido pelas Moiras</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Você aprende um truque à sua escolha da lista de
-magias de qualquer classe.
-Se você já conhece esse truque, você pode conjurálo como uma ação bônus. Quando o fizer, você não
-pode conjurar o mesmo truque novamente durante o
-mesmo turno.
-Além disso, se você conjurar o truque como uma
-ação bônus, você não pode conjurar uma magia de
-nível durante esse turno, exceto truques com tempo
-de conjuração de 1 ação.
-Usos. Você pode usar esta característica um
-número de vezes igual ao seu bônus de proficiência, e
-recupera todos os usos ao terminar um descanso
-longo.
-</p>
-                    </div>
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Instinto de Sobrevivência</h4>
-                        <p class="text-xs text-gray-300">Reação: 
-Quando você sofre dano de um ataque ou efeito que
-você possa perceber, você pode usar sua reação para
-reduzir o dano recebido.
-O dano é reduzido em um valor igual a “1d10 + seu
-bônus de proficiência”.
-Você pode usar esta característica após ver o valor
-do dano, mas antes que ele seja aplicado.
-Usos. Você pode usar esta característica um
-número de vezes igual ao seu bônus de proficiência,
-recuperando todos os usos ao terminar um descanso
-longo.
-</p>
-                    </div>
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Fio do Destino</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Quando você falha em um teste de habilidade ou
-salvaguarda, você pode recorrer ao destino para
-tentar novamente.
-Você refaz a rolagem e adiciona um bônus de +2 ao
-resultado. Você deve usar o novo resultado.
-Você pode usar esta característica após saber que
-falhou, mas antes de quaisquer efeitos da falha serem
-aplicados.
-Usos. Você pode usar esta característica duas
-vezes, recuperando todos os usos ao terminar um
-descanso longo.
-</p>
-                    </div>
-
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Mau Presságio
-</h4>
-                        <p class="text-xs text-gray-300">Reação:
-Quando uma criatura que você possa ver realiza
-uma jogada de ataque contra você ou uma criatura
-que você possa ver, você pode usar sua reação para
-interferir no destino dela.
-Role “1d6” e subtraia o resultado da jogada de
-ataque. Você pode usar esta característica após ver a
-jogada, mas antes que o Mestre determine se o ataque
-atinge ou erra.
-Usos. Você pode usar esta característica um
-número de vezes igual ao seu bônus de proficiência,
-recuperando todos os usos ao terminar um descanso
-longo.
-</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Sorte Anômala
-</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Quando você realiza uma jogada de ataque, teste de
-habilidade ou salvaguarda, você pode forçar uma nova
-tentativa.
-Você rerrola o dado e deve usar o novo resultado.
-Você pode usar esta característica após ver o
-resultado da rolagem, mas antes que seus efeitos
-sejam aplicados.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso curto
-ou longo.
-</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Reflexo Instintivo
-</h4>
-                        <p class="text-xs text-gray-300">Reação: No início de um combate, imediatamente
-após a rolagem de iniciativa, mas antes do primeiro
-turno ser resolvido, você pode agir instintivamente.
-Escolha um dos seguintes efeitos:
-Você troca de posição com uma criatura aliada a
-até 3 metros de você.
-Você se move até metade do seu deslocamento
-sem provocar ataques de oportunidade.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso curto
-ou longo.
-</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Persistência Mortal
-</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Quando você seria reduzido a 0 pontos de vida, mas
-não morto instantaneamente, você pode permanecer
-com 1 ponto de vida em vez disso.
-Após usar esta característica, você não pode usá-la
-novamente até terminar um descanso longo.
-Se você sofrer dano que resultaria em morte
-instantânea, esta característica não tem efeito.</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Toque do Destino</h4>
-                        <p class="text-xs text-gray-300">Reação:
-Quando você ou uma criatura aliada que você possa
-ver a até 9 metros realiza uma jogada de ataque, teste
-de habilidade ou salvaguarda, você pode usar sua
-reação para influenciar o resultado.
-Role “1d4” e adicione o resultado à rolagem.
-Você pode usar esta característica após ver a
-rolagem, mas antes que seus efeitos sejam aplicados.
-Usos. Você pode usar esta característica um
-número de vezes igual ao seu bônus de proficiência,
-recuperando todos os usos ao terminar um descanso
-longo.
-</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Desvio Improvisado</h4>
-                        <p class="text-xs text-gray-300">Reação:
-Quando você é alvo de um ataque, você pode usar
-sua reação para tentar evitá-lo.
-Você ganha um bônus de +2 na Classe de
-Armadura contra aquela jogada de ataque,
-potencialmente fazendo com que o ataque erre.
-Você pode usar esta característica após ver a jogada
-de ataque, mas antes que o Mestre determine o
-resultado.
-Usos. Você pode usar esta característica um
-número de vezes igual ao seu bônus de proficiência,
-recuperando todos os usos ao terminar um descanso
-longo.
-</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Presságio Favorável
-</h4>
-                        <p class="text-xs text-gray-300">Característica Mística
-Antes de realizar uma jogada de ataque, teste de
-habilidade ou salvaguarda, você pode invocar um
-vislumbre do destino.
-Você realiza a rolagem com vantagem.
-Usos. Você pode usar esta característica duas
-vezes, recuperando todos os usos ao terminar um
-descanso longo.
-</p>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <section class="mb-12 fade-in-section">
-            <div class="ascensao-card border-l-4 border-green-500">
-                <span class="tag-estagio bg-green-500">Estágio 3 — Tocando o Divino (30-44)</span>
-                <p class="text-sm text-gray-400 mb-6 italic">Ao atingir este estágio, você escolhe uma das habilidades abaixo:</p>
-                
-                <div class="space-y-4">
-                    <div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Corpo Heroico</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Seu corpo transcende os limites mortais,
-adquirindo resiliência sobrenatural.
-Você recebe um bônus de +1 na sua Classe de
-Armadura enquanto não estiver incapacitado.
-Além disso, aumente seu valor de Força ou
-Constituição em +1, até um máximo de 20.
-Esse bônus na Classe de Armadura se acumula
-com outras fontes, exceto bônus com o mesmo nome.
-</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Mente Estratégica</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Sua mente é tocada pela lógica divina e pela
-percepção absoluta.
-Você recebe um bônus de +1 na Classe de
-Dificuldade de todas as suas habilidades e magias.
-Além disso, aumente sua Inteligência ou Sabedoria
-em +1, até um máximo de 20.
-Este bônus se aplica apenas a efeitos originados
-diretamente de você.</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Movimento Divino
-</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Você se move como se o mundo físico tivesse
-menos influência sobre você.
-Seu deslocamento aumenta em 3 metros.
-Você ignora terreno difícil não mágico. Terreno
-difícil mágico ainda afeta você normalmente, a menos
-que você também possua outra característica que o
-negue.
-Esse bônus se aplica a todos os seus tipos de
-deslocamento.
-</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Pele Lendária</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Sua pele adquire resistência semelhante à de
-criaturas míticas.
-Sempre que você sofre dano de um ataque ou
-efeito, reduza o dano em um valor igual à metade do
-seu bônus de proficiência (arredondado para cima).
-Essa redução ocorre após determinar o dano, mas
-antes de aplicar resistências ou vulnerabilidades.</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Sentidos Elevados</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Seus sentidos ultrapassam as limitações humanas.
-Você recebe:
-+2 bônus em iniciativa
-+2 bônus em Percepção passiva
-Além disso, você não pode ser surpreendido
-enquanto estiver consciente.
-Você ainda pode ser afetado por condições que
-limitem seus sentidos, como cegueira ou surdez.</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Sangue Resiliente</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Sua constituição torna-se excepcionalmente
-estável.
-Você tem vantagem em todas as salvaguardas de
-Constituição.
-Além disso, uma vez por turno, quando você falhar
-em uma salvaguarda de Constituição, você pode
-adicionar seu bônus de proficiência à rolagem,
-potencialmente transformando a falha em sucesso.
-Você pode usar esse benefício um número de vezes
-igual ao seu bônus de proficiência, recuperando todos
-os usos ao terminar um descanso longo.</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Força Descomunal</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Sua força rivaliza com a de criaturas lendárias.
-Você recebe +1 nas jogadas de dano de ataques
-corpo a corpo.
-Além disso, você é considerado como uma
-categoria de tamanho maior ao determinar sua
-capacidade de empurrar, puxar ou levantar.
-Esse benefício não altera seu espaço ocupado nem
-alcance.
-</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Essência Arcana</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-A energia mágica flui naturalmente através de você.
-Você aprende um truque à sua escolha da lista de
-magias de qualquer classe.
-Além disso, você recebe +1 nas jogadas de ataque
-de magias.
-Se você não possuir a habilidade de conjurar
-magias, este truque usa Constituição como atributo de
-conjuração.
-</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Agilidade Sobrenatural</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Seus movimentos tornam-se imprevisíveis e fluidos.
-Você pode realizar a ação Desengajar como uma
-ação bônus.
-Usos. Você pode usar esta característica um
-número de vezes igual ao seu bônus de proficiência,
-recuperando todos os usos ao terminar um descanso
-longo.
-Quando você usa esta habilidade, você não provoca
-ataques de oportunidade durante o restante do turno.
-</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-[#d4af37] font-bold">Aura Latente</h4>
-                        <p class="text-xs text-gray-300">Característica Mística:
-Uma presença divina emana de você,
-enfraquecendo seus inimigos.
-Criaturas hostis a até 1,5 metro de você sofrem
-uma penalidade de -1 em salvaguardas contra
-habilidades, magias e efeitos originados por você.
-Esse efeito não se acumula com múltiplas fontes
-iguais</p>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <section class="mb-12 fade-in-section">
-            <div class="ascensao-card border-l-4 border-yellow-500">
-                <span class="tag-estagio bg-yellow-500 text-black">Estágio 4 — Escolhido dos Deuses (45-59)</span>
-<p class="text-sm text-gray-400 mb-6 italic">Ao atingir este estágio, você escolhe uma das habilidades abaixo:</p>
-
-                <div class="grid md:grid-cols-2 gap-4 mt-4">
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Golpe Preciso</h4>
-                        <p class="text-[10px] text-gray-400">Característica de Combate:
-Uma vez por turno, quando você realiza uma jogada
-de ataque, você pode adicionar +2 à rolagem.
-Se o ataque atingir, ele causa 1d8 de dano
-adicional.
-Você pode declarar o uso após rolar o ataque, mas
-antes do resultado ser determinado.
-</p>
-                    </div>
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Investida Divina</h4>
-                        <p class="text-[10px] text-gray-400">Característica de Combate:
-Se você se mover pelo menos 6 metros em linha
-reta imediatamente antes de atingir uma criatura com
-um ataque corpo a corpo, o ataque causa 1d10 de
-dano adicional.
-O alvo deve realizar uma salvaguarda de Força (CD
-= 8 + Proficiência + modificador de atributo
-relevante).
-Em caso de falha, o alvo fica caído.
-</p>
-                    </div>
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Defesa Instintiva</h4>
-                        <p class="text-[10px] text-gray-400">Reação:
-Quando você é atingido por um ataque, você pode
-usar sua reação para ganhar resistência ao dano
-daquele ataque ou um bônus de +3 na Classe de
-Armadura contra aquele ataque.
-Você pode escolher usar esta habilidade após ver a
-jogada de ataque, mas antes do dano ser aplicado.
-Usos. Proficiência por descanso longo. }}
-Contra-Ataque Divino
-Reação
-Quando uma criatura dentro do seu alcance erra
-um ataque contra você, você pode usar sua reação
-para realizar um ataque corpo a corpo contra ela.
-Esse ataque ocorre imediatamente após o erro.
-Usos. Proficiência por descanso longo.
-</p>
-                    </div>
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Conjuração Acelerada
-</h4>
-                        <p class="text-[10px] text-gray-400">Característica Mística:
-Quando você conjura uma magia com tempo de
-conjuração de 1 ação, você pode alterar o tempo de
-conjuração para uma ação bônus.
-A magia deve ser de nível igual ou inferior ao seu
-bônus de proficiência.
-Você ainda deve seguir as regras normais de
-conjuração de magia.
-Usos. Proficiência por descanso longo.
-</p>
-                    </div>
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Escudo Arcano
-</h4>
-                        <p class="text-[10px] text-gray-400">Reação:
-Quando você sofre dano, você pode usar sua reação
-para reduzir o dano em 2d10 + modificador de
-habilidade de conjuração.
-Você pode usar essa habilidade após ver o valor do
-dano, mas antes de aplicá-lo.
-Usos. Proficiência por descanso longo.</p>
-                    </div>
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Impacto Brutal</h4>
-                        <p class="text-[10px] text-gray-400">Característica de Combate:
-Quando você acerta um acerto crítico com um
-ataque, você causa 1d12 de dano adicional.
-Esse dano é do mesmo tipo do ataque que o
-originou.
-</p>
-                    </div>
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Foco de Combate
-</h4>
-                        <p class="text-[10px] text-gray-400">Ação Bônus:
-Você entra em um estado de concentração marcial.
-Até o início do seu próximo turno, você recebe +1
-nas jogadas de ataque.
-Usos. Proficiência por descanso longo.
-</p>
-                    </div>
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Canal Divino
-</h4>
-                        <p class="text-[10px] text-gray-400">Característica Mística:
-Uma vez por turno, quando você causa dano com
-uma magia, você pode adicionar seu bônus de
-proficiência ao dano causado.
-Esse bônus é aplicado após a rolagem de dano.
-</p>
-                    </div>
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Aura de Guerra</h4>
-                        <p class="text-[10px] text-gray-400">Ação Bônus:
-Você emana uma aura de combate inspiradora.
-Aliados a até 3 metros recebem +1 nas jogadas de
-ataque até o início do seu próximo turno.
-Usos. Proficiência por descanso longo.
-</p>
-
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="mb-12 fade-in-section">
-            <div class="ascensao-card border-l-4 border-orange-500">
-                <span class="tag-estagio bg-orange-500">Estágio 5 — Herói Lendário (60-74)</span>
-                <p class="text-xs text-gray-300 mb-4">Ao atingir este estágio, você escolhe duas das
-habilidades abaixo.</p>
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Corpo de Campeão
-</h4>
-                        <p class="text-[10px] text-gray-400">Característica Mística:
-Seu corpo torna-se digno das lendas, suportando
-dores, impactos e exaustão muito além dos limites
-mortais.
-Seus pontos de vida máximos aumentam em 25, e
-esse aumento se aplica novamente sempre que você
-adquirir este estágio. Sempre que seus pontos de vida
-máximos aumentarem desta forma, seus pontos de
-vida atuais também aumentam na mesma quantidade.
-Além disso, você tem vantagem em testes de
-resistência contra morte.
-Por fim, quando você recupera pontos de vida por
-meio de magia, habilidade ou descanso, você recupera
-uma quantidade adicional de pontos de vida igual ao
-seu bônus de proficiência. Esse bônus adicional pode
-ser aplicado apenas uma vez por efeito de cura.
-Este benefício não se acumula consigo mesmo caso
-você receba esta característica por mais de uma fonte.
-</p>
-
-
-            </div>
-
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Golpe Lendário</h4>
-                        <p class="text-[10px] text-gray-400">Característica de Combate:
-Seus ataques carregam o peso de feitos que já
-entraram para a história.
-Uma vez por turno, quando você acerta uma
-criatura com um ataque com arma ou ataque
-desarmado, você pode causar dano adicional igual ao
-seu bônus de proficiência.
-Você pode decidir usar esta característica após
-confirmar que o ataque atingiu, mas antes de rolar o
-dano.
-Se o ataque atingir mais de uma criatura ao mesmo
-tempo, como por meio de uma característica especial,
-o dano adicional se aplica apenas a uma dessas
-criaturas.
-O dano adicional é do mesmo tipo do ataque que o
-provocou.</p>
-
-            </div>
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Presença Dominante
-</h4>
-                        <p class="text-[10px] text-gray-400">Característica Mística:
-Sua mera presença em combate pressiona o
-espírito e a confiança de seus adversários.
-Criaturas hostis a até 3 metros de você sofrem uma
-penalidade de -1 nas jogadas de ataque feitas contra
-você.
-Essa penalidade se aplica apenas enquanto você
-não estiver incapacitado e a criatura puder ver ou
-perceber você.
-Além disso, você tem vantagem em testes de
-Carisma (Intimidação) feitos contra criaturas que
-tenham testemunhado você em combate, visto seus
-poderes ou ouvido relatos confiáveis sobre seus feitos.
-Se uma criatura for imune à condição
-amedrontado, ela ainda sofre a penalidade nas
-jogadas de ataque, mas o Mestre pode negar a
-vantagem em Intimidação, se apropriado.
-</p>
-
-            </div>
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Resistência Mítica</h4>
-                        <p class="text-[10px] text-gray-400">Característica Mística:
-Seu corpo e espírito se adaptam aos perigos mais
-extremos.
-Ao terminar um descanso longo, escolha um dos
-seguintes tipos de dano: ácido, frio, fogo, força,
-elétrico, necrótico, psíquico, radiante, trovejante,
-venenoso ou ácido.
-Até terminar seu próximo descanso longo, você tem
-resistência ao tipo de dano escolhido.
-Além disso, uma vez por descanso curto, quando
-você sofrer dano do tipo escolhido, você pode usar sua
-reação para reduzir esse dano em uma quantidade
-adicional igual a “1d12 + seu bônus de proficiência”.
-Você pode usar essa reação após ver o dano, mas
-antes de aplicá-lo.</p>
-
-            </div>
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Aura Heroica</h4>
-                        <p class="text-[10px] text-gray-400">Característica Mística:
-Sua presença inspira aliados e estabiliza a linha de
-frente mesmo nos momentos mais caóticos.
-Enquanto você não estiver incapacitado, criaturas
-aliadas à sua escolha a até 3 metros de você recebem
-+1 na Classe de Armadura.
-Uma criatura perde esse benefício imediatamente
-se sair do alcance da aura.
-Além disso, quando um aliado beneficiado por esta
-aura falha em uma salvaguarda contra a condição
-amedrontado, você pode usar sua reação para
-permitir que ele repita a salvaguarda, devendo usar o
-novo resultado.
-Usos. Você pode usar esta reação um número de
-vezes igual ao seu bônus de proficiência, recuperando
-todos os usos ao terminar um descanso longo.
-</p>
-
-            </div>
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Espírito Indomável</h4>
-                        <p class="text-[10px] text-gray-400">Característica Mística:
-Seu espírito se recusa a ceder, mesmo diante de
-efeitos capazes de destruir a mente ou dobrar a
-vontade.
-Quando você falha em uma salvaguarda, você pode
-refazer a rolagem. Você deve usar o novo resultado.
-Você pode decidir usar esta característica após
-saber que falhou, mas antes de sofrer quaisquer
-efeitos da falha.
-Usos. Você pode usar esta característica duas
-vezes, recuperando todos os usos ao terminar um
-descanso longo.
-Se a salvaguarda possuir um efeito parcial em caso
-de sucesso, você passa a sofrer apenas esse efeito
-parcial caso a nova rolagem seja bem-sucedida.
-</p>
-
-            </div>
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Caçador de Monstros</h4>
-                        <p class="text-[10px] text-gray-400">Característica de Combate:
-Seus golpes são particularmente devastadores
-contra criaturas de grande porte e natureza
-monstruosa.
-Uma vez por turno, quando você atinge uma
-criatura Grande ou maior com um ataque com arma,
-você causa “2d6” de dano adicional a ela.
-Você pode decidir usar esta característica após o
-ataque atingir, mas antes de rolar o dano.
-Além disso, você tem vantagem em testes de
-Sabedoria (Sobrevivência) e Inteligência relacionados
-a rastrear, identificar ou recordar informações sobre
-monstros, bestas monstruosas, gigantes e criaturas
-lendárias, a critério do Mestre.
-O dano adicional é do mesmo tipo do ataque que o
-provocou.
-</p>
-
-            </div>
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Recuperação Lendária</h4>
-                        <p class="text-[10px] text-gray-400">Ação Bônus:
-Seu corpo aprendeu a se recompor com velocidade
-antinatural em meio ao combate.
-Como uma ação bônus, você recupera pontos de
-vida iguais a “2d8 + seu modificador de Constituição +
-seu bônus de proficiência”.
-Você não pode usar esta característica se estiver
-com 0 pontos de vida, a menos que outra habilidade
-permita que você realize ações bônus nessa condição.
-Usos. Você pode usar esta característica um
-número de vezes igual ao seu bônus de proficiência,
-recuperando todos os usos ao terminar um descanso
-longo.
-Quando você usa esta característica, sinais visíveis
-de energia divina, determinação heroica ou vitalidade
-mítica se manifestam em você, conforme o tema do
-personagem.
-</p>
-
-            </div>
-
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Mestre da Batalha</h4>
-                        <p class="text-[10px] text-gray-400">Característica de Combate:
-Você enxerga pequenas aberturas no combate e
-sabe explorá-las com perfeição.
-Quando você realiza uma jogada de ataque, você
-pode escolher realizar a rolagem com vantagem.
-Você deve declarar o uso desta característica antes
-de rolar o ataque.
-Usos. Você pode usar esta característica um
-número de vezes igual ao seu bônus de proficiência,
-recuperando todos os usos ao terminar um descanso
-longo.
-Além disso, se o ataque realizado com vantagem
-atingir, seu deslocamento não provoca ataques de
-oportunidade da criatura atingida até o final do turno
-atual.
-</p>
-
-            </div>
-
-                    <div class="p-3 bg-black/30 border border-gray-800">
-                        <h4 class="text-[#d4af37] text-sm">Aura Intimidante
-</h4>
-                        <p class="text-[10px] text-gray-400">Característica Mística:
-A sua presença é tão esmagadora que inimigos
-hesitam antes mesmo de atacá-lo.
-Uma criatura hostil que iniciar o turno a até 3
-metros de você deve ser bem-sucedida em uma
-salvaguarda de Sabedoria (CD = 8 + seu bônus de
-proficiência + seu modificador de Carisma, Força ou
-Sabedoria, escolhido quando você adquire esta
-característica) ou terá desvantagem na próxima
-jogada de ataque que realizar até o final do turno.
-Uma criatura que seja bem-sucedida nessa
-salvaguarda fica imune a este efeito até o início do
-próximo turno dela.
-Você deve estar consciente e não incapacitado para
-que esta aura funcione.</p>
-
-            </div>
-
-        </section>
-
-        <section class="mb-12 fade-in-section">
-            <div class="ascensao-card border-l-4 border-purple-600">
-                <span class="tag-estagio bg-purple-600">Estágio 6 — Semideus Desperto (75-89)</span>
-                <p class="text-xs text-gray-300 mb-4">Ao atingir este estágio, você escolhe uma das
-habilidades abaixo.
-</p>
-                <div class="p-4 bg-purple-600/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Ira dos Deuses</h4>
-                    <p class="text-xs text-gray-300">Ação Bônus:
-Você desperta por um instante a fúria dos poderes
-superiores que observam seu destino.
-Como uma ação bônus, você entra em um estado de
-exaltação divina que dura por 1 minuto ou até você
-ficar incapacitado. Durante esse estado, uma vez em
-cada um dos seus turnos, quando você atinge uma
-criatura com um ataque, você recebe os seguintes
-benefícios:
-Você recebe +2 na jogada de ataque.
-O ataque causa “2d8” de dano adicional.
-Você pode aplicar esse benefício a apenas um
-ataque por turno, mesmo que realize múltiplos
-ataques.
-O dano adicional é do mesmo tipo do ataque que o
-provocou, a menos que o Mestre permita que ele
-assuma uma manifestação temática apropriada ao seu
-poder divino.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso longo
-</p>
-                </div>
-
-                <div class="p-4 bg-purple-600/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Corpo Imortal</h4>
-                    <p class="text-xs text-gray-300">Característica Mística:
-Seu corpo se recusa a cair enquanto sua lenda
-ainda não chegou ao fim.
-Quando você seria reduzido a 0 pontos de vida, mas
-não morto instantaneamente, você pode permanecer
-com 1 ponto de vida em vez disso.
-Ao fazer isso, até o início do seu próximo turno,
-você recebe resistência a todos os tipos de dano.
-Além disso, durante esse período, você tem
-vantagem em salvaguardas e testes feitos para evitar
-ser empurrado, derrubado ou incapacitado
-fisicamente.
-Após usar esta característica, você não pode usá-la
-novamente até terminar um descanso longo.
-Se um efeito causar morte instantânea, esta
-característica não impede essa morte.
-
-</p>
-                </div>
-
-                <div class="p-4 bg-purple-600/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Domínio Elemental
-</h4>
-                    <p class="text-xs text-gray-300">Característica Mística:
-Você assume uma afinidade absoluta com uma
-força primordial.
-Escolha um dos seguintes tipos de dano ao adquirir
-esta característica: ácido, frio, fogo, elétrico, necrótico,
-psíquico, radiante ou trovejante.
-Uma vez por turno, quando você causa dano com
-um ataque, magia ou habilidade, você pode causar
-“1d8” de dano adicional do tipo escolhido.
-Além disso, seus ataques, magias e habilidades
-ignoram resistência ao tipo de dano escolhido.
-Se uma criatura for imune ao tipo de dano
-escolhido, essa imunidade não é ignorada, a menos
-que o Mestre determine o contrário para efeitos
-excepcionalmente épicos.
-Quando você adquire esta característica,
-manifestações visuais relacionadas ao elemento
-escolhido passam a acompanhar seus poderes
-sempre que você desejar.
-</p>
-                </div>
-
-                <div class="p-4 bg-purple-600/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Reflexos Sobrenaturais
-</h4>
-                    <p class="text-xs text-gray-300">Característica Mística:
-Seus reflexos ultrapassam qualquer padrão mortal,
-permitindo respostas instantâneas mesmo sob
-pressão extrema.
-Você recebe +2 na Classe de Armadura.
-Além disso, você tem vantagem em salvaguardas de
-Destreza.
-Por fim, quando você é forçado a realizar uma
-salvaguarda de Destreza para sofrer metade do dano
-em caso de sucesso, você pode usar sua reação para
-receber resistência àquele dano se for bem-sucedido
-na salvaguarda.
-Usos. Você pode usar essa reação um número de
-vezes igual ao seu bônus de proficiência, recuperando
-todos os usos ao terminar um descanso longo.
-
-</p>
-                </div>
-
-                <div class="p-4 bg-purple-600/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Ação Divina</h4>
-                    <p class="text-xs text-gray-300">Característica Mística:
-Por um breve momento, você rompe a cadência
-comum do combate e age além do que os mortais
-poderiam suportar.
-No seu turno, você pode realizar uma ação
-adicional.
-Essa ação adicional pode ser usada para realizar a
-ação Atacar (uma única vez), Correr, Desengajar,
-Esquivar, Usar um Objeto ou Conjurar uma magia
-com tempo de conjuração de 1 ação.
-Se você usar essa ação adicional para conjurar uma
-magia, ainda deverá obedecer às restrições normais
-de conjuração no mesmo turno.
-Você pode ativar esta característica em qualquer
-momento do seu turno, mas não durante o turno de
-outra criatura.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso curto
-ou longo.</p>
-                </div>
-
-                <div class="p-4 bg-purple-600/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Vontade Absoluta</h4>
-                    <p class="text-xs text-gray-300">Característica Mística:
-Sua mente torna-se um bastião que pouquíssimos
-poderes podem violar.
-Você se torna imune à condição amedrontado.
-Além disso, você tem vantagem em salvaguardas
-contra efeitos que causariam as condições
-enfeitiçado, amedrontado ou atordoado, ou que
-tentem ler sua mente, alterar suas emoções, controlar
-suas ações ou manipular sua percepção.
-Se você for bem-sucedido em uma dessas
-salvaguardas, você pode usar sua reação para revelar
-sua resistência sobrenatural. Ao fazê-lo, a criatura que
-causou o efeito sofre desvantagem na próxima jogada
-de ataque ou salvaguarda que fizer antes do final do
-próximo turno dela.
-Usos. Você pode usar essa reação um número de
-vezes igual ao seu bônus de proficiência, recuperando
-todos os usos ao terminar um descanso longo.
-</p>
-                </div>
-
-                <div class="p-4 bg-purple-600/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Recuperação Divina
-</h4>
-                    <p class="text-xs text-gray-300">Ação Bônus:
-A energia divina em seu sangue reconstitui sua
-forma mesmo sob violência intensa.
-Como uma ação bônus, você ativa esta
-característica por 3 rodadas. Até o final da duração,
-no início de cada um dos seus turnos, você recupera
-10 pontos de vida.
-Esta regeneração termina antecipadamente se você
-ficar com 0 pontos de vida ou morrer.
-Enquanto esta característica estiver ativa, você tem
-vantagem em salvaguardas contra as condições
-envenenado e exaustão.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso longo.
-</p>
-                </div>
-
-                <div class="p-4 bg-purple-600/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Golpe Inevitável</h4>
-                    <p class="text-xs text-gray-300">Característica de Combate:
-Você aprendeu a atingir exatamente onde a defesa
-do inimigo falha.
-Uma vez por turno, quando você realiza uma jogada
-de ataque, você pode ignorar bônus de Classe de
-Armadura concedidos por escudos, cobertura, magias
-ou efeitos temporários ao determinar se o ataque
-atinge.
-Você pode decidir usar esta característica após ver
-a jogada, mas antes do Mestre declarar se ela acerta
-ou erra.
-Este benefício não ignora a Classe de Armadura
-base da criatura nem a armadura física que ela veste,
-apenas bônus adicionais à Classe de Armadura.
-Usos. Você pode usar esta característica um
-número de vezes igual ao seu bônus de proficiência,
-recuperando todos os usos ao terminar um descanso
-longo.
-</p>
-                </div>
-
-                <div class="p-4 bg-purple-600/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Forma Superior</h4>
-                    <p class="text-xs text-gray-300">Ação:
-Você libera sua forma semidivina em um estado
-mais estável e completo.
-Como uma ação, você assume uma forma superior
-por 1 minuto. Durante a duração, você recebe os
-seguintes benefícios:
-+2 na Classe de Armadura.
-+2 em todas as salvaguardas.
-Seu deslocamento aumenta em 3 metros.
-Você tem vantagem em testes de Força e
-Constituição.
-A transformação termina antecipadamente se você
-ficar inconsciente ou morrer.
-Uma manifestação visível acompanha esta
-transformação, como olhos brilhantes, aura divina,
-marcas luminosas, armadura espectral, vento ao
-redor do corpo ou outro sinal semelhante.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso longo.
-</p>
-                </div>
-
-                <div class="p-4 bg-purple-600/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Presença Divina
-</h4>
-                    <p class="text-xs text-gray-300">Característica Mística:
-Seu poder se derrama ao seu redor e torna mais
-difícil resistir à sua vontade.
-Criaturas hostis a até 3 metros de você têm
-desvantagem em salvaguardas contra suas
-habilidades, magias e características enquanto você
-não estiver incapacitado.
-Uma criatura que não possa ver, ouvir ou perceber
-sua presença não é afetada, a critério do Mestre.
-Esse efeito não se acumula com efeitos idênticos ou
-equivalentes que imponham desvantagem
-generalizada nas mesmas salvaguardas.</p>
-                </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="mb-12 fade-in-section">
-            <div class="ascensao-card border-l-4 border-red-600">
-                <span class="tag-estagio bg-red-600">Estágio 7 — Ascensão Divina (90-100)</span>
-                <p class="text-xs text-gray-300 mb-4">Ao atingir este estágio, você escolhe 1 Dádiva Divina e
-1 Habilidade Assinatura.
-</span>
-                <p class="text-xs text-gray-300 mb-4">DÁDIVAS:
-</p>
-
-
-                <div class="p-4 bg-red-900/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Avatar Olímpico</h4>
-                    <p class="text-xs text-gray-300">✨ Aetherion:
-Você assume um aspecto digno de ser reconhecido
-pelos próprios deuses.
-Como uma ação, você manifesta sua forma avatar
-por 1 minuto. Durante a duração, você recebe os
-seguintes benefícios:
-Você recebe +2 em testes de atributo, jogadas de
-ataque, jogadas de dano, Classe de Armadura e
-salvaguardas.
-Você tem resistência a todos os tipos de dano.
-Uma vez em cada um dos seus turnos, quando
-você atinge uma criatura com um ataque ou causa
-dano com uma magia, você pode causar “2d8” de
-dano adicional.
-O dano adicional é do mesmo tipo do ataque ou
-magia que o provocou, ou de um tipo apropriado ao
-seu domínio, com permissão do Mestre.
-A manifestação dessa forma é sempre grandiosa,
-como coroas de luz, relâmpagos, fogo sagrado,
-sombras régias, armadura celestial, olhos solares ou
-outros sinais de ascensão.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso longo.
-</p>
-                </div>
-
-                <div class="p-4 bg-red-900/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Existência Elevada</h4>
-                    <p class="text-xs text-gray-300">Humano:
-Sua existência já não pode ser medida inteiramente
-pelos padrões dos mortais.
-Você não envelhece e não pode morrer em
-decorrência de envelhecimento natural ou
-sobrenatural.
-Além disso, acertos críticos contra você são
-tratados como acertos normais.
-Por fim, quando você falha em uma salvaguarda
-contra um efeito que envelheça, enfraqueça ou
-deteriore seu corpo ou essência, você pode optar por
-ser bem-sucedido em vez disso.
-Usos. Você pode usar esse benefício de sucesso
-automático uma vez, recuperando o uso ao terminar
-um descanso longo.
-</p>
-                </div>
-
-                <div class="p-4 bg-red-900/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Corpo Perfeito</h4>
-                    <p class="text-xs text-gray-300">🪨 Megalion:
-Sua forma aproxima-se de um ideal físico e
-espiritual inalcançável aos mortais.
-Você recebe +2 permanente na Classe de
-Armadura.
-Além disso, seu deslocamento aumenta em 3
-metros, e você recebe +2 em testes de Atletismo e
-Acrobacia.
-Por fim, uma vez em cada um dos seus turnos,
-quando você falha em um teste de Força, Destreza ou
-Constituição, você pode adicionar +2 à rolagem,
-potencialmente transformando a falha em sucesso.
-</p>
-                </div>
-
-                <div class="p-4 bg-red-900/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Essência Imortal</h4>
-                    <p class="text-xs text-gray-300">🔥 Tartarianos:
-Sua centelha divina resiste ao fim absoluto.
-Você não pode ser morto instantaneamente por
-dano massivo, efeitos que causem morte automática
-ou habilidades semelhantes, a menos que o efeito
-venha de uma divindade maior, artefato supremo ou
-decisão específica do Mestre em um contexto épico.
-Sempre que um efeito tentaria matá-lo
-instantaneamente, você é reduzido a 1 ponto de vida
-em vez disso.
-Após usar este benefício, você não pode usá-lo
-novamente até terminar um descanso longo.
-</p>
-                </div>
-
-                <div class="p-4 bg-red-900/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Aura de Soberania</h4>
-                    <p class="text-xs text-gray-300">🐺 Therionitas:
-Seu poder é reconhecido instintivamente por
-aliados e temido pelos inimigos.
-Enquanto você não estiver incapacitado, aliados à
-sua escolha a até 9 metros de você recebem +2 em
-salvaguardas contra ser amedrontados ou
-enfeitiçados.
-Além disso, criaturas hostis que iniciem o turno a
-até 3 metros de você sofrem uma penalidade de -2 na
-primeira jogada de ataque que fizerem até o final do
-turno.
-Uma criatura não é afetada por essa penalidade se
-for imune à condição amedrontado e tiver ND ou nível
-igual ou superior ao seu, a critério do Mestre.</p>
-                </div>
-
-</span>
-                <p class="text-xs text-gray-300 mb-4">Habilidades Assinatura:
-</p>
-
-                <div class="p-4 bg-red-900/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Golpe do Olimpo</h4>
-                    <p class="text-xs text-gray-300">Ação:
-Você descarrega um ataque de magnitude quase
-divina em um único instante.
-Como parte desta ação, faça um ataque com arma
-ou ataque desarmado. Se o ataque atingir, ele causa
-“6d10” de dano adicional.
-Esse dano ignora resistência ao tipo de dano do
-ataque.
-Se o alvo for uma criatura Grande ou maior, ele
-deve ser bem-sucedido em uma salvaguarda de Força
-(CD = 8 + seu bônus de proficiência + seu modificador
-de Força, Destreza ou atributo de conjuração) ou será
-derrubado no chão.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso longo.
-</p>
-                </div>
-
-                <div class="p-4 bg-red-900/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Ruptura do Destino
-</h4>
-                    <p class="text-xs text-gray-300">Reação:
-Você interfere diretamente no fio do destino,
-recusando o resultado que acabou de acontecer.
-Quando uma criatura que você possa ver a até 18
-metros realiza uma jogada de ataque, teste de
-habilidade ou salvaguarda, você pode usar sua reação
-para forçá-la a repetir a rolagem.
-Você escolhe qual dos dois resultados será usado.
-Você pode usar esta característica após a rolagem
-ser feita, mas antes que seus efeitos sejam aplicados.
-Se a criatura estiver protegida por poder divino
-equivalente, artefato superior ou efeito semelhante, o
-Mestre pode exigir uma disputa narrativa ou limitar
-esta habilidade.
-Usos. Você pode usar esta característica uma vez
-por sessão.</p>
-                </div>
-
-                <div class="p-4 bg-red-900/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Comando Divino
-</h4>
-                    <p class="text-xs text-gray-300">Ação:
-Sua voz carrega autoridade sobrenatural, e poucos
-conseguem resistir a ela.
-Escolha uma criatura que você possa ver a até 18
-metros. O alvo deve ser bem-sucedido em uma
-salvaguarda de Sabedoria (CD = 8 + seu bônus de
-proficiência + seu modificador de Carisma, Sabedoria
-ou atributo de conjuração) ou perde o próximo turno.
-Criaturas imunes à condição enfeitiçado ou
-incapacitadas de ouvir você têm vantagem nessa
-salvaguarda, a critério do Mestre.
-Após ser afetada ou passar na salvaguarda contra
-esta habilidade, uma criatura fica imune a ela por 24
-horas.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso longo.
-</p>
-                </div>
-
-                <div class="p-4 bg-red-900/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Tempo Quebrado</h4>
-                    <p class="text-xs text-gray-300">Ação:
-Por um instante, você se move fora do fluxo normal
-do tempo.
-Após usar esta ação, você ganha imediatamente um
-turno adicional, que ocorre logo após o turno atual.
-Durante esse turno adicional, você pode se mover,
-realizar uma ação, usar uma ação bônus e interagir
-com objetos normalmente.
-Você não pode usar esta característica para ganhar
-outro turno adicional, mesmo por meio de outras
-habilidades semelhantes.
-Se um efeito terminaria no fim do seu turno atual,
-ele permanece ativo até o final do turno adicional.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso longo.
-</p>
-                </div>
-
-                <div class="p-4 bg-red-900/10 border border-red-900/30">
-                    <h4 class="text-white font-bold mb-2">Chamado Divino
-</h4>
-                    <p class="text-xs text-gray-300">Ação:
-Você convoca uma manifestação superior para lutar
-ao seu lado.
-Escolha uma criatura espiritual, celestial, infernal,
-elemental, ancestral ou mitológica apropriada ao seu
-tema divino. Essa criatura surge em um espaço
-desocupado que você possa ver a até 9 metros.
-A criatura age imediatamente após você na ordem
-de iniciativa, obedece aos seus comandos verbais e
-permanece por 1 minuto, até cair a 0 pontos de vida
-ou até você dispensá-la sem gastar ação.
-O Mestre define a ficha da criatura convocada, mas
-ela deve ser equivalente a uma criatura poderosa
-apropriada ao estágio da campanha, sem superar o
-protagonismo do personagem.
-Usos. Você pode usar esta característica uma vez,
-recuperando seu uso ao terminar um descanso
-longo.</p>
-                </div>
-
-            </div>
-        </section>
-
+  </div>
+
+  <!-- HUD -->
+  <header class="hud">
+    <div class="hud-left">
+      <span class="hp">HP <span class="bar"><i style="width:88%"></i></span> 88/100</span>
+      <span class="mp">MP <span class="bar mp-bar"><i style="width:62%"></i></span> 62/100</span>
+    </div>
+    <div class="hud-center">★ ASCENSÃO ★</div>
+    <div class="hud-right">
+      <span>NÍVEL 5</span>
+      <span>XP 1240</span>
+      <span class="coins">◎ 320</span>
+    </div>
+  </header>
+
+   <main>
+    <!-- HEADER -->
+    <section class="ascensao-header">
+      <h1 class="ascensao-title">SISTEMA DE ASCENSÃO</h1>
+      <p class="ascensao-subtitle">~ a jornada da mortalidade à semi-divindade ~</p>
+    </section>
+
+    <!-- ==================== ESTÁGIO 1 ==================== -->
+    <section id="estagio1" class="screen stage-1">
+      <div class="stage-card">
+        <div class="stage-card-header">
+          <img src="imagens/sprites/ascensao_1.png" alt="Mortal Comum" class="stage-sprite">
+          <h2>ESTÁGIO 1 — MORTAL COMUM (1–14)</h2>
         </div>
+        <div class="stage-card-body">
+          <span class="stage-tag">Estágio 1 — Mortal Comum (1–14)</span>
+          <p style="font-family:'VT323',monospace;font-size:19px;color:var(--ink);margin:12px 0">Nenhuma influência divina. Apenas feitos humanos normais.</p>
+          <p style="font-family:'VT323',monospace;font-size:17px;color:var(--ink-dim);font-style:italic;margin:8px 0">Narrativa: Os Deuses ignoram sua existência no Olimpo.</p>
+        </div>
+      </div>
+    </section>
 
-        <section class="fade-in-section">
-            <h2 class="text-3xl text-gold mt-12 mb-6">🎲 Mecânica de Pontuação</h2>
-            <div class="grid md:grid-cols-2 gap-4 text-sm">
-                <div class="mecanica-box">
-                    <h4 class="text-green-500 mb-4">Ganhos (Aclamação)</h4>
-                    <ul class="space-y-2 text-gray-300">
-                        <li>✨ Grandes Feitos: <span class="text-white">1d4 pontos</span></li>
-                        <li>📜 Missões: <span class="text-white">Dificuldade da missão</span></li>
-                        <li>⚔️ Derrotar Lendários: <span class="text-white">1 + Dificuldade</span></li>
-                    </ul>
-                </div>
-                <div class="mecanica-box" style="border-color: #922610;">
-                    <h4 class="text-red-500 mb-4">Perdas (Ira Divina)</h4>
-                    <ul class="space-y-2 text-gray-300">
-                        <li>❌ Negar Ajuda: <span class="text-white">-1 ponto</span></li>
-                        <li>💀 Matar Inocente: <span class="text-white">-1d4 pontos</span></li>
-                        <li>⚡ Desrespeitar Deuses: <span class="text-white">-5 (Menor) / -10 (Maior)</span></li>
-                        <li>🏛️ Profanar Templos: <span class="text-white">-15 (Menor) / -30 (Maior)</span></li>
-                    </ul>
-                </div>
-            </div>
+    <!-- ==================== ESTÁGIO 2 ==================== -->
+    <section id="estagio2" class="screen stage-2">
+      <div class="stage-card">
+        <div class="stage-card-header">
+          <img src="imagens/sprites/ascensao_2.png" alt="Marcado pelo Destino" class="stage-sprite">
+          <h2>ESTÁGIO 2 — MARCADO PELO DESTINO (15-29)</h2>
+        </div>
+        <div class="stage-card-body">
+          <span class="stage-tag">Estágio 2 — Marcado pelo Destino (15-29)</span>
+          <p style="font-family:'VT323',monospace;font-size:17px;color:var(--ink-dim);font-style:italic;margin:12px 0">Ao atingir este estágio, você escolhe uma das habilidades abaixo:</p>
 
-            <div class="mecanica-box border-red-600 bg-red-900/10 mt-6">
-                <h4 class="text-red-600 font-bold mb-2">⚠️ Punições Negativas</h4>
-                <p class="text-sm text-gray-300">Pontos negativos no Nível 1 geram punições severas:</p>
-                <ul class="list-disc ml-5 mt-2 text-xs text-gray-400 space-y-1">
-                    <li><span class="text-white">-30:</span> Desvantagem em testes.</li>
-                    <li><span class="text-white">-50:</span> Perseguição divina constante.</li>
-                    <li><span class="text-white">-80:</span> Possibilidade iminente de execução divina.</li>
-                </ul>
-            </div>
-        </section>
+          <div class="ability-box">
+            <h4>FAVORECIDO PELAS MOIRAS</h4>
+            <p><strong>Característica Mística:</strong> Você aprende um truque à sua escolha da lista de magias de qualquer classe. Se você já conhece esse truque, você pode conjurá-lo como uma ação bônus. Quando o fizer, você não pode conjurar o mesmo truque novamente durante o mesmo turno. Além disso, se você conjurar o truque como uma ação bônus, você não pode conjurar uma magia de nível durante esse turno, exceto truques com tempo de conjuração de 1 ação. <strong>Usos.</strong> Você pode usar esta característica um número de vezes igual ao seu bônus de proficiência, e recupera todos os usos ao terminar um descanso longo.</p>
+          </div>
 
-        <footer class="text-center text-gray-600 mt-20 pb-10">
-            <p>© 2026 Sistema Ascensão de Herois</p>
-        </footer>
-    </div>
+          <div class="ability-box">
+            <h4>INSTINTO DE SOBREVIVÊNCIA</h4>
+            <p><strong>Reação:</strong> Quando você sofre dano de um ataque ou efeito que você possa perceber, você pode usar sua reação para reduzir o dano recebido. O dano é reduzido em um valor igual a "1d10 + seu bônus de proficiência". Você pode usar esta característica após ver o valor do dano, mas antes que ele seja aplicado. <strong>Usos.</strong> Você pode usar esta característica um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
 
+          <div class="ability-box">
+            <h4>FIO DO DESTINO</h4>
+            <p><strong>Característica Mística:</strong> Quando você falha em um teste de habilidade ou salvaguarda, você pode recorrer ao destino para tentar novamente. Você refaz a rolagem e adiciona um bônus de +2 ao resultado. Você deve usar o novo resultado. Você pode usar esta característica após saber que falhou, mas antes de quaisquer efeitos da falha serem aplicados. <strong>Usos.</strong> Você pode usar esta característica duas vezes, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
 
-        <footer class="text-center text-gray-600 border-t border-gray-900 pt-8 fade-in-section">
-            <p>© 2026 Sistema Ascensão — Era dos Heróis</p>
-        </footer>
-    </main>
+          <div class="ability-box">
+            <h4>MAU PRESSÁGIO</h4>
+            <p><strong>Reação:</strong> Quando uma criatura que você possa ver realiza uma jogada de ataque contra você ou uma criatura que você possa ver, você pode usar sua reação para interferir no destino dela. Role "1d6" e subtraia o resultado da jogada de ataque. Você pode usar esta característica após ver a jogada, mas antes que o Mestre determine se o ataque atinge ou erra. <strong>Usos.</strong> Você pode usar esta característica um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
 
-    <script>
-        // --- Animação do Canvas de Fundo ---
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+          <div class="ability-box">
+            <h4>SORTE ANÔMALA</h4>
+            <p><strong>Característica Mística:</strong> Quando você realiza uma jogada de ataque, teste de habilidade ou salvaguarda, você pode forçar uma nova tentativa. Você rerrola o dado e deve usar o novo resultado. Você pode usar esta característica após ver o resultado da rolagem, mas antes que seus efeitos sejam aplicados. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso curto ou longo.</p>
+          </div>
 
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
-            // Cria partículas douradas sutis
-            for(let i=0; i<80; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2,
-                    speed: Math.random() * 0.5 + 0.1 // Velocidade lenta para subir
-                });
-            }
-        }
+          <div class="ability-box">
+            <h4>REFLEXO INSTINTIVO</h4>
+            <p><strong>Reação:</strong> No início de um combate, imediatamente após a rolagem de iniciativa, mas antes do primeiro turno ser resolvido, você pode agir instintivamente. Escolha um dos seguintes efeitos: Você troca de posição com uma criatura aliada a até 3 metros de você. Você se move até metade do seu deslocamento sem provocar ataques de oportunidade. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso curto ou longo.</p>
+          </div>
 
-        function drawParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(212, 175, 55, 0.3)"; // Dourado com transparência
-            particles.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Move a partícula para cima
-                p.y -= p.speed;
-                // Se sair do topo, reaparece no fundo
-                if(p.y < 0) p.y = canvas.height;
-            });
-            requestAnimationFrame(drawParticles);
-        }
+          <div class="ability-box">
+            <h4>PERSISTÊNCIA MORTAL</h4>
+            <p><strong>Característica Mística:</strong> Quando você seria reduzido a 0 pontos de vida, mas não morto instantaneamente, você pode permanecer com 1 ponto de vida em vez disso. Após usar esta característica, você não pode usá-la novamente até terminar um descanso longo. Se você sofrer dano que resultaria em morte instantânea, esta característica não tem efeito.</p>
+          </div>
 
-        window.addEventListener('resize', initCanvas);
-        initCanvas();
-        drawParticles();
+          <div class="ability-box">
+            <h4>TOQUE DO DESTINO</h4>
+            <p><strong>Reação:</strong> Quando você ou uma criatura aliada que você possa ver a até 9 metros realiza uma jogada de ataque, teste de habilidade ou salvaguarda, você pode usar sua reação para influenciar o resultado. Role "1d4" e adicione o resultado à rolagem. Você pode usar esta característica após ver a rolagem, mas antes que seus efeitos sejam aplicados. <strong>Usos.</strong> Você pode usar esta característica um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
 
-        // --- Lógica da Tela de Carregamento e Fade-In ao Rolar ---
-        setTimeout(() => {
-            const loader = document.getElementById('loader');
-            const main = document.getElementById('main-content');
-            loader.style.opacity = '0';
-            
-            setTimeout(() => {
-                loader.style.display = 'none';
-                main.classList.remove('opacity-0');
-                
-                // Configura o Observer para animações ao rolar a página
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                        }
-                    });
-                }, { threshold: 0.1 }); // Ativa quando 10% do elemento estiver visível
+          <div class="ability-box">
+            <h4>DESVIO IMPROVISADO</h4>
+            <p><strong>Reação:</strong> Quando você é alvo de um ataque, você pode usar sua reação para tentar evitá-lo. Você ganha um bônus de +2 na Classe de Armadura contra aquela jogada de ataque, potencialmente fazendo com que o ataque erre. Você pode usar esta característica após ver a jogada de ataque, mas antes que o Mestre determine o resultado. <strong>Usos.</strong> Você pode usar esta característica um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
 
-                // Aplica o observer a todas as seções configuradas
-                document.querySelectorAll('.fade-in-section').forEach(section => {
-                    observer.observe(section);
-                });
+          <div class="ability-box">
+            <h4>PRESSÁGIO FAVORÁVEL</h4>
+            <p><strong>Característica Mística:</strong> Antes de realizar uma jogada de ataque, teste de habilidade ou salvaguarda, você pode invocar um vislumbre do destino. Você realiza a rolagem com vantagem. <strong>Usos.</strong> Você pode usar esta característica duas vezes, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            }, 1000); // Tempo para a transição de opacidade do loader
-        }, 3000); // Tempo total de exibição do loader
-    </script>
+    <!-- ==================== ESTÁGIO 3 ==================== -->
+    <section id="estagio3" class="screen stage-3">
+      <div class="stage-card">
+        <div class="stage-card-header">
+          <img src="imagens/sprites/ascensao_3.png" alt="Tocando o Divino" class="stage-sprite">
+          <h2>ESTÁGIO 3 — TOCANDO O DIVINO (30-44)</h2>
+        </div>
+        <div class="stage-card-body">
+          <span class="stage-tag">Estágio 3 — Tocando o Divino (30-44)</span>
+          <p style="font-family:'VT323',monospace;font-size:17px;color:var(--ink-dim);font-style:italic;margin:12px 0">Ao atingir este estágio, você escolhe uma das habilidades abaixo:</p>
+
+          <div class="ability-box">
+            <h4>CORPO HEROICO</h4>
+            <p><strong>Característica Mística:</strong> Seu corpo transcende os limites mortais, adquirindo resiliência sobrenatural. Você recebe um bônus de +1 na sua Classe de Armadura enquanto não estiver incapacitado. Além disso, aumente seu valor de Força ou Constituição em +1, até um máximo de 20. Esse bônus na Classe de Armadura se acumula com outras fontes, exceto bônus com o mesmo nome.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>MENTE ESTRATÉGICA</h4>
+            <p><strong>Característica Mística:</strong> Sua mente é tocada pela lógica divina e pela percepção absoluta. Você recebe um bônus de +1 na Classe de Dificuldade de todas as suas habilidades e magias. Além disso, aumente sua Inteligência ou Sabedoria em +1, até um máximo de 20. Este bônus se aplica apenas a efeitos originados diretamente de você.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>MOVIMENTO DIVINO</h4>
+            <p><strong>Característica Mística:</strong> Você se move como se o mundo físico tivesse menos influência sobre você. Seu deslocamento aumenta em 3 metros. Você ignora terreno difícil não mágico. Terreno difícil mágico ainda afeta você normalmente, a menos que você também possua outra característica que o negue. Esse bônus se aplica a todos os seus tipos de deslocamento.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>PELE LENDÁRIA</h4>
+            <p><strong>Característica Mística:</strong> Sua pele adquire resistência semelhante à de criaturas míticas. Sempre que você sofre dano de um ataque ou efeito, reduza o dano em um valor igual à metade do seu bônus de proficiência (arredondado para cima). Essa redução ocorre após determinar o dano, mas antes de aplicar resistências ou vulnerabilidades.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>SENTIDOS ELEVADOS</h4>
+            <p><strong>Característica Mística:</strong> Seus sentidos ultrapassam as limitações humanas. Você recebe: +2 bônus em iniciativa, +2 bônus em Percepção passiva. Além disso, você não pode ser surpreendido enquanto estiver consciente. Você ainda pode ser afetado por condições que limitem seus sentidos, como cegueira ou surdez.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>SANGUE RESILIENTE</h4>
+            <p><strong>Característica Mística:</strong> Sua constituição torna-se excepcionalmente estável. Você tem vantagem em todas as salvaguardas de Constituição. Além disso, uma vez por turno, quando você falhar em uma salvaguarda de Constituição, você pode adicionar seu bônus de proficiência à rolagem, potencialmente transformando a falha em sucesso. Você pode usar esse benefício um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>FORÇA DESCOMUNAL</h4>
+            <p><strong>Característica Mística:</strong> Sua força rivaliza com a de criaturas lendárias. Você recebe +1 nas jogadas de dano de ataques corpo a corpo. Além disso, você é considerado como uma categoria de tamanho maior ao determinar sua capacidade de empurrar, puxar ou levantar. Esse benefício não altera seu espaço ocupado nem alcance.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>ESSÊNCIA ARCANA</h4>
+            <p><strong>Característica Mística:</strong> A energia mágica flui naturalmente através de você. Você aprende um truque à sua escolha da lista de magias de qualquer classe. Além disso, você recebe +1 nas jogadas de ataque de magias. Se você não possuir a habilidade de conjurar magias, este truque usa Constituição como atributo de conjuração.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>AGILIDADE SOBRENATURAL</h4>
+            <p><strong>Característica Mística:</strong> Seus movimentos tornam-se imprevisíveis e fluidos. Você pode realizar a ação Desengajar como uma ação bônus. <strong>Usos.</strong> Você pode usar esta característica um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo. Quando você usa esta habilidade, você não provoca ataques de oportunidade durante o restante do turno.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>AURA LATENTE</h4>
+            <p><strong>Característica Mística:</strong> Uma presença divina emana de você, enfraquecendo seus inimigos. Criaturas hostis a até 1,5 metro de você sofrem uma penalidade de -1 em salvaguardas contra habilidades, magias e efeitos originados por você. Esse efeito não se acumula com múltiplas fontes iguais.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ESTÁGIO 4 ==================== -->
+    <section id="estagio4" class="screen stage-4">
+      <div class="stage-card">
+        <div class="stage-card-header">
+          <img src="imagens/sprites/ascensao_4.png" alt="Escolhido dos Deuses" class="stage-sprite">
+          <h2>ESTÁGIO 4 — ESCOLHIDO DOS DEUSES (45-59)</h2>
+        </div>
+        <div class="stage-card-body">
+          <span class="stage-tag">Estágio 4 — Escolhido dos Deuses (45-59)</span>
+          <p style="font-family:'VT323',monospace;font-size:17px;color:var(--ink-dim);font-style:italic;margin:12px 0">Ao atingir este estágio, você escolhe uma das habilidades abaixo:</p>
+
+          <div class="ability-box">
+            <h4>GOLPE PRECISO</h4>
+            <p><strong>Característica de Combate:</strong> Uma vez por turno, quando você realiza uma jogada de ataque, você pode adicionar +2 à rolagem. Se o ataque atingir, ele causa 1d8 de dano adicional. Você pode declarar o uso após rolar o ataque, mas antes do resultado ser determinado.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>INVESTIDA DIVINA</h4>
+            <p><strong>Característica de Combate:</strong> Se você se mover pelo menos 6 metros em linha reta imediatamente antes de atingir uma criatura com um ataque corpo a corpo, o ataque causa 1d10 de dano adicional. O alvo deve realizar uma salvaguarda de Força (CD = 8 + Proficiência + modificador de atributo relevante). Em caso de falha, o alvo fica caído.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>DEFESA INSTINTIVA</h4>
+            <p><strong>Reação:</strong> Quando você é atingido por um ataque, você pode usar sua reação para ganhar resistência ao dano daquele ataque ou um bônus de +3 na Classe de Armadura contra aquele ataque. Você pode escolher usar esta habilidade após ver a jogada de ataque, mas antes do dano ser aplicado. <strong>Usos.</strong> Proficiência por descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>CONTRA-ATAQUE DIVINO</h4>
+            <p><strong>Reação:</strong> Quando uma criatura dentro do seu alcance erra um ataque contra você, você pode usar sua reação para realizar um ataque corpo a corpo contra ela. Esse ataque ocorre imediatamente após o erro. <strong>Usos.</strong> Proficiência por descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>CONJURAÇÃO ACELERADA</h4>
+            <p><strong>Característica Mística:</strong> Quando você conjura uma magia com tempo de conjuração de 1 ação, você pode alterar o tempo de conjuração para uma ação bônus. A magia deve ser de nível igual ou inferior ao seu bônus de proficiência. Você ainda deve seguir as regras normais de conjuração de magia. <strong>Usos.</strong> Proficiência por descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>ESCUDO ARCANO</h4>
+            <p><strong>Reação:</strong> Quando você sofre dano, você pode usar sua reação para reduzir o dano em 2d10 + modificador de habilidade de conjuração. Você pode usar essa habilidade após ver o valor do dano, mas antes de aplicá-lo. <strong>Usos.</strong> Proficiência por descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>IMPACTO BRUTAL</h4>
+            <p><strong>Característica de Combate:</strong> Quando você acerta um acerto crítico com um ataque, você causa 1d12 de dano adicional. Esse dano é do mesmo tipo do ataque que o originou.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>FOCO DE COMBATE</h4>
+            <p><strong>Ação Bônus:</strong> Você entra em um estado de concentração marcial. Até o início do seu próximo turno, você recebe +1 nas jogadas de ataque. <strong>Usos.</strong> Proficiência por descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>CANAL DIVINO</h4>
+            <p><strong>Característica Mística:</strong> Uma vez por turno, quando você causa dano com uma magia, você pode adicionar seu bônus de proficiência ao dano causado. Esse bônus é aplicado após a rolagem de dano.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>AURA DE GUERRA</h4>
+            <p><strong>Ação Bônus:</strong> Você emana uma aura de combate inspiradora. Aliados a até 3 metros recebem +1 nas jogadas de ataque até o início do seu próximo turno. <strong>Usos.</strong> Proficiência por descanso longo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ESTÁGIO 5 ==================== -->
+    <section id="estagio5" class="screen stage-5">
+      <div class="stage-card">
+        <div class="stage-card-header">
+          <img src="imagens/sprites/ascensao_5.png" alt="Herói Lendário" class="stage-sprite">
+          <h2>ESTÁGIO 5 — HERÓI LENDÁRIO (60-74)</h2>
+        </div>
+        <div class="stage-card-body">
+          <span class="stage-tag">Estágio 5 — Herói Lendário (60-74)</span>
+          <p style="font-family:'VT323',monospace;font-size:17px;color:var(--ink);margin:12px 0">Ao atingir este estágio, você escolhe duas das habilidades abaixo.</p>
+
+          <div class="ability-box">
+            <h4>CORPO DE CAMPEÃO</h4>
+            <p><strong>Característica Mística:</strong> Seu corpo torna-se digno das lendas, suportando dores, impactos e exaustão muito além dos limites mortais. Seus pontos de vida máximos aumentam em 25, e esse aumento se aplica novamente sempre que você adquirir este estágio. Sempre que seus pontos de vida máximos aumentarem desta forma, seus pontos de vida atuais também aumentam na mesma quantidade. Além disso, você tem vantagem em testes de resistência contra morte. Por fim, quando você recupera pontos de vida por meio de magia, habilidade ou descanso, você recupera uma quantidade adicional de pontos de vida igual ao seu bônus de proficiência. Esse bônus adicional pode ser aplicado apenas uma vez por efeito de cura. Este benefício não se acumula consigo mesmo caso você receba esta característica por mais de uma fonte.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>GOLPE LENDÁRIO</h4>
+            <p><strong>Característica de Combate:</strong> Seus ataques carregam o peso de feitos que já entraram para a história. Uma vez por turno, quando você acerta uma criatura com um ataque com arma ou ataque desarmado, você pode causar dano adicional igual ao seu bônus de proficiência. Você pode decidir usar esta característica após confirmar que o ataque atingiu, mas antes de rolar o dano. Se o ataque atingir mais de uma criatura ao mesmo tempo, como por meio de uma característica especial, o dano adicional se aplica apenas a uma dessas criaturas. O dano adicional é do mesmo tipo do ataque que o provocou.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>PRESENÇA DOMINANTE</h4>
+            <p><strong>Característica Mística:</strong> Sua mera presença em combate pressiona o espírito e a confiança de seus adversários. Criaturas hostis a até 3 metros de você sofrem uma penalidade de -1 nas jogadas de ataque feitas contra você. Essa penalidade se aplica apenas enquanto você não estiver incapacitado e a criatura puder ver ou perceber você. Além disso, você tem vantagem em testes de Carisma (Intimidação) feitos contra criaturas que tenham testemunhado você em combate, visto seus poderes ou ouvido relatos confiáveis sobre seus feitos. Se uma criatura for imune à condição amedrontado, ela ainda sofre a penalidade nas jogadas de ataque, mas o Mestre pode negar a vantagem em Intimidação, se apropriado.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>RESISTÊNCIA MÍTICA</h4>
+            <p><strong>Característica Mística:</strong> Seu corpo e espírito se adaptam aos perigos mais extremos. Ao terminar um descanso longo, escolha um dos seguintes tipos de dano: ácido, frio, fogo, força, elétrico, necrótico, psíquico, radiante, trovejante, venenoso ou ácido. Até terminar seu próximo descanso longo, você tem resistência ao tipo de dano escolhido. Além disso, uma vez por descanso curto, quando você sofrer dano do tipo escolhido, você pode usar sua reação para reduzir esse dano em uma quantidade adicional igual a "1d12 + seu bônus de proficiência". Você pode usar essa reação após ver o dano, mas antes de aplicá-lo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>AURA HEROICA</h4>
+            <p><strong>Característica Mística:</strong> Sua presença inspira aliados e estabiliza a linha de frente mesmo nos momentos mais caóticos. Enquanto você não estiver incapacitado, criaturas aliadas à sua escolha a até 3 metros de você recebem +1 na Classe de Armadura. Uma criatura perde esse benefício imediatamente se sair do alcance da aura. Além disso, quando um aliado beneficiado por esta aura falha em uma salvaguarda contra a condição amedrontado, você pode usar sua reação para permitir que ele repita a salvaguarda, devendo usar o novo resultado. <strong>Usos.</strong> Você pode usar esta reação um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>ESPÍRITO INDOMÁVEL</h4>
+            <p><strong>Característica Mística:</strong> Seu espírito se recusa a ceder, mesmo diante de efeitos capazes de destruir a mente ou dobrar a vontade. Quando você falha em uma salvaguarda, você pode refazer a rolagem. Você deve usar o novo resultado. Você pode decidir usar esta característica após saber que falhou, mas antes de sofrer quaisquer efeitos da falha. <strong>Usos.</strong> Você pode usar esta característica duas vezes, recuperando todos os usos ao terminar um descanso longo. Se a salvaguarda possuir um efeito parcial em caso de sucesso, você passa a sofrer apenas esse efeito parcial caso a nova rolagem seja bem-sucedida.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>CAÇADOR DE MONSTROS</h4>
+            <p><strong>Característica de Combate:</strong> Seus golpes são particularmente devastadores contra criaturas de grande porte e natureza monstruosa. Uma vez por turno, quando você atinge uma criatura Grande ou maior com um ataque com arma, você causa "2d6" de dano adicional a ela. Você pode decidir usar esta característica após o ataque atingir, mas antes de rolar o dano. Além disso, você tem vantagem em testes de Sabedoria (Sobrevivência) e Inteligência relacionados a rastrear, identificar ou recordar informações sobre monstros, bestas monstruosas, gigantes e criaturas lendárias, a critério do Mestre. O dano adicional é do mesmo tipo do ataque que o provocou.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>RECUPERAÇÃO LENDÁRIA</h4>
+            <p><strong>Ação Bônus:</strong> Seu corpo aprendeu a se recompor com velocidade antinatural em meio ao combate. Como uma ação bônus, você recupera pontos de vida iguais a "2d8 + seu modificador de Constituição + seu bônus de proficiência". Você não pode usar esta característica se estiver com 0 pontos de vida, a menos que outra habilidade permita que você realize ações bônus nessa condição. <strong>Usos.</strong> Você pode usar esta característica um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo. Quando você usa esta característica, sinais visíveis de energia divina, determinação heroica ou vitalidade mítica se manifestam em você, conforme o tema do personagem.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>MESTRE DA BATALHA</h4>
+            <p><strong>Característica de Combate:</strong> Você enxerga pequenas aberturas no combate e sabe explorá-las com perfeição. Quando você realiza uma jogada de ataque, você pode escolher realizar a rolagem com vantagem. Você deve declarar o uso desta característica antes de rolar o ataque. <strong>Usos.</strong> Você pode usar esta característica um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo. Além disso, se o ataque realizado com vantagem atingir, seu deslocamento não provoca ataques de oportunidade da criatura atingida até o final do turno atual.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>AURA INTIMIDANTE</h4>
+            <p><strong>Característica Mística:</strong> A sua presença é tão esmagadora que inimigos hesitam antes mesmo de atacá-lo. Uma criatura hostil que iniciar o turno a até 3 metros de você deve ser bem-sucedida em uma salvaguarda de Sabedoria (CD = 8 + seu bônus de proficiência + seu modificador de Carisma, Força ou Sabedoria, escolhido quando você adquire esta característica) ou terá desvantagem na próxima jogada de ataque que realizar até o final do turno. Uma criatura que seja bem-sucedida nessa salvaguarda fica imune a este efeito até o início do próximo turno dela. Você deve estar consciente e não incapacitado para que esta aura funcione.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ESTÁGIO 6 ==================== -->
+    <section id="estagio6" class="screen stage-6">
+      <div class="stage-card">
+        <div class="stage-card-header">
+          <img src="imagens/sprites/ascensao_6.png" alt="Semideus Desperto" class="stage-sprite">
+          <h2>ESTÁGIO 6 — SEMIDEUS DESPERTO (75-89)</h2>
+        </div>
+        <div class="stage-card-body">
+          <span class="stage-tag">Estágio 6 — Semideus Desperto (75-89)</span>
+          <p style="font-family:'VT323',monospace;font-size:17px;color:var(--ink);margin:12px 0">Ao atingir este estágio, você escolhe uma das habilidades abaixo.</p>
+
+          <div class="ability-box">
+            <h4>IRA DOS DEUSES</h4>
+            <p><strong>Ação Bônus:</strong> Você desperta por um instante a fúria dos poderes superiores que observam seu destino. Como uma ação bônus, você entra em um estado de exaltação divina que dura por 1 minuto ou até você ficar incapacitado. Durante esse estado, uma vez em cada um dos seus turnos, quando você atinge uma criatura com um ataque, você recebe os seguintes benefícios: Você recebe +2 na jogada de ataque. O ataque causa "2d8" de dano adicional. Você pode aplicar esse benefício a apenas um ataque por turno, mesmo que realize múltiplos ataques. O dano adicional é do mesmo tipo do ataque que o provocou, a menos que o Mestre permita que ele assuma uma manifestação temática apropriada ao seu poder divino. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>CORPO IMORTAL</h4>
+            <p><strong>Característica Mística:</strong> Seu corpo se recusa a cair enquanto sua lenda ainda não chegou ao fim. Quando você seria reduzido a 0 pontos de vida, mas não morto instantaneamente, você pode permanecer com 1 ponto de vida em vez disso. Ao fazer isso, até o início do seu próximo turno, você recebe resistência a todos os tipos de dano. Além disso, durante esse período, você tem vantagem em salvaguardas e testes feitos para evitar ser empurrado, derrubado ou incapacitado fisicamente. Após usar esta característica, você não pode usá-la novamente até terminar um descanso longo. Se um efeito causar morte instantânea, esta característica não impede essa morte.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>DOMÍNIO ELEMENTAL</h4>
+            <p><strong>Característica Mística:</strong> Você assume uma afinidade absoluta com uma força primordial. Escolha um dos seguintes tipos de dano ao adquirir esta característica: ácido, frio, fogo, elétrico, necrótico, psíquico, radiante ou trovejante. Uma vez por turno, quando você causa dano com um ataque, magia ou habilidade, você pode causar "1d8" de dano adicional do tipo escolhido. Além disso, seus ataques, magias e habilidades ignoram resistência ao tipo de dano escolhido. Se uma criatura for imune ao tipo de dano escolhido, essa imunidade não é ignorada, a menos que o Mestre determine o contrário para efeitos excepcionalmente épicos. Quando você adquire esta característica, manifestações visuais relacionadas ao elemento escolhido passam a acompanhar seus poderes sempre que você desejar.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>REFLEXOS SOBRENATURAIS</h4>
+            <p><strong>Característica Mística:</strong> Seus reflexos ultrapassam qualquer padrão mortal, permitindo respostas instantâneas mesmo sob pressão extrema. Você recebe +2 na Classe de Armadura. Além disso, você tem vantagem em salvaguardas de Destreza. Por fim, quando você é forçado a realizar uma salvaguarda de Destreza para sofrer metade do dano em caso de sucesso, você pode usar sua reação para receber resistência àquele dano se for bem-sucedido na salvaguarda. <strong>Usos.</strong> Você pode usar essa reação um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>AÇÃO DIVINA</h4>
+            <p><strong>Característica Mística:</strong> Por um breve momento, você rompe a cadência comum do combate e age além do que os mortais poderiam suportar. No seu turno, você pode realizar uma ação adicional. Essa ação adicional pode ser usada para realizar a ação Atacar (uma única vez), Correr, Desengajar, Esquivar, Usar um Objeto ou Conjurar uma magia com tempo de conjuração de 1 ação. Se você usar essa ação adicional para conjurar uma magia, ainda deverá obedecer às restrições normais de conjuração no mesmo turno. Você pode ativar esta característica em qualquer momento do seu turno, mas não durante o turno de outra criatura. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso curto ou longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>VONTADE ABSOLUTA</h4>
+            <p><strong>Característica Mística:</strong> Sua mente torna-se um bastião que pouquíssimos poderes podem violar. Você se torna imune à condição amedrontado. Além disso, você tem vantagem em salvaguardas contra efeitos que causariam as condições enfeitiçado, amedrontado ou atordoado, ou que tentem ler sua mente, alterar suas emoções, controlar suas ações ou manipular sua percepção. Se você for bem-sucedido em uma dessas salvaguardas, você pode usar sua reação para revelar sua resistência sobrenatural. Ao fazê-lo, a criatura que causou o efeito sofre desvantagem na próxima jogada de ataque ou salvaguarda que fizer antes do final do próximo turno dela. <strong>Usos.</strong> Você pode usar essa reação um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>RECUPERAÇÃO DIVINA</h4>
+            <p><strong>Ação Bônus:</strong> A energia divina em seu sangue reconstitui sua forma mesmo sob violência intensa. Como uma ação bônus, você ativa esta característica por 3 rodadas. Até o final da duração, no início de cada um dos seus turnos, você recupera 10 pontos de vida. Esta regeneração termina antecipamente se você ficar com 0 pontos de vida ou morrer. Enquanto esta característica estiver ativa, você tem vantagem em salvaguardas contra as condições envenenado e exaustão. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>GOLPE INEVITÁVEL</h4>
+            <p><strong>Característica de Combate:</strong> Você aprendeu a atingir exatamente onde a defesa do inimigo falha. Uma vez por turno, quando você realiza uma jogada de ataque, você pode ignorar bônus de Classe de Armadura concedidos por escudos, cobertura, magias ou efeitos temporários ao determinar se o ataque atinge. Você pode decidir usar esta característica após ver a jogada, mas antes do Mestre declarar se ela acerta ou erra. Este benefício não ignora a Classe de Armadura base da criatura nem a armadura física que ela veste, apenas bônus adicionais à Classe de Armadura. <strong>Usos.</strong> Você pode usar esta característica um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>FORMA SUPERIOR</h4>
+            <p><strong>Ação:</strong> Você libera sua forma semidivina em um estado mais estável e completo. Como uma ação, você assume uma forma superior por 1 minuto. Durante a duração, você recebe os seguintes benefícios: +2 na Classe de Armadura. +2 em todas as salvaguardas. Seu deslocamento aumenta em 3 metros. Você tem vantagem em testes de Força e Constituição. A transformação termina antecipadamente se você ficar inconsciente ou morrer. Uma manifestação visível acompanha esta transformação, como olhos brilhantes, aura divina, marcas luminosas, armadura espectral, vento ao redor do corpo ou outro sinal semelhante. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>PRESENÇA DIVINA</h4>
+            <p><strong>Característica Mística:</strong> Seu poder se derrama ao seu redor e torna mais difícil resistir à sua vontade. Criaturas hostis a até 3 metros de você têm desvantagem em salvaguardas contra suas habilidades, magias e características enquanto você não estiver incapacitado. Uma criatura que não possa ver, ouvir ou perceber sua presença não é afetada, a critério do Mestre. Esse efeito não se acumula com efeitos idênticos ou equivalentes que imponham desvantagem generalizada nas mesmas salvaguardas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ESTÁGIO 7 ==================== -->
+    <section id="estagio7" class="screen stage-7">
+      <div class="stage-card">
+        <div class="stage-card-header">
+          <img src="imagens/sprites/ascensao_7.png" alt="Ascensão Divina" class="stage-sprite">
+          <h2>ESTÁGIO 7 — ASCENSÃO DIVINA (90-100)</h2>
+        </div>
+        <div class="stage-card-body">
+          <span class="stage-tag">Estágio 7 — Ascensão Divina (90-100)</span>
+          <p style="font-family:'VT323',monospace;font-size:17px;color:var(--ink);margin:12px 0">Ao atingir este estágio, você escolhe 1 Dádiva Divina e 1 Habilidade Assinatura.</p>
+
+          <h3 style="color:var(--gold);font-size:13px;letter-spacing:2px;margin:22px 0 14px;padding-bottom:8px;border-bottom:2px dashed var(--gold-dark);text-shadow:2px 2px 0 #000">DÁDIVAS DIVINAS</h3>
+
+          <div class="ability-box">
+            <h4>AVATAR OLÍMPICO (Aetherion)</h4>
+            <p>Você assume um aspecto digno de ser reconhecido pelos próprios deuses. Como uma ação, você manifesta sua forma avatar por 1 minuto. Durante a duração, você recebe os seguintes benefícios: Você recebe +2 em testes de atributo, jogadas de ataque, jogadas de dano, Classe de Armadura e salvaguardas. Você tem resistência a todos os tipos de dano. Uma vez em cada um dos seus turnos, quando você atinge uma criatura com um ataque ou causa dano com uma magia, você pode causar "2d8" de dano adicional. O dano adicional é do mesmo tipo do ataque ou magia que o provocou, ou de um tipo apropriado ao seu domínio, com permissão do Mestre. A manifestação dessa forma é sempre grandiosa, como coroas de luz, relâmpagos, fogo sagrado, sombras régias, armadura celestial, olhos solares ou outros sinais de ascensão. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>EXISTÊNCIA ELEVADA (Humano)</h4>
+            <p>Sua existência já não pode ser medida inteiramente pelos padrões dos mortais. Você não envelhece e não pode morrer em decorrência de envelhecimento natural ou sobrenatural. Além disso, acertos críticos contra você são tratados como acertos normais. Por fim, quando você falha em uma salvaguarda contra um efeito que envelheça, enfraqueça ou deteriore seu corpo ou essência, você pode optar por ser bem-sucedido em vez disso. <strong>Usos.</strong> Você pode usar esse benefício de sucesso automático uma vez, recuperando o uso ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>CORPO PERFEITO (Megalion)</h4>
+            <p>Sua forma aproxima-se de um ideal físico e espiritual inalcançável aos mortais. Você recebe +2 permanente na Classe de Armadura. Além disso, seu deslocamento aumenta em 3 metros, e você recebe +2 em testes de Atletismo e Acrobacia. Por fim, uma vez em cada um dos seus turnos, quando você falha em um teste de Força, Destreza ou Constituição, você pode adicionar +2 à rolagem, potencialmente transformando a falha em sucesso.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>ESSÊNCIA IMORTAL (Tartarianos)</h4>
+            <p>Sua centelha divina resiste ao fim absoluto. Você não pode ser morto instantaneamente por dano massivo, efeitos que causem morte automática ou habilidades semelhantes, a menos que o efeito venha de uma divindade maior, artefato supremo ou decisão específica do Mestre em um contexto épico. Sempre que um efeito tentaria matá-lo instantaneamente, você é reduzido a 1 ponto de vida em vez disso. Após usar este benefício, você não pode usá-lo novamente até terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>AURA DE SOBERANIA (Therionitas)</h4>
+            <p>Seu poder é reconhecido instintivamente por aliados e temido pelos inimigos. Enquanto você não estiver incapacitado, aliados à sua escolha a até 9 metros de você recebem +2 em salvaguardas contra ser amedrontados ou enfeitiçados. Além disso, criaturas hostis que iniciem o turno a até 3 metros de você sofrem uma penalidade de -2 na primeira jogada de ataque que fizerem até o final do turno. Uma criatura não é afetada por essa penalidade se for imune à condição amedrontado e tiver ND ou nível igual ou superior ao seu, a critério do Mestre.</p>
+          </div>
+
+          <h3 style="color:var(--gold);font-size:13px;letter-spacing:2px;margin:22px 0 14px;padding-bottom:8px;border-bottom:2px dashed var(--gold-dark);text-shadow:2px 2px 0 #000">HABILIDADES ASSINATURA</h3>
+
+          <div class="ability-box">
+            <h4>GOLPE DO OLIMPO</h4>
+            <p><strong>Ação:</strong> Você descarrega um ataque de magnitude quase divina em um único instante. Como parte desta ação, faça um ataque com arma ou ataque desarmado. Se o ataque atingir, ele causa "6d10" de dano adicional. Esse dano ignora resistência ao tipo de dano do ataque. Se o alvo for uma criatura Grande ou maior, ele deve ser bem-sucedido em uma salvaguarda de Força (CD = 8 + seu bônus de proficiência + seu modificador de Força, Destreza ou atributo de conjuração) ou será derrubado no chão. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>RUPTURA DO DESTINO</h4>
+            <p><strong>Reação:</strong> Você interfere diretamente no fio do destino, recusando o resultado que acabou de acontecer. Quando uma criatura que você possa ver a até 18 metros realiza uma jogada de ataque, teste de habilidade ou salvaguarda, você pode usar sua reação para forçá-la a repetir a rolagem. Você escolhe qual dos dois resultados será usado. Você pode usar esta característica após a rolagem ser feita, mas antes que seus efeitos sejam aplicados. Se a criatura estiver protegida por poder divino equivalente, artefato superior ou efeito semelhante, o Mestre pode exigir uma disputa narrativa ou limitar esta habilidade. <strong>Usos.</strong> Você pode usar esta característica uma vez por sessão.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>COMANDO DIVINO</h4>
+            <p><strong>Ação:</strong> Sua voz carrega autoridade sobrenatural, e poucos conseguem resistir a ela. Escolha uma criatura que você possa ver a até 18 metros. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria (CD = 8 + seu bônus de proficiência + seu modificador de Carisma, Sabedoria ou atributo de conjuração) ou perde o próximo turno. Criaturas imunes à condição enfeitiçado ou incapacitadas de ouvir você têm vantagem nessa salvaguarda, a critério do Mestre. Após ser afetada ou passar na salvaguarda contra esta habilidade, uma criatura fica imune a ela por 24 horas. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>TEMPO QUEBRADO</h4>
+            <p><strong>Ação:</strong> Por um instante, você se move fora do fluxo normal do tempo. Após usar esta ação, você ganha imediatamente um turno adicional, que ocorre logo após o turno atual. Durante esse turno adicional, você pode se mover, realizar uma ação, usar uma ação bônus e interagir com objetos normalmente. Você não pode usar esta característica para ganhar outro turno adicional, mesmo por meio de outras habilidades semelhantes. Se um efeito terminaria no fim do seu turno atual, ele permanece ativo até o final do turno adicional. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso longo.</p>
+          </div>
+
+          <div class="ability-box">
+            <h4>CHAMADO DIVINO</h4>
+            <p><strong>Ação:</strong> Você convoca uma manifestação superior para lutar ao seu lado. Escolha uma criatura espiritual, celestial, infernal, elemental, ancestral ou mitológica apropriada ao seu tema divino. Essa criatura surge em um espaço desocupado que você possa ver a até 9 metros. A criatura age imediatamente após você na ordem de iniciativa, obedece aos seus comandos verbais e permanece por 1 minuto, até cair a 0 pontos de vida ou até você dispensá-la sem gastar ação. O Mestre define a ficha da criatura convocada, mas ela deve ser equivalente a uma criatura poderosa apropriada ao estágio da campanha, sem superar o protagonismo do personagem. <strong>Usos.</strong> Você pode usar esta característica uma vez, recuperando seu uso ao terminar um descanso longo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== MECÂNICA DE PONTUAÇÃO ==================== -->
+    <section id="pontuacao" class="screen">
+      <h2 class="screen-title">🎲 MECÂNICA DE PONTUAÇÃO</h2>
+
+      <div class="score-grid">
+        <div class="score-box">
+          <h4 style="color:var(--green)">GANHOS (ACAMAÇÃO)</h4>
+          <ul>
+            <li>✨ Grandes Feitos: <span>1d4 pontos</span></li>
+            <li>📜 Missões: <span>Dificuldade da missão</span></li>
+            <li>⚔️ Derrotar Lendários: <span>1 + Dificuldade</span></li>
+          </ul>
+        </div>
+        <div class="score-box" style="border-color:var(--red)">
+          <h4 style="color:var(--red)">PERDAS (IRA DIVINA)</h4>
+          <ul>
+            <li>❌ Negar Ajuda: <span>-1 ponto</span></li>
+            <li>💀 Matar Inocente: <span>-1d4 pontos</span></li>
+            <li>⚡ Desrespeitar Deuses: <span>-5 (Menor) / -10 (Maior)</span></li>
+            <li>🏛️ Profanar Templos: <span>-15 (Menor) / -30 (Maior)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="score-box" style="border-color:var(--red);margin-top:18px">
+        <h4 style="color:var(--red)">⚠️ PUNIÇÕES NEGATIVAS</h4>
+        <p style="font-family:'VT323',monospace;font-size:17px;color:var(--ink);margin:8px 0">Pontos negativos no Nível 1 geram punições severas:</p>
+        <ul>
+          <li><span>-30:</span> Desvantagem em testes.</li>
+          <li><span>-50:</span> Perseguição divina constante.</li>
+          <li><span>-80:</span> Possibilidade iminente de execução divina.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>★ ERA DOS HERÓIS ★ · "que os deuses guiem seus dados"</p>
+    <p class="copyleft">
+      Criador: Evandro Neto de Oliveira · WhatsApp: (22) 9 9727 3243<br>
+      © 2026 Era dos Heróis · Todos os direitos reservados.
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
