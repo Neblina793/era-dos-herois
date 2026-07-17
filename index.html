@@ -8,6 +8,31 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .btn-pixel { position: relative; overflow: visible; }
+    .new-badge {
+      position: absolute;
+      top: -12px;
+      right: -10px;
+      background: #ff2b2b;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      padding: 4px 6px;
+      border: 2px solid #fff5d6;
+      border-radius: 4px;
+      transform: rotate(12deg);
+      box-shadow: 0 0 6px 2px rgba(255,43,43,0.9), 0 0 14px 4px rgba(255,215,0,0.6);
+      animation: novo-pulse 1.2s infinite;
+      z-index: 20;
+      letter-spacing: 1px;
+      pointer-events: none;
+    }
+    @keyframes novo-pulse {
+      0%, 100% { transform: rotate(12deg) scale(1); box-shadow: 0 0 6px 2px rgba(255,43,43,0.9), 0 0 14px 4px rgba(255,215,0,0.6); }
+      50% { transform: rotate(12deg) scale(1.15); box-shadow: 0 0 10px 4px rgba(255,43,43,1), 0 0 20px 8px rgba(255,215,0,0.85); }
+    }
+  </style>
 </head>
 <body>
   <!-- CRT SCANLINES + VIGNETTE -->
@@ -110,7 +135,7 @@
           <a href="Raça.html"               class="btn-pixel">☉ RAÇAS</a>
           <a href="ascensao.html"           class="btn-pixel">★ ASCENSÃO</a>
           <a href="item.html"               class="btn-pixel">◈ ITENS</a>
-          <a href="Taverna.html"            class="btn-pixel">♨ TAVERNA</a>
+          <a href="Taverna.html"            class="btn-pixel">♨ TAVERNA<span class="new-badge">NOVO!</span></a>
           <a href="divindades.html"         class="btn-pixel">☷ HQ'S</a>
           <a href="ferreiro.html"           class="btn-pixel">⚒ FERREIRO</a>
           <a href="visualizar_mapa.html"    class="btn-pixel">▣ MAPAS</a>
@@ -245,6 +270,24 @@
             <h3>SESSÃO 02 · A FULGA DE KARCERUS PARTE 02</h3>
             <p>Os herois conseguiram fugir do coliseu porem alguns de seus aliados acabaram ficando para tras. Eles agora se encontram em uma caverna abandona em baixo do coliseu. o que sera que os aguarda?</p>
             <span class="tag">DUNGEON · 14:00hs</span>
+          </div>
+          <span class="status open">▶ ABERTA</span>
+        </li>
+        <li class="session">
+          <span class="session-date">17<br><b>JUL</b></span>
+          <div class="session-body">
+            <h3>SESSÃO 03 · AS PORTAS DE KRUMA</h3>
+            <p>Sob um céu que ainda cheira a sal e fumaça de forja, três desconhecidos cruzam os portões invisíveis da cidade-estado de Kruma pela primeira vez. Não se conhecem — ainda. O destino, porém, já teceu os fios que os uniram nesta noite. Nas ruas de pedra escura, entre o brilho das tochas e o sussurro dos mercadores, uma nova lenda começa a ser escrita. Os deuses observam em silêncio... e as Moiras já apostam quem sobreviverá até o amanhecer.</p>
+            <span class="tag">ARCO: O INÍCIO DA LENDA · 18:00hs · GRUPO DE 3 HERÓIS</span>
+          </div>
+          <span class="status open">▶ ABERTA</span>
+        </li>
+        <li class="session">
+          <span class="session-date">18<br><b>JUL</b></span>
+          <div class="session-body">
+            <h3>SESSÃO 04 · A FUGA DE KARCERUS</h3>
+            <p>Cinco almas condenadas despertam acorrentadas nas profundezas da ilha-prisão de Karcerus, onde o mar nunca dorme e os gritos dos esquecidos ecoam pelas muralhas encharcadas. Não há julgamento, não há clemência — apenas a escuridão, os carcereiros implacáveis e uma única certeza: fugir ou apodrecer entre as rochas. Enquanto a maré sobe e os corredores se fecham como fauces de uma besta, o grupo terá que decidir até onde está disposto a ir por sua liberdade.</p>
+            <span class="tag">ARCO: ESCAPANDO DO INFERNO · 18:00hs · GRUPO DE 5 HERÓIS</span>
           </div>
           <span class="status open">▶ ABERTA</span>
         </li>

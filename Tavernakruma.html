@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taverna de Kruma - Mural de Missões</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; background-color: #000; font-family: 'Cinzel', serif; overflow: hidden; }
+        #loading-screen { position: fixed; inset: 0; background: black; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+        .loading-text { margin-top: 15px; color: #e0c097; font-size: 1.2rem; letter-spacing: 5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        #main-content { display: none; width: 100%; height: 100vh; background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('tavkruma.jpg'); background-size: cover; background-position: center; padding: 40px; overflow-y: auto; }
+        .btn-voltar { position: absolute; top: 20px; left: 20px; border: 1px solid #e0c097; color: #e0c097; padding: 10px 20px; text-decoration: none; font-size: 0.8rem; z-index: 10; }
+        header { text-align: center; margin-bottom: 50px; }
+        h1 { color: #e0c097; font-size: 3rem; text-shadow: 0 0 15px rgba(224, 192, 151, 0.5); letter-spacing: 10px; }
+        .subtitle { color: #a88b6a; font-size: 1rem; letter-spacing: 4px; margin-top: 10px; }
+        .quest-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto 60px; }
+        .quest-paper { background: url('https://www.transparenttextures.com/patterns/paper-fibers.png'), #c5a880; padding: 25px; min-height: 200px; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); cursor: pointer; position: relative; border: 1px solid #8e735b; transition: 0.3s; }
+        .quest-paper:hover { transform: scale(1.05); z-index: 5; }
+        .quest-paper h3 { color: #4a3728; border-bottom: 2px solid #4a3728; margin-bottom: 15px; font-size: 1.4rem; }
+        .quest-paper p { color: #5d4637; font-size: 0.9rem; line-height: 1.4; height: 60px; overflow: hidden; }
+        .stamp { position: absolute; bottom: 10px; right: 15px; font-weight: bold; color: #8b0000; opacity: 0.7; border: 3px solid #8b0000; padding: 5px; transform: rotate(-15deg); text-transform: uppercase; }
+
+        #quest-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
+        .modal-content { background: #e0c097; width: 100%; max-width: 600px; padding: 40px; border: 10px double #4a3728; color: #4a3728; position: relative; max-height: 90vh; display: flex; flex-direction: column; }
+        .close-modal { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; }
+        #modal-desc { font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; overflow-y: auto; max-height: 350px; padding-right: 15px; white-space: pre-line; }
+
+        #modal-desc::-webkit-scrollbar { width: 8px; }
+        #modal-desc::-webkit-scrollbar-track { background: rgba(74, 55, 40, 0.1); border-radius: 10px; }
+        #modal-desc::-webkit-scrollbar-thumb { background: #4a3728; border-radius: 10px; }
+
+        .reward-box { font-size: 1.3rem; font-weight: bold; color: #8b0000; margin-top: auto; padding-top: 15px; border-top: 1px dashed #4a3728; }
+    </style>
+</head>
+<body>
+    <div id="loading-screen"><div class="loading-text">ABRINDO MURAL...</div></div>
+    <div id="main-content">
+        <a href="index.html" class="btn-voltar">← VOLTAR</a>
+        <header>
+            <h1>TAVERNA DE KRUMA</h1>
+            <div class="subtitle">MURAL DE MISSÕES</div>
+        </header>
+        <div class="quest-board">
+            <div class="quest-paper" onclick="openQuest(1)">
+                <h3>O Canto dos Afogados</h3>
+                <p>Marinheiros que sobrevivem ao Estreito de Alexandria relatam que algo está subindo das falésias escuras durante a noite. Não são apenas sereias comuns; são criaturas tocadas pela podridão do submundo, cujas vozes faze...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(2)">
+                <h3>A Máscara que Chora Sangue</h3>
+                <p>Durante o último festival, um ator coadjuvante vestiu uma máscara de comédia antiga encontrada nas Ruínas Antigas. Ele não conseguiu mais tirá-la. Agora, ele vaga pelo Distrito Dionisíaco dançando até os ossos quebrar...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(3)">
+                <h3>O Sangue no Tablado</h3>
+                <p>Uma das arenas improvisadas de Kruma foi interditada. Um gladiador que morreu em combate na noite passada recusou-se a cair. O solo seco da arena, saturado por décadas de sangue sacrificial, ergueu o homem como uma ab...</p>
+                <div class="stamp">Perigo</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(4)">
+                <h3>A Carga do Mercado Vivo</h3>
+                <p>Uma carroça vinda das estradas estreitas foi emboscada antes de cruzar os portões invisíveis de Kruma. O conteúdo não era ouro, mas sim três caixas de ferro seladas com chumbo, contendo ovos de Basilisco Negro. Se ele...</p>
+                <div class="stamp">Urgente</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(5)">
+                <h3>O Deus Faminto do Subterrâneo</h3>
+                <p>Eles cavaram fundo demais no Mercado Vivo. Um porão desabou, revelando um dos túneis esquecidos das Ruínas Antigas. Algo cego, faminto e cheio de tentáculos de pedra começou a puxar os mercadores para baixo durante o ...</p>
+                <div class="stamp">Perigo</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(6)">
+                <h3>A Caçada à Corça de Bronze</h3>
+                <p>Uma criatura que se assemelha à mítica Corça de Cerineia foi avistada cruzando os caminhos perigosos ao redor de Kruma. Seus cascos são de bronze puro e seus chifres brilham como ouro, mas seus olhos são vazios e escu...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(7)">
+                <h3>O Cobrador de Promessas</h3>
+                <p>Em Kruma, "se você consegue manter... é seu". Mas um trapaceiro chamado Kalos roubou uma adaga ritualística de um altar de Hermes e tentou fugir da cidade. Ele foi amaldiçoado no meio do caminho e transformado em um e...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(8)">
+                <h3>O Banquete dos Abutres</h3>
+                <p>Os corpos dos guerreiros caídos nas arenas estão sumindo do cemitério de rochas negras antes de receberem as moedas nos olhos para a travessia do Estige. Um bando de carniçais liderados por uma cria de Cérbero de duas...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(9)">
+                <h3>A Ninfa do Pântano de Piche</h3>
+                <p>Nas profundezas dos vales que cercam Kruma, existe uma nascente de piche negro e borbulhante. Uma Dríade, outrora protetora de uma floresta sagrada, foi corrompida pela escuridão da região e agora atrai viajantes para...</p>
+                <div class="stamp">Perigo</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(10)">
+                <h3>O Vinho da Imortalidade</h3>
+                <p>Um boato corre pelas tavernas: um barril do primeiríssimo vinho pisado por Dionísio, guardado em uma tumba lacrada nas Ruínas Antigas, pode curar qualquer doença e estender a vida por um século. O nobre ateniense ofer...</p>
+                <div class="stamp">Urgente</div>
+            </div>
+        </div>
+    </div>
+    <div id="quest-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title" style="font-size:2rem; border-bottom:3px solid #4a3728; margin-bottom:20px;"></h2>
+            <p id="modal-desc"></p>
+            <div class="reward-box">Recompensa: <span id="modal-reward"></span></div>
+        </div>
+    </div>
+    <script>
+        const quests = {
+    "1": {
+        "title": "O Canto dos Afogados",
+        "desc": "Por ordem de Lycus, o Navegante Cego\n\nMarinheiros que sobrevivem ao Estreito de Alexandria relatam que algo está subindo das falésias escuras durante a noite. Não são apenas sereias comuns; são criaturas tocadas pela podridão do submundo, cujas vozes fazem os homens arrancarem os próprios olhos antes de se jogarem ao mar.\n\n🧜‍♀️ DESCRIÇÃO DA AMEAÇA\n\nTrês Harpias das Profundezas com plumagem encharcada de lodo e feições anfíbias.\n\nSeu canto causa alucinações de afogamento e paralisia.\n\nElas atacam em bando, arrastando as vítimas para as cavernas verticais das falésias.\n\n🎯 OBJETIVO\n\nEscalar as falésias escuras durante a maré baixa.\n\nSilenciar o bando e trazer as garras da líder como prova.\n\n🪙 RECOMPENSA\n\n300 Dracmas de Prata.\n\nItem: Anel de Respiração Aquática (feito de ossos de baleia) ou uma garrafa de Vinho Dionisíaco Corrompido (funciona como uma Poção de Fúria).",
+        "reward": "300 Dracmas de Prata",
+        "stamp": "Disponível"
+    },
+    "2": {
+        "title": "A Máscara que Chora Sangue",
+        "desc": "Contratante: O Diretor do Anfiteatro de Dionísio\n\nDurante o último festival, um ator coadjuvante vestiu uma máscara de comédia antiga encontrada nas Ruínas Antigas. Ele não conseguiu mais tirá-la. Agora, ele vaga pelo Distrito Dionisíaco dançando até os ossos quebrarem, forçando quem cruza seu caminho a se juntar à dança mortal.\n\n🎭 DESCRIÇÃO DA AMEAÇA\n\nUm renegado possuído por um espírito de loucura (Estatísticas de Ghoul modificado).\n\nEle gasta 20 de deslocamento por turno apenas dançando e transmite a maldição pelo toque.\n\nA máscara parece fundida à carne de seu rosto.\n\n🎯 OBJETIVO\n\nCapturar o ator vivo ou morto.\n\nRemover a máscara sem destruí-la (exige um teste de Arcanismo ou Religião CD 14 ou o uso de Remover Maldição).\n\n🪙 RECOMPENSA\n\n450 Dracmas.\n\nItem: A Máscara da Comédia Macabra (Garante vantagem em testes de Atuação, mas exige um teste de resistência de Sabedoria CD 12 ao ser vestida para não perder o controle por 1 minuto).",
+        "reward": "450 Dracmas",
+        "stamp": "Disponível"
+    },
+    "3": {
+        "title": "O Sangue no Tablado",
+        "desc": "Contratante: Mestre de Armas Theron, do Distrito dos Confrontos\n\nUma das arenas improvisadas de Kruma foi interditada. Um gladiador que morreu em combate na noite passada recusou-se a cair. O solo seco da arena, saturado por décadas de sangue sacrificial, ergueu o homem como uma abominação de carne costurada e ódio.\n\n⚔️ DESCRIÇÃO DA AMEAÇA\n\nUm Minotauro Zumbi ou guerreiro morto-vivo de proporções massivas.\n\nEle empunha uma marreta de ferro fundido e ignora o primeiro golpe fatal que recebe (Resistência Inabalável).\n\n🎯 OBJETIVO\n\nEntrar na arena fechada e destruir a abominação.\n\nPurificar o centro do tablado com vinho puro para acalmar a terra.\n\n🪙 RECOMPENSA\n\n500 Dracmas.\n\nO direito de lutar na arena principal como campeão convidado.",
+        "reward": "500 Dracmas",
+        "stamp": "Perigo"
+    },
+    "4": {
+        "title": "A Carga do Mercado Vivo",
+        "desc": "Contratante: Madame Drusila, Mercadora de Raridades\n\nUma carroça vinda das estradas estreitas foi emboscada antes de cruzar os portões invisíveis de Kruma. O conteúdo não era ouro, mas sim três caixas de ferro seladas com chumbo, contendo ovos de Basilisco Negro. Se eles chocarem no vale, a fauna local será petrificada.\n\n🐍 DESCRIÇÃO DA AMEAÇA\n\nSalteadores locais tomaram a carga, sem saber o que há dentro.\n\nOs ovos estão prestes a eclodir devido ao calor das fogueiras dos acampamentos criminosos.\n\n🎯 OBJETIVO\n\nLocalizar o acampamento dos salteadores nos vales profundos.\n\nRecuperar as três caixas intactas. Se um ovo quebrar, matem o que sair de dentro.\n\n🪙 RECOMPENSA\n\n600 Dracmas.\n\nItem: Uma Pedra de Amolar de Hefesto (Adiciona +1 de dano de fogo a uma arma cortante por 1 hora, uso único).",
+        "reward": "600 Dracmas",
+        "stamp": "Urgente"
+    },
+    "5": {
+        "title": "O Deus Faminto do Subterrâneo",
+        "desc": "Contratante: Inscrição Anônima (Deixada com uma adaga cravada no mural)\n\nEles cavaram fundo demais no Mercado Vivo. Um porão desabou, revelando um dos túneis esquecidos das Ruínas Antigas. Algo cego, faminto e cheio de tentáculos de pedra começou a puxar os mercadores para baixo durante o silêncio da madrugada.\n\n👁️ DESCRIÇÃO DA AMEAÇA\n\nUma cria do Caos primordial (Estatísticas de um Gazer ou Grick modificado para parecer feito de rocha obsidiana e lodo).\n\nA criatura caça por vibração no solo.\n\n🎯 OBJETIVO\n\nDescer pelo porão desabado.\n\nSelar a entrada do túnel antigo ou erradicar a criatura que habita ali.\n\n🪙 RECOMPENSA\n\n700 Dracmas (pago em moedas antigas encontradas no local).",
+        "reward": "700 Dracmas",
+        "stamp": "Perigo"
+    },
+    "6": {
+        "title": "A Caçada à Corça de Bronze",
+        "desc": "Contratante: O Culto da Lua de Sangue\n\nUma criatura que se assemelha à mítica Corça de Cerineia foi avistada cruzando os caminhos perigosos ao redor de Kruma. Seus cascos são de bronze puro e seus chifres brilham como ouro, mas seus olhos são vazios e escuros — uma aberração de Dark Fantasy enviada como um presságio de fome.\n\n🦌 DESCRIÇÃO DA CRIATURA\n\nVelocidade extrema (deslocamento de 60 pés).\n\nSeus cascos deixam marcas de queimadura na rocha negra.\n\nEla não ataca a menos que seja encurralada, mas sua presença atrai lobos famintos e sombras.\n\n🎯 OBJETIVO\n\nAbater a criatura e trazer seus chifres de ouro dourado.\n\n🪙 RECOMPENSA\n\n800 Dracmas.\n\nItem: Chifre da Caçada Selvagem (Item mágico: Uma vez por dia, use uma ação para soprar o chifre e conjurar o feitiço Passos Sem Pegadas em até 3 aliados).",
+        "reward": "800 Dracmas",
+        "stamp": "Disponível"
+    },
+    "7": {
+        "title": "O Cobrador de Promessas",
+        "desc": "Contratante: Pallas, o Cambista de Almas\n\nEm Kruma, \"se você consegue manter... é seu\". Mas um trapaceiro chamado Kalos roubou uma adaga ritualística de um altar de Hermes e tentou fugir da cidade. Ele foi amaldiçoado no meio do caminho e transformado em um espectro ganancioso que rouba a própria força vital de quem carrega moedas.\n\n👻 DESCRIÇÃO DA AMEAÇA\n\nUm Espectro (Shadow) que drena a Força das criaturas.\n\nEle é imune a armas não mágicas, a menos que as armas sejam banhadas em vinho ou sangue fresco.\n\n🎯 OBJETIVO\n\nEncontrar Kalos nas estradas estreitas fora da cidade.\n\nRecuperar a Adaga de Hermes e devolvê-la ao altar no Distrito Dionisíaco.\n\n🪙 RECOMPENSA\n\n350 Dracmas.\n\nItem: A própria Adaga de Hermes (Uma adaga +1 que permite ao usuário usar a ação de Disparada como uma ação bônus uma vez por descanso curto).",
+        "reward": "350 Dracmas",
+        "stamp": "Disponível"
+    },
+    "8": {
+        "title": "O Banquete dos Abutres",
+        "desc": "Contratante: Famílias do Distrito dos Confrontos\n\nOs corpos dos guerreiros caídos nas arenas estão sumindo do cemitério de rochas negras antes de receberem as moedas nos olhos para a travessia do Estige. Um bando de carniçais liderados por uma cria de Cérbero de duas cabeças está profanando os mortos.\n\n🐕 DESCRIÇÃO DA AMEAÇA\n\nUm Cão Infernal de duas cabeças (Dano de fogo e duas mordidas por turno).\n\nTrês carniçais que o seguem como servos.\n\n🎯 OBJETIVO\n\nLimpar o cemitério de rochas negras.\n\nGarantir que os corpos recebam o ritual fúnebre adequado.\n\n🪙 RECOMPENSA\n\n550 Dracmas.\n\nFavor: O clero local curará gratuitamente o grupo de qualquer doença ou maldição contraída na missão.",
+        "reward": "550 Dracmas",
+        "stamp": "Disponível"
+    },
+    "9": {
+        "title": "A Ninfa do Pântano de Piche",
+        "desc": "Contratante: Colecionadores do Mercado Vivo\n\nNas profundezas dos vales que cercam Kruma, existe uma nascente de piche negro e borbulhante. Uma Dríade, outrora protetora de uma floresta sagrada, foi corrompida pela escuridão da região e agora atrai viajantes para o pântano betuminoso, transformando-os em estátuas de piche eterno.\n\n🪵 DESCRIÇÃO DA AMEAÇA\n\nDríade Corrompida (Dark Fantasy). Suas raízes causam a condição Agarrado e infligem dano de terra/ácido.\n\nO terreno ao redor dela é considerado terreno difícil.\n\n🎯 OBJETIVO\n\nDestruir o coração da Dríade (um caroço de madeira negra que brilha em roxo).\n\n🪙 RECOMPENSA\n\n900 Dracmas.\n\nItem: Madeira de Ébano do Caos (Pode ser usada por um artesão para criar um escudo ou cajado que concede resistência a dano de Necrótico).",
+        "reward": "900 Dracmas",
+        "stamp": "Perigo"
+    },
+    "10": {
+        "title": "O Vinho da Imortalidade",
+        "desc": "Contratante: Um Nobre Decadente de Atenas (Escondido no Mercado Vivo)\n\nUm boato corre pelas tavernas: um barril do primeiríssimo vinho pisado por Dionísio, guardado em uma tumba lacrada nas Ruínas Antigas, pode curar qualquer doença e estender a vida por um século. O nobre ateniense oferece uma fortuna, mas a tumba é protegida pelo próprio guardião do esquecimento.\n\n🍷 DESCRIÇÃO DA AMEAÇA\n\nUma Esfinge de Pedra corrompida ou um Golem de Carne feito de videiras e ossos antigos.\n\nO guardião faz uma charada. Errar a charada concede desvantagem em todos os testes de resistência por 24 horas devido ao medo sobrenatural.\n\n🎯 OBJETIVO\n\nRomper o lacre da tumba subterrânea.\n\nTrazer o ânfora de vinho intacta para o contratante na Taverna Central ao amanhecer.\n\n🪙 RECOMPENSA\n\n1.200 Dracmas.\n\nItem: Uma dose restante do vinho na ânfora, que funciona como uma Poção de Cura Suprema e remove qualquer status negativo permanentemente.",
+        "reward": "1.200 Dracmas",
+        "stamp": "Urgente"
+    }
+};
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            }, 1000);
+        });
+        function openQuest(id) {
+            const q = quests[id];
+            document.getElementById('modal-title').innerText = q.title;
+            document.getElementById('modal-desc').innerText = q.desc;
+            document.getElementById('modal-reward').innerText = q.reward;
+            document.getElementById('quest-modal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('quest-modal').style.display = 'none'; }
+        window.onclick = e => { if(e.target == document.getElementById('quest-modal')) closeModal(); }
+    </script>
+</body>
+</html>
