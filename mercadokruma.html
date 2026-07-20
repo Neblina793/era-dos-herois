@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado Vivo de Kruma</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; background-color: #000; font-family: 'Cinzel', serif; overflow: hidden; }
+        #loading-screen { position: fixed; inset: 0; background: black; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+        .loading-text { margin-top: 15px; color: #e0c097; font-size: 1.2rem; letter-spacing: 5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        #main-content { display: none; width: 100%; height: 100vh; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.85)), url('mercadovivo.jpg'); background-size: cover; background-position: center; padding: 40px; overflow-y: auto; }
+        .btn-voltar { position: absolute; top: 20px; left: 20px; border: 1px solid #e0c097; color: #e0c097; padding: 10px 20px; text-decoration: none; font-size: 0.8rem; z-index: 10; }
+        header { text-align: center; margin-bottom: 50px; }
+        h1 { color: #e0c097; font-size: 3rem; text-shadow: 0 0 15px rgba(224, 192, 151, 0.5); letter-spacing: 8px; }
+        .subtitle { color: #a88b6a; font-size: 1rem; letter-spacing: 4px; margin-top: 10px; }
+
+        .merchant-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto 60px; }
+        .merchant-card { background: url('https://www.transparenttextures.com/patterns/paper-fibers.png'), #c5a880; padding: 25px 20px; text-align: center; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); cursor: pointer; position: relative; border: 1px solid #8e735b; transition: 0.3s; }
+        .merchant-card:hover { transform: scale(1.05); z-index: 5; }
+        .portrait { width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 2.6rem; background: radial-gradient(circle at 35% 30%, #4a3728, #241a13); border: 3px solid #8b0000; box-shadow: inset 0 0 10px rgba(0,0,0,0.6); }
+        .merchant-card h3 { color: #4a3728; font-size: 1.2rem; margin-bottom: 6px; }
+        .merchant-card .role { color: #6b4a2f; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        .merchant-card .teaser { color: #5d4637; font-size: 0.82rem; line-height: 1.35; height: 55px; overflow: hidden; }
+        .stamp { position: absolute; top: -10px; right: -10px; font-weight: bold; font-size: 0.7rem; color: #fff; background: #8b0000; opacity: 0.9; padding: 6px 10px; transform: rotate(8deg); text-transform: uppercase; box-shadow: 2px 2px 6px rgba(0,0,0,0.5); }
+
+        #merchant-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
+        .modal-content { background: #e0c097; width: 100%; max-width: 650px; padding: 35px; border: 10px double #4a3728; color: #4a3728; position: relative; max-height: 90vh; display: flex; flex-direction: column; }
+        .close-modal { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; }
+        .modal-header { display: flex; align-items: center; gap: 20px; border-bottom: 3px solid #4a3728; margin-bottom: 15px; padding-bottom: 15px; }
+        .modal-header .portrait { width: 70px; height: 70px; font-size: 2rem; flex-shrink: 0; }
+        #modal-title { font-size: 1.7rem; }
+        #modal-role { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #6b4a2f; }
+
+        #modal-body { overflow-y: auto; padding-right: 10px; }
+        #modal-body::-webkit-scrollbar { width: 8px; }
+        #modal-body::-webkit-scrollbar-track { background: rgba(74, 55, 40, 0.1); border-radius: 10px; }
+        #modal-body::-webkit-scrollbar-thumb { background: #4a3728; border-radius: 10px; }
+
+        .dialogo { font-style: italic; line-height: 1.6; margin-bottom: 20px; padding: 12px 15px; background: rgba(74,55,40,0.08); border-left: 4px solid #8b0000; white-space: pre-line; }
+
+        .produtos-titulo { font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; color: #4a3728; border-bottom: 1px dashed #4a3728; margin-bottom: 10px; padding-bottom: 5px; }
+        table.produtos { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        table.produtos td { padding: 7px 4px; border-bottom: 1px solid rgba(74,55,40,0.2); font-size: 0.95rem; }
+        table.produtos td.preco { text-align: right; font-weight: bold; color: #8b0000; white-space: nowrap; }
+
+        details.segredo { margin-top: 10px; border: 1px dashed #8b0000; padding: 10px 12px; background: rgba(139,0,0,0.07); }
+        details.segredo summary { cursor: pointer; font-weight: bold; color: #8b0000; letter-spacing: 1px; font-size: 0.85rem; text-transform: uppercase; }
+        details.segredo p { margin-top: 8px; font-size: 0.9rem; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div id="loading-screen"><div class="loading-text">ABRINDO O MERCADO...</div></div>
+    <div id="main-content">
+        <a href="index.html" class="btn-voltar">← VOLTAR</a>
+        <header>
+            <h1>MERCADO VIVO DE KRUMA</h1>
+            <div class="subtitle">COMERCIANTES E CHARLATÕES</div>
+        </header>
+        <div class="merchant-board" id="merchant-board"></div>
+    </div>
+
+    <div id="merchant-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <div class="portrait" id="modal-portrait"></div>
+                <div>
+                    <h2 id="modal-title"></h2>
+                    <div id="modal-role"></div>
+                </div>
+            </div>
+            <div id="modal-body">
+                <div class="dialogo" id="modal-dialogo"></div>
+                <div class="produtos-titulo">Mercadorias</div>
+                <table class="produtos" id="modal-produtos"></table>
+                <div id="modal-segredo-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const merchants = [
+            {
+                id: 1,
+                nome: "Braxos, o Ferreiro das Chamas",
+                icone: "⚔️",
+                papel: "Armeiro",
+                golpista: false,
+                teaser: "Forjador veterano do Distrito dos Confrontos. Suas lâminas já derramaram sangue em mil arenas.",
+                dialogo: "\"Sente o calor da minha forja? Cada lâmina que sai daqui bebeu fogo por sete dias. Não vendo ferro fraco, estrangeiro — vendo o que te mantém vivo quando a sorte te abandona. Escolha bem, porque eu não faço reembolso para os mortos.\"",
+                produtos: [
+                    ["Espada Curta de Ferro", "40 Dracmas"],
+                    ["Machado de Guerra", "75 Dracmas"],
+                    ["Lança Ritualística", "60 Dracmas"],
+                    ["Adaga Serrilhada", "30 Dracmas"],
+                    ["Maça de Bronze Cravejada", "55 Dracmas"]
+                ]
+            },
+            {
+                id: 2,
+                nome: "Yolanda, a Couraceira das Sombras",
+                icone: "🛡️",
+                papel: "Armeira",
+                golpista: false,
+                teaser: "Trabalha com couro batido e metais recuperados das arenas abandonadas. Discreta e precisa.",
+                dialogo: "\"Não pergunto de onde vêm as cicatrizes de quem entra na minha loja, e você não pergunta de onde vem o metal das minhas armaduras. Só garanto uma coisa: o que eu costuro, não se abre fácil.\"",
+                produtos: [
+                    ["Armadura de Couro Batido", "50 Dracmas"],
+                    ["Cota de Malha Antiga", "120 Dracmas"],
+                    ["Escudo Redondo de Bronze", "45 Dracmas"],
+                    ["Elmo Espinhado", "65 Dracmas"],
+                    ["Grevas de Ferro", "40 Dracmas"]
+                ]
+            },
+            {
+                id: 3,
+                nome: "Mestra Ifigênia, Alquimista do Vale",
+                icone: "⚗️",
+                papel: "Alquimista",
+                golpista: false,
+                teaser: "Destila poções nas fornalhas subterrâneas próximas às Ruínas Antigas. Cada frasco é testado nela mesma.",
+                dialogo: "\"Todo frasco que sai da minha bancada, eu bebo uma gota antes de vender. Se estou viva pra te atender, é porque funciona. Escolha com cuidado — misturar o que não se entende é o mesmo que assinar seu próprio atestado de óbito.\"",
+                produtos: [
+                    ["Poção de Cura Menor", "25 Dracmas"],
+                    ["Antídoto Universal", "40 Dracmas"],
+                    ["Óleo de Fogo Alquímico", "35 Dracmas"],
+                    ["Elixir de Vigor", "50 Dracmas"],
+                    ["Fumaça Cega de Sombra", "30 Dracmas"]
+                ]
+            },
+            {
+                id: 4,
+                nome: "Nikolas, o Joalheiro de Kruma",
+                icone: "💎",
+                papel: "Joalheiro",
+                golpista: false,
+                teaser: "Herdou o ofício de três gerações de joalheiros. Só vende peças que ele mesmo autentica.",
+                dialogo: "\"Ouro e pedra não mentem, meu amigo, só os homens mentem sobre eles. Cada peça que vendo aqui carrega uma marca minha gravada na base. Se alguém te oferecer algo parecido sem essa marca, corra — ou melhor, me avise, porque tem um golpista solto por aí.\"",
+                produtos: [
+                    ["Anel de Proteção Menor", "200 Dracmas"],
+                    ["Colar de Ônix Sagrado", "350 Dracmas"],
+                    ["Bracelete de Ametista", "150 Dracmas"],
+                    ["Broche de Ouro Antigo", "400 Dracmas"],
+                    ["Diadema de Prata Élfica", "500 Dracmas"]
+                ]
+            },
+            {
+                id: 5,
+                nome: "Talos, o Mercador dos Caminhos",
+                icone: "🗺️",
+                papel: "Mercador Viajante",
+                golpista: false,
+                teaser: "Chegou de fora dos limites conhecidos de Kruma, com uma carroça cheia de itens úteis para quem parte em missão.",
+                dialogo: "\"Eu já vi o que tem lá fora, e acredite, você vai precisar de mais do que coragem. Mapas, cordas, luz que não apaga... tudo que sobrevive nas estradas estreitas, eu carrego. Preço justo, sem enrolação.\"",
+                produtos: [
+                    ["Mapa das Estradas Estreitas", "20 Dracmas"],
+                    ["Corda de Fibra Élfica (15m)", "15 Dracmas"],
+                    ["Lampião Eterno", "60 Dracmas"],
+                    ["Kit de Ferreiro Portátil", "45 Dracmas"],
+                    ["Pergaminho em Branco", "10 Dracmas"]
+                ]
+            },
+            {
+                id: 6,
+                nome: "Sereno, o Negociante de Relíquias",
+                icone: "🎭",
+                papel: "Antiquário",
+                golpista: true,
+                teaser: "Fala baixo, sorri fácil e sempre tem 'a última peça de uma coleção rara' esperando por um comprador especial.",
+                dialogo: "\"Ah, você tem bom olho, isso eu percebo logo. Este anel aqui... foi tirado das mãos de um herói esquecido pelas próprias Ruínas Antigas, antes que os deuses apagassem seu nome da história. Peças assim não aparecem duas vezes. Eu poderia guardar para um comprador mais... generoso, mas gostei de você. Vou fazer um preço especial, só hoje.\"",
+                produtos: [
+                    ["Anel do Herói Esquecido", "300 Dracmas"],
+                    ["Poção da Juventude Eterna", "150 Dracmas"],
+                    ["Fragmento da Estrela Caída", "250 Dracmas"]
+                ],
+                segredo: "Todos os itens de Sereno são falsificações convincentes: o \"anel do herói\" é latão polido sem qualquer propriedade mágica, a \"poção da juventude\" é água adocicada com mel e ervas aromáticas, e o \"fragmento de estrela\" é apenas uma pedra comum pintada com pó metálico. Sereno é hábil em manipular quem duvida, oferecendo 'certificados de autenticidade' falsos e histórias emocionantes sob medida para cada comprador. Se confrontado com provas, ele foge pelo Mercado Vivo, conhecendo cada beco."
+            },
+            {
+                id: 7,
+                nome: "Madame Circe, Vidente do Mercado",
+                icone: "🔮",
+                papel: "Vidente",
+                golpista: true,
+                teaser: "Uma tenda enfumaçada perto da fonte central. Ela já sabe seu nome antes de você dizer — ou finge saber.",
+                dialogo: "\"Sente-se, criança. Eu vi você chegando antes mesmo de seus pés tocarem estas pedras... os espíritos sussurram sobre uma sombra que te segue. Mas não se preocupe, eu tenho o que você precisa para afastá-la. Um amuleto, uma leitura, um pouco de pó abençoado sob a lua cheia. O destino não é gratuito, mas a paz de espírito não tem preço, não é mesmo?\"",
+                produtos: [
+                    ["Amuleto da Sorte Eterna", "80 Dracmas"],
+                    ["Leitura do Destino", "50 Dracmas"],
+                    ["Pó da Boa Fortuna", "30 Dracmas"]
+                ],
+                segredo: "Madame Circe não possui nenhum poder místico real: seus 'amuletos' são pedras de rio comuns, suas 'leituras' são frases genéricas adaptadas com informações que ela mesma colhe bisbilhotando conversas no mercado, e o 'pó da boa fortuna' é apenas cinza de incenso perfumado. Enquanto distrai a vítima com a leitura, um cúmplice (geralmente uma criança de rua) revista os bolsos do cliente distraído. Se descoberta, ela alega que a \"energia do cliente estava bloqueando o ritual\" e devolve parte do dinheiro para evitar escândalo."
+            },
+            {
+                id: 8,
+                nome: "Doutor Menandro, Curandeiro Milagroso",
+                icone: "⚕️",
+                papel: "Curandeiro",
+                golpista: true,
+                teaser: "Vende curas para tudo, de febres a maldições antigas, com uma banca cheia de frascos coloridos e promessas grandiosas.",
+                dialogo: "\"Amigo, amiga, chegou na hora certa! Este elixir aqui já curou pestes, quebrou maldições e devolveu a juventude a um velho conselheiro de Atenas — ele mesmo me escreveu uma carta de agradecimento, posso mostrar se quiser. Garantia total: se não funcionar, é porque seu espírito resiste à cura, não porque o remédio falhou. Mas não se preocupe, isso é raro.\"",
+                produtos: [
+                    ["Elixir da Cura Total", "200 Dracmas"],
+                    ["Bálsamo dos Deuses", "90 Dracmas"],
+                    ["Pílula do Renascimento", "120 Dracmas"]
+                ],
+                segredo: "As \"curas\" de Menandro são, na melhor das hipóteses, água com corante e mel, e na pior, misturas de ervas suaves que causam sonolência ou leves alucinações — o suficiente para o cliente jurar ter sentido algo acontecer. Ele nunca fica na mesma banca por mais de algumas semanas, sempre mudando de área do Mercado Vivo antes que as reclamações se acumulem. Caso um cliente exija reembolso, ele culpa \"impurezas espirituais\" do comprador e some no meio da multidão."
+            }
+        ];
+
+        const board = document.getElementById('merchant-board');
+        merchants.forEach(m => {
+            const card = document.createElement('div');
+            card.className = 'merchant-card';
+            card.onclick = () => openMerchant(m.id);
+            card.innerHTML = `
+                ${m.golpista ? '<div class="stamp">?</div>' : ''}
+                <div class="portrait">${m.icone}</div>
+                <h3>${m.nome}</h3>
+                <div class="role">${m.papel}</div>
+                <div class="teaser">${m.teaser}</div>
+            `;
+            board.appendChild(card);
+        });
+
+        function openMerchant(id) {
+            const m = merchants.find(x => x.id === id);
+            document.getElementById('modal-portrait').innerText = m.icone;
+            document.getElementById('modal-title').innerText = m.nome;
+            document.getElementById('modal-role').innerText = m.papel;
+            document.getElementById('modal-dialogo').innerText = m.dialogo;
+
+            const tabela = document.getElementById('modal-produtos');
+            tabela.innerHTML = '';
+            m.produtos.forEach(p => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${p[0]}</td><td class="preco">${p[1]}</td>`;
+                tabela.appendChild(row);
+            });
+
+            const segredoContainer = document.getElementById('modal-segredo-container');
+            segredoContainer.innerHTML = '';
+            if (m.golpista) {
+                const details = document.createElement('details');
+                details.className = 'segredo';
+                details.innerHTML = `<summary>🎭 Segredo do Mestre</summary><p>${m.segredo}</p>`;
+                segredoContainer.appendChild(details);
+            }
+
+            document.getElementById('merchant-modal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('merchant-modal').style.display = 'none'; }
+        window.onclick = e => { if (e.target == document.getElementById('merchant-modal')) closeModal(); };
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -13,6 +13,8 @@
         @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
         #main-content { display: none; width: 100%; height: 100vh; background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('tavkruma.jpg'); background-size: cover; background-position: center; padding: 40px; overflow-y: auto; }
         .btn-voltar { position: absolute; top: 20px; left: 20px; border: 1px solid #e0c097; color: #e0c097; padding: 10px 20px; text-decoration: none; font-size: 0.8rem; z-index: 10; }
+        .btn-mercado { position: absolute; top: 20px; right: 20px; border: 1px solid #e0c097; color: #e0c097; padding: 10px 20px; text-decoration: none; font-size: 0.8rem; z-index: 10; transition: 0.3s; }
+        .btn-mercado:hover { background: #e0c097; color: #1a1a1a; }
         header { text-align: center; margin-bottom: 50px; }
         h1 { color: #e0c097; font-size: 3rem; text-shadow: 0 0 15px rgba(224, 192, 151, 0.5); letter-spacing: 10px; }
         .subtitle { color: #a88b6a; font-size: 1rem; letter-spacing: 4px; margin-top: 10px; }
@@ -39,6 +41,7 @@
     <div id="loading-screen"><div class="loading-text">ABRINDO MURAL...</div></div>
     <div id="main-content">
         <a href="index.html" class="btn-voltar">← VOLTAR</a>
+        <a href="mercadokruma.html" class="btn-mercado">MERCADO →</a>
         <header>
             <h1>TAVERNA DE KRUMA</h1>
             <div class="subtitle">MURAL DE MISSÕES</div>
@@ -92,6 +95,56 @@
             <div class="quest-paper" onclick="openQuest(10)">
                 <h3>O Vinho da Imortalidade</h3>
                 <p>Um boato corre pelas tavernas: um barril do primeiríssimo vinho pisado por Dionísio, guardado em uma tumba lacrada nas Ruínas Antigas, pode curar qualquer doença e estender a vida por um século. O nobre ateniense ofer...</p>
+                <div class="stamp">Urgente</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(11)">
+                <h3>O Eco das Correntes</h3>
+                <p>Durante as madrugadas, correntes enferrujadas são ouvidas arrastando-se pelas falésias escuras. Viajantes desaparecem ao seguir o som, deixando apenas marcas de sangue e ferrugem nas ped...</p>
+                <div class="stamp">Perigo</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(12)">
+                <h3>O Poeta Sem Rosto</h3>
+                <p>Um poeta mascarado começou a recitar versos no Distrito Dionisíaco. Quem ouve seus poemas perde a memória de uma pessoa querida a cada apresentação. O poeta é um espírito antigo preso e...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(13)">
+                <h3>A Arena das Sombras</h3>
+                <p>Uma arena abandonada voltou a funcionar sozinha durante a noite. Guerreiros mortos surgem das sombras e lutam eternamente, enquanto apostas invisíveis são feitas por espectadores fantasm...</p>
+                <div class="stamp">Perigo</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(14)">
+                <h3>O Mercador de Ossos</h3>
+                <p>Um comerciante desconhecido vende artefatos feitos de ossos humanos e promete riqueza imediata a quem comprar suas mercadorias. Porém, todos os clientes desaparecem após sete dias...</p>
+                <div class="stamp">Urgente</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(15)">
+                <h3>O Festival das Chamas Eternas</h3>
+                <p>Durante o Festival das Chamas Eternas, uma fogueira sagrada saiu do controle e começou a consumir casas inteiras sem jamais se apagar. Um elemental de fogo espalha chamas sobrenatura...</p>
+                <div class="stamp">Urgente</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(16)">
+                <h3>A Serpente do Vale Negro</h3>
+                <p>Uma serpente colossal foi vista deslizando pelos vales profundos ao redor de Kruma. Seu veneno transforma carne em pedra negra. A criatura possui escamas resistentes como obsidiana...</p>
+                <div class="stamp">Perigo</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(17)">
+                <h3>O Templo Enterrado</h3>
+                <p>Escavações nas Ruínas Antigas revelaram a entrada de um templo soterrado, coberto por símbolos que ninguém consegue decifrar. Estátuas vivas e armadilhas ancestrais o protegem...</p>
+                <div class="stamp">Disponível</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(18)">
+                <h3>A Dança dos Enforcados</h3>
+                <p>Corpos de criminosos executados começaram a balançar sozinhos nas praças de Kruma. À meia-noite, eles descem das cordas e dançam pelas ruas, sob o comando de um espírito vingativo...</p>
+                <div class="stamp">Perigo</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(19)">
+                <h3>O Roubo da Máscara Real</h3>
+                <p>Uma máscara lendária, usada por antigos governantes secretos de Kruma, foi roubada durante uma celebração no Anfiteatro de Dionísio por uma guilda de assassinos rival...</p>
+                <div class="stamp">Urgente</div>
+            </div>
+            <div class="quest-paper" onclick="openQuest(20)">
+                <h3>O Coração de Kruma</h3>
+                <p>Uma mensagem apareceu sozinha no mural da taverna: "Kruma está acordando." Moradores relatam tremores subterrâneos e vozes vindas das profundezas da cidade...</p>
                 <div class="stamp">Urgente</div>
             </div>
         </div>
@@ -164,6 +217,66 @@
         "title": "O Vinho da Imortalidade",
         "desc": "Contratante: Um Nobre Decadente de Atenas (Escondido no Mercado Vivo)\n\nUm boato corre pelas tavernas: um barril do primeiríssimo vinho pisado por Dionísio, guardado em uma tumba lacrada nas Ruínas Antigas, pode curar qualquer doença e estender a vida por um século. O nobre ateniense oferece uma fortuna, mas a tumba é protegida pelo próprio guardião do esquecimento.\n\n🍷 DESCRIÇÃO DA AMEAÇA\n\nUma Esfinge de Pedra corrompida ou um Golem de Carne feito de videiras e ossos antigos.\n\nO guardião faz uma charada. Errar a charada concede desvantagem em todos os testes de resistência por 24 horas devido ao medo sobrenatural.\n\n🎯 OBJETIVO\n\nRomper o lacre da tumba subterrânea.\n\nTrazer o ânfora de vinho intacta para o contratante na Taverna Central ao amanhecer.\n\n🪙 RECOMPENSA\n\n1.200 Dracmas.\n\nItem: Uma dose restante do vinho na ânfora, que funciona como uma Poção de Cura Suprema e remove qualquer status negativo permanentemente.",
         "reward": "1.200 Dracmas",
+        "stamp": "Urgente"
+    },
+    "11": {
+        "title": "O Eco das Correntes",
+        "desc": "Contratante: Guardiã Selene, das Falésias do Estreito\n\nDurante as madrugadas, correntes enferrujadas são ouvidas arrastando-se pelas falésias escuras. Viajantes desaparecem ao seguir o som, deixando apenas marcas de sangue e ferrugem nas pedras.\n\n⛓️ DESCRIÇÃO DA AMEAÇA\n\nUm antigo carcereiro morto-vivo, acorrentado ao espírito de dezenas de prisioneiros esquecidos, patrulha os penhascos e arrasta suas vítimas para cavernas submersas.\n\n🎯 OBJETIVO\n\nEncontrar a origem das correntes.\n\nLibertar os espíritos presos ou destruir o carcereiro.\n\nTrazer uma das correntes encantadas como prova.\n\n🪙 RECOMPENSA\n\n650 Dracmas e a Corrente do Guardião, que permite imobilizar uma criatura uma vez por descanso curto.",
+        "reward": "650 Dracmas",
+        "stamp": "Perigo"
+    },
+    "12": {
+        "title": "O Poeta Sem Rosto",
+        "desc": "Contratante: Proprietário da Taverna Central\n\nUm poeta mascarado começou a recitar versos no Distrito Dionisíaco. Quem ouve seus poemas perde a memória de uma pessoa querida a cada apresentação.\n\n🎭 DESCRIÇÃO DA AMEAÇA\n\nO poeta é um espírito antigo preso em uma máscara dourada. Suas palavras roubam lembranças e alimentam uma entidade esquecida nas Ruínas Antigas.\n\n🎯 OBJETIVO\n\nDescobrir a verdadeira identidade do poeta.\n\nInterromper a apresentação antes do próximo festival.\n\nQueimar os versos amaldiçoados.\n\n🪙 RECOMPENSA\n\n500 Dracmas e a Lira da Memória, que concede vantagem em testes de História.",
+        "reward": "500 Dracmas",
+        "stamp": "Disponível"
+    },
+    "13": {
+        "title": "A Arena das Sombras",
+        "desc": "Contratante: Mestre de Armas Theron\n\nUma arena abandonada voltou a funcionar sozinha durante a noite. Guerreiros mortos surgem das sombras e lutam eternamente, enquanto apostas invisíveis são feitas por espectadores fantasmagóricos.\n\n⚔️ DESCRIÇÃO DA AMEAÇA\n\nUm campeão espectral convoca sombras de antigos gladiadores para defender a arena.\n\n🎯 OBJETIVO\n\nEntrar na arena após o pôr do sol.\n\nDerrotar o campeão espectral.\n\nDestruir o sino negro que convoca os gladiadores.\n\n🪙 RECOMPENSA\n\n900 Dracmas e o direito de usar a arena para treinamentos especiais.",
+        "reward": "900 Dracmas",
+        "stamp": "Perigo"
+    },
+    "14": {
+        "title": "O Mercador de Ossos",
+        "desc": "Contratante: Conselho do Mercado Vivo\n\nUm comerciante desconhecido vende artefatos feitos de ossos humanos e promete riqueza imediata a quem comprar suas mercadorias. Porém, todos os clientes desaparecem após sete dias.\n\n💀 DESCRIÇÃO DA AMEAÇA\n\nO mercador é um necromante disfarçado, que usa os compradores como matéria-prima para criar servos mortos-vivos.\n\n🎯 OBJETIVO\n\nIdentificar o mercador.\n\nInfiltrar-se em seu depósito secreto.\n\nLibertar os prisioneiros antes do ritual final.\n\n🪙 RECOMPENSA\n\n750 Dracmas e um Amuleto de Proteção contra Mortos-Vivos.",
+        "reward": "750 Dracmas",
+        "stamp": "Urgente"
+    },
+    "15": {
+        "title": "O Festival das Chamas Eternas",
+        "desc": "Contratante: Sacerdotisa de Dionísio\n\nDurante o Festival das Chamas Eternas, uma fogueira sagrada saiu do controle e começou a consumir casas inteiras sem jamais se apagar.\n\n🔥 DESCRIÇÃO DA AMEAÇA\n\nUm elemental de fogo alimentado pela fé e pelo caos do festival espalha chamas sobrenaturais por Kruma.\n\n🎯 OBJETIVO\n\nConter o incêndio no Distrito Dionisíaco.\n\nDescobrir quem invocou o elemental.\n\nApagar a chama central com água do Estreito de Alexandria.\n\n🪙 RECOMPENSA\n\n1.000 Dracmas e uma Tocha de Fogo Eterno.",
+        "reward": "1.000 Dracmas",
+        "stamp": "Urgente"
+    },
+    "16": {
+        "title": "A Serpente do Vale Negro",
+        "desc": "Contratante: Caçadores das Encostas\n\nUma serpente colossal foi vista deslizando pelos vales profundos ao redor de Kruma. Seu veneno transforma carne em pedra negra.\n\n🐍 DESCRIÇÃO DA AMEAÇA\n\nA criatura possui escamas resistentes como obsidiana e pode desaparecer entre as sombras das rochas.\n\n🎯 OBJETIVO\n\nRastrear a serpente até sua toca.\n\nColetar uma amostra de seu veneno.\n\nAbater a criatura antes que alcance a cidade.\n\n🪙 RECOMPENSA\n\n1.100 Dracmas e 3 frascos de Veneno Petrificante.",
+        "reward": "1.100 Dracmas",
+        "stamp": "Perigo"
+    },
+    "17": {
+        "title": "O Templo Enterrado",
+        "desc": "Contratante: Arqueólogo ateniense\n\nEscavações nas Ruínas Antigas revelaram a entrada de um templo soterrado, coberto por símbolos que ninguém consegue decifrar.\n\n🗿 DESCRIÇÃO DA AMEAÇA\n\nO templo é protegido por estátuas vivas e armadilhas criadas por uma civilização anterior aos deuses conhecidos.\n\n🎯 OBJETIVO\n\nExplorar o templo enterrado.\n\nRecuperar a relíquia central.\n\nSobreviver às armadilhas ancestrais.\n\n🪙 RECOMPENSA\n\n1.300 Dracmas e a Chave das Ruínas, capaz de abrir portas antigas.",
+        "reward": "1.300 Dracmas",
+        "stamp": "Disponível"
+    },
+    "18": {
+        "title": "A Dança dos Enforcados",
+        "desc": "Contratante: Moradores do Distrito dos Confrontos\n\nCorpos de criminosos executados começaram a balançar sozinhos nas praças de Kruma. À meia-noite, eles descem das cordas e dançam pelas ruas.\n\n💀 DESCRIÇÃO DA AMEAÇA\n\nUm espírito vingativo controla os cadáveres e busca justiça contra aqueles que o condenaram.\n\n🎯 OBJETIVO\n\nDescobrir a identidade do espírito.\n\nRealizar um julgamento ritual.\n\nConceder paz aos mortos.\n\n🪙 RECOMPENSA\n\n700 Dracmas e a bênção de resistência contra medo por 7 dias.",
+        "reward": "700 Dracmas",
+        "stamp": "Perigo"
+    },
+    "19": {
+        "title": "O Roubo da Máscara Real",
+        "desc": "Contratante: Sombra da Coroa\n\nUma máscara lendária, usada por antigos governantes secretos de Kruma, foi roubada durante uma celebração no Anfiteatro de Dionísio.\n\n🎭 DESCRIÇÃO DA AMEAÇA\n\nO ladrão pertence a uma guilda de assassinos e pretende vender a máscara para um império rival.\n\n🎯 OBJETIVO\n\nSeguir as pistas pelo Mercado Vivo.\n\nEncontrar o esconderijo da guilda.\n\nRecuperar a máscara intacta.\n\n🪙 RECOMPENSA\n\n1.500 Dracmas e um favor da Sombra da Coroa.",
+        "reward": "1.500 Dracmas",
+        "stamp": "Urgente"
+    },
+    "20": {
+        "title": "O Coração de Kruma",
+        "desc": "Contratante: Inscrição Anônima no Mural\n\nUma mensagem apareceu sozinha no mural da taverna: \"Kruma está acordando.\" Moradores relatam tremores subterrâneos e vozes vindas das profundezas da cidade.\n\n🌋 DESCRIÇÃO DA AMEAÇA\n\nNas cavernas abaixo de Kruma existe uma entidade ancestral que mantém o caos da cidade em equilíbrio. Algo está tentando despertá-la completamente.\n\n🎯 OBJETIVO\n\nDescer ao Subterrâneo de Kruma.\n\nDescobrir a origem dos tremores.\n\nImpedir o despertar da entidade ancestral.\n\n🪙 RECOMPENSA\n\n2.000 Dracmas, um artefato lendário e acesso a uma área secreta de Kruma.",
+        "reward": "2.000 Dracmas",
         "stamp": "Urgente"
     }
 };
