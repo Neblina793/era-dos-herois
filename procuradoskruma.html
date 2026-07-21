@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kruma - Mural dos Procurados</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; background-color: #000; font-family: 'Cinzel', serif; overflow: hidden; }
+        #loading-screen { position: fixed; inset: 0; background: black; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+        .loading-text { margin-top: 15px; color: #e0c097; font-size: 1.2rem; letter-spacing: 5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        #main-content { display: none; width: 100%; height: 100vh; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('tavkruma.jpg'); background-size: cover; background-position: center; padding: 40px; overflow-y: auto; }
+        .btn-voltar { position: absolute; top: 20px; left: 20px; border: 1px solid #e0c097; color: #e0c097; padding: 10px 20px; text-decoration: none; font-size: 0.8rem; z-index: 10; transition: 0.3s; }
+        .btn-voltar:hover { background: #e0c097; color: #1a1a1a; }
+        .btn-mercado { position: absolute; top: 20px; right: 20px; border: 1px solid #e0c097; color: #e0c097; padding: 10px 20px; text-decoration: none; font-size: 0.8rem; z-index: 10; transition: 0.3s; }
+        .btn-mercado:hover { background: #e0c097; color: #1a1a1a; }
+        header { text-align: center; margin-bottom: 50px; }
+        h1 { color: #e0c097; font-size: 3rem; text-shadow: 0 0 15px rgba(224, 192, 151, 0.5); letter-spacing: 10px; }
+        .subtitle { color: #a88b6a; font-size: 1rem; letter-spacing: 4px; margin-top: 10px; }
+
+        .wanted-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; max-width: 1300px; margin: 0 auto 60px; }
+        .wanted-poster { background: url('https://www.transparenttextures.com/patterns/paper-fibers.png'), #c5a880; padding: 20px; box-shadow: 6px 6px 18px rgba(0,0,0,0.6); border: 1px solid #8e735b; position: relative; color: #4a3728; transition: 0.3s; cursor: pointer; }
+        .wanted-poster:hover { transform: scale(1.04) rotate(0deg); z-index: 5; }
+        .poster-header { text-align: center; font-size: 1.6rem; letter-spacing: 6px; color: #8b0000; border-bottom: 2px solid #4a3728; padding-bottom: 8px; margin-bottom: 12px; text-shadow: none; }
+        .poster-photo { width: 100%; height: 180px; object-fit: cover; border: 3px solid #4a3728; filter: sepia(0.5) contrast(1.05); background: #2a2a2a; color: #8e735b; font-size: 0.75rem; text-align: center; cursor: zoom-in; }
+
+        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 3000; padding: 30px; cursor: zoom-out; }
+        #lightbox img { max-width: 90vw; max-height: 90vh; border: 4px solid #e0c097; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+        #lightbox .close-lightbox { position: absolute; top: 20px; right: 30px; font-size: 2.5rem; color: #e0c097; cursor: pointer; }
+        .poster-name { text-align: center; font-size: 1.3rem; margin-top: 12px; color: #4a3728; border-bottom: 1px dashed #4a3728; padding-bottom: 8px; }
+        .poster-crime { font-size: 0.85rem; line-height: 1.4; margin-top: 10px; height: 78px; overflow: hidden; color: #5d4637; }
+        .poster-footer { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .danger-level { color: #8b0000; letter-spacing: 2px; }
+        .status-badge { padding: 3px 10px; border: 1px solid #4a3728; font-weight: bold; text-transform: uppercase; font-size: 0.65rem; }
+        .status-vivo { background: #5d7a4a; color: #eee; }
+        .status-morto { background: #8b0000; color: #eee; }
+        .reward-tag { margin-top: 10px; text-align: center; font-weight: bold; color: #8b0000; font-size: 1rem; border-top: 1px dashed #4a3728; padding-top: 8px; }
+
+        #wanted-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
+        .modal-content { background: #e0c097; width: 100%; max-width: 600px; padding: 40px; border: 10px double #4a3728; color: #4a3728; position: relative; max-height: 90vh; display: flex; flex-direction: column; overflow-y: auto; }
+        .close-modal { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; }
+        #modal-photo { width: 160px; height: 190px; object-fit: cover; border: 3px solid #4a3728; margin: 0 auto 15px; display: block; background: #2a2a2a; color: #8e735b; font-size: 0.8rem; text-align: center; cursor: zoom-in; }
+        #modal-desc { font-size: 1.05rem; line-height: 1.6; margin-bottom: 15px; white-space: pre-line; }
+        .modal-meta { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #4a3728; padding-top: 15px; margin-top: auto; }
+    </style>
+</head>
+<body>
+    <div id="loading-screen"><div class="loading-text">AFIXANDO CARTAZES...</div></div>
+    <div id="main-content">
+        <a href="Tavernakruma.html" class="btn-voltar">← VOLTAR</a>
+        <a href="mercadokruma.html" class="btn-mercado">MERCADO →</a>
+        <header>
+            <h1>PROCURADOS</h1>
+            <div class="subtitle">MURAL DE RECOMPENSAS DE KRUMA</div>
+        </header>
+        <div class="wanted-board">
+            <div class="wanted-poster" onclick="openWanted(1)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu001.png" alt="procu001.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu001.png';">
+                <div class="poster-name">Olho de Cobra</div>
+                <p class="poster-crime">Bandido mestre em venenos que assassinou três magistrados de Kruma trocando o vinho ritual por peçonha de víbora-das-sombras, cobrando dos rivais deles pelo serviço...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠☠☠</span>
+                    <span class="status-badge status-morto">Morto</span>
+                </div>
+                <div class="reward-tag">1.400 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(2)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu002.png" alt="procu002.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu002.png';">
+                <div class="poster-name">Doriskos, o Sorridente</div>
+                <p class="poster-crime">Trapaceiro de jogos de dados que já arruinou dezenas de famílias no Distrito Dionisíaco, fugindo sempre antes de pagar as dívidas de sangue que ele mesmo provoca...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠</span>
+                    <span class="status-badge status-vivo">Vivo ou Morto</span>
+                </div>
+                <div class="reward-tag">150 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(3)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu003.png" alt="procu003.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu003.png';">
+                <div class="poster-name">A Viúva de Ferro</div>
+                <p class="poster-crime">Assassina que executa contratos usando lâminas untadas com óleo negro das Ruínas Antigas, responsável pela morte de dois conselheiros do Mercado Vivo em uma única noite...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠☠</span>
+                    <span class="status-badge status-morto">Morto</span>
+                </div>
+                <div class="reward-tag">900 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(4)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu004.png" alt="procu004.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu004.png';">
+                <div class="poster-name">Bruto Calvião</div>
+                <p class="poster-crime">Ex-gladiador expulso da arena por matar um oponente já rendido diante da plateia, hoje extorquindo comerciantes das estradas estreitas com sua força descomunal...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠</span>
+                    <span class="status-badge status-vivo">Vivo ou Morto</span>
+                </div>
+                <div class="reward-tag">400 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(5)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu005.png" alt="procu005.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu005.png';">
+                <div class="poster-name">Cassandra, a Profetiza Falsa</div>
+                <p class="poster-crime">Charlatã que se passa por oráculo de Delfos, vendendo profecias falsas que já levaram fiéis a atos de sacrifício e loucura pelo Distrito Dionisíaco...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠</span>
+                    <span class="status-badge status-vivo">Vivo ou Morto</span>
+                </div>
+                <div class="reward-tag">350 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(6)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu006.png" alt="procu006.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu006.png';">
+                <div class="poster-name">O Carniceiro do Subterrâneo</div>
+                <p class="poster-crime">Necromante renegado que sequestra mercadores do Mercado Vivo para experimentos profanos nos túneis esquecidos das Ruínas Antigas, criando servos de ossos costurados...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠☠☠☠</span>
+                    <span class="status-badge status-morto">Somente Morto</span>
+                </div>
+                <div class="reward-tag">2.200 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(7)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu007.png" alt="procu007.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu007.png';">
+                <div class="poster-name">Pequena Meli</div>
+                <p class="poster-crime">Batedora de carteiras e arrombadora de fechaduras que opera entre as barracas do Mercado Vivo, procurada por furtar o selo de um conselheiro para forjar documentos...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠</span>
+                    <span class="status-badge status-vivo">Vivo</span>
+                </div>
+                <div class="reward-tag">80 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(8)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu008.png" alt="procu008.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu008.png';">
+                <div class="poster-name">Tirano das Falésias</div>
+                <p class="poster-crime">Antigo capitão de navio que agora comanda um bando de saqueadores nas falésias do Estreito de Alexandria, afundando embarcações inteiras por diversão e lucro...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠☠</span>
+                    <span class="status-badge status-morto">Morto</span>
+                </div>
+                <div class="reward-tag">1.000 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(9)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu009.png" alt="procu009.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu009.png';">
+                <div class="poster-name">Irmãs Nêmesis</div>
+                <p class="poster-crime">Duas gêmeas incendiárias que já reduziram três armazéns do Mercado Vivo a cinzas cobrando "proteção" dos comerciantes que se recusam a pagar tributo...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠☠</span>
+                    <span class="status-badge status-vivo">Vivo ou Morto</span>
+                </div>
+                <div class="reward-tag">850 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(10)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu010.png" alt="procu010.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu010.png';">
+                <div class="poster-name">O Curandeiro Amargo</div>
+                <p class="poster-crime">Falso boticário que vende poções adulteradas com veneno de lesma-das-sombras, responsável por dezenas de mortes lentas entre os fiéis que buscavam cura...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠</span>
+                    <span class="status-badge status-vivo">Vivo ou Morto</span>
+                </div>
+                <div class="reward-tag">500 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(11)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu011.png" alt="procu011.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu011.png';">
+                <div class="poster-name">Xantos, o Devorador de Contratos</div>
+                <p class="poster-crime">Advogado corrupto que forja contratos de escravidão por dívida em Kruma, condenando famílias inteiras ao trabalho forçado nas minas fora da cidade...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠</span>
+                    <span class="status-badge status-vivo">Vivo</span>
+                </div>
+                <div class="reward-tag">300 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(12)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu012.png" alt="procu012.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu012.png';">
+                <div class="poster-name">A Sombra do Anfiteatro</div>
+                <p class="poster-crime">Assassina ritualística que mata atores e sacerdotes durante os festivais dionisíacos, deixando símbolos amaldiçoados gravados nos corpos das vítimas...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠☠☠</span>
+                    <span class="status-badge status-morto">Somente Morto</span>
+                </div>
+                <div class="reward-tag">1.700 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(13)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu013.png" alt="procu013.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu013.png';">
+                <div class="poster-name">Grom, o Punho de Pedra</div>
+                <p class="poster-crime">Fugitivo das arenas subterrâneas que espancou até a morte um juiz de combate por declarar sua derrota, escondendo-se agora nos vales ao redor de Kruma...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠☠</span>
+                    <span class="status-badge status-morto">Morto</span>
+                </div>
+                <div class="reward-tag">950 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(14)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu014.png" alt="procu014.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu014.png';">
+                <div class="poster-name">Madame Ossanha</div>
+                <p class="poster-crime">Comerciante clandestina de relíquias amaldiçoadas das Ruínas Antigas, vendendo artefatos que já corromperam três famílias nobres de Kruma...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠</span>
+                    <span class="status-badge status-vivo">Vivo ou Morto</span>
+                </div>
+                <div class="reward-tag">600 Dracmas</div>
+            </div>
+
+            <div class="wanted-poster" onclick="openWanted(15)">
+                <div class="poster-header">PROCURADO</div>
+                <img class="poster-photo" src="imagens/procu015.png" alt="procu015.png" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);" onerror="this.onerror=null;this.classList.add('no-photo');this.alt='procu015.png';">
+                <div class="poster-name">O Herege de Cinzas</div>
+                <p class="poster-crime">Sacerdote apóstata que profanou o altar de Dionísio invocando um elemental de fogo que consumiu parte do Distrito Dionisíaco durante o último festival...</p>
+                <div class="poster-footer">
+                    <span class="danger-level">☠☠☠☠☠</span>
+                    <span class="status-badge status-morto">Somente Morto</span>
+                </div>
+                <div class="reward-tag">2.500 Dracmas</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wanted-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <img id="modal-photo" src="" alt="" onclick="event.stopPropagation(); openLightbox(this.src, this.alt);">
+            <h2 id="modal-title" style="font-size:1.8rem; text-align:center; border-bottom:3px solid #4a3728; margin-bottom:20px; padding-bottom:10px;"></h2>
+            <p id="modal-desc"></p>
+            <div class="modal-meta">
+                <span id="modal-danger" class="danger-level" style="font-size:1.2rem;"></span>
+                <span id="modal-status" class="status-badge"></span>
+                <span id="modal-reward" style="font-weight:bold; color:#8b0000; font-size:1.1rem;"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="lightbox" onclick="closeLightbox()">
+        <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+
+    <script>
+        const wanteds = {
+    "1": {
+        "title": "Olho de Cobra",
+        "img": "imagens/procu001.png",
+        "desc": "🐍 CRIME\n\nBandido mestre em venenos que assassinou três magistrados de Kruma trocando o vinho ritual por peçonha de víbora-das-sombras. Cobra caro dos rivais políticos das vítimas pelo serviço, sempre desaparecendo antes de ser identificado. Reconhecido pela cicatriz em formato de presa sobre o olho esquerdo, que lhe rendeu o apelido.\n\n⚠️ PERIGO\n\nCarrega ao menos três venenos diferentes escondidos em anéis e é capaz de matar antes que a vítima perceba o ataque. Evite ingerir qualquer bebida ou alimento oferecido por ele.\n\n🎯 CONDIÇÃO\n\nDevido à letalidade de seus venenos e ao histórico de assassinatos políticos, o Conselho de Kruma exige a entrega do corpo. Captura viva não é aceita.",
+        "danger": "☠☠☠☠",
+        "status": "morto",
+        "status_label": "Somente Morto",
+        "reward": "1.400 Dracmas"
+    },
+    "2": {
+        "title": "Doriskos, o Sorridente",
+        "img": "imagens/procu002.png",
+        "desc": "🎲 CRIME\n\nTrapaceiro de jogos de dados que já arruinou dezenas de famílias no Distrito Dionisíaco, usando dados viciados e cúmplices infiltrados entre os apostadores. Foge sempre antes de pagar as dívidas de sangue que ele mesmo provoca entre os perdedores.\n\n⚠️ PERIGO\n\nNão é um lutador; prefere fugir e subornar guardas. Baixo risco de confronto direto.\n\n🎯 CONDIÇÃO\n\nO Mercado Vivo aceita a entrega viva ou morta, preferindo vivo para que pague as dívidas que deixou.",
+        "danger": "☠",
+        "status": "vivo",
+        "status_label": "Vivo ou Morto",
+        "reward": "150 Dracmas"
+    },
+    "3": {
+        "title": "A Viúva de Ferro",
+        "img": "imagens/procu003.png",
+        "desc": "🗡️ CRIME\n\nAssassina profissional que executa contratos usando lâminas untadas com óleo negro extraído das Ruínas Antigas. Responsável pela morte de dois conselheiros do Mercado Vivo em uma única noite, sem deixar testemunhas vivas.\n\n⚠️ PERIGO\n\nExtremamente treinada em combate corpo a corpo e furtividade; suas lâminas causam ferimentos que não cicatrizam com facilidade.\n\n🎯 CONDIÇÃO\n\nO Conselho exige prova de sua morte para encerrar a investigação sobre os assassinatos.",
+        "danger": "☠☠☠",
+        "status": "morto",
+        "status_label": "Somente Morto",
+        "reward": "900 Dracmas"
+    },
+    "4": {
+        "title": "Bruto Calvião",
+        "img": "imagens/procu004.png",
+        "desc": "⚔️ CRIME\n\nEx-gladiador expulso da arena por matar um oponente já rendido diante da plateia. Hoje extorque comerciantes que trafegam pelas estradas estreitas ao redor de Kruma, usando sua força descomunal para intimidar caravanas inteiras.\n\n⚠️ PERIGO\n\nForça física muito acima da média; capaz de erguer uma carroça sozinho.\n\n🎯 CONDIÇÃO\n\nOs comerciantes prejudicados aceitam sua entrega viva, para julgamento público, ou morta.",
+        "danger": "☠☠",
+        "status": "vivo",
+        "status_label": "Vivo ou Morto",
+        "reward": "400 Dracmas"
+    },
+    "5": {
+        "title": "Cassandra, a Profetiza Falsa",
+        "img": "imagens/procu005.png",
+        "desc": "🔮 CRIME\n\nCharlatã que se passa por oráculo, vendendo profecias falsas no Distrito Dionisíaco. Suas mentiras já levaram fiéis desesperados a atos de sacrifício e loucura, na esperança de agradar deuses que ela mesma inventa.\n\n⚠️ PERIGO\n\nManipuladora talentosa, mas sem habilidades de combate reais.\n\n🎯 CONDIÇÃO\n\nO clero de Kruma prefere julgá-la publicamente, mas aceita prova de morte caso resista à captura.",
+        "danger": "☠☠",
+        "status": "vivo",
+        "status_label": "Vivo ou Morto",
+        "reward": "350 Dracmas"
+    },
+    "6": {
+        "title": "O Carniceiro do Subterrâneo",
+        "img": "imagens/procu006.png",
+        "desc": "💀 CRIME\n\nNecromante renegado que sequestra mercadores do Mercado Vivo para experimentos profanos nos túneis esquecidos das Ruínas Antigas, transformando suas vítimas em servos de ossos costurados que ainda sentem dor.\n\n⚠️ PERIGO\n\nComanda múltiplos mortos-vivos e domina magias de necromancia avançada; extremamente perigoso mesmo à distância.\n\n🎯 CONDIÇÃO\n\nSuas magias podem reanimá-lo se capturado vivo. O Conselho exige a destruição completa do corpo como prova.",
+        "danger": "☠☠☠☠☠",
+        "status": "morto",
+        "status_label": "Somente Morto",
+        "reward": "2.200 Dracmas"
+    },
+    "7": {
+        "title": "Pequena Meli",
+        "img": "imagens/procu007.png",
+        "desc": "🗝️ CRIME\n\nBatedora de carteiras e arrombadora de fechaduras que opera entre as barracas do Mercado Vivo. Procurada por furtar o selo oficial de um conselheiro, usado depois para forjar documentos de posse de terras.\n\n⚠️ PERIGO\n\nNenhum risco de combate; foge com agilidade pelos becos e telhados.\n\n🎯 CONDIÇÃO\n\nDeve ser entregue viva, para que o selo roubado seja recuperado e o conselheiro identifique os documentos forjados.",
+        "danger": "☠",
+        "status": "vivo",
+        "status_label": "Vivo",
+        "reward": "80 Dracmas"
+    },
+    "8": {
+        "title": "Tirano das Falésias",
+        "img": "imagens/procu008.png",
+        "desc": "🌊 CRIME\n\nAntigo capitão de navio que hoje comanda um bando de saqueadores nas falésias do Estreito de Alexandria, afundando embarcações inteiras por diversão e pilhando o que resta antes que os sobreviventes cheguem à costa.\n\n⚠️ PERIGO\n\nComanda uma tripulação armada e conhece as correntes do estreito melhor que qualquer marinheiro vivo.\n\n🎯 CONDIÇÃO\n\nOs armadores de Kruma só aceitam prova de sua morte, temendo que, vivo, ele volte a comandar outro bando.",
+        "danger": "☠☠☠",
+        "status": "morto",
+        "status_label": "Morto",
+        "reward": "1.000 Dracmas"
+    },
+    "9": {
+        "title": "Irmãs Nêmesis",
+        "img": "imagens/procu009.png",
+        "desc": "🔥 CRIME\n\nDuas gêmeas incendiárias que já reduziram três armazéns do Mercado Vivo a cinzas, cobrando \"proteção\" dos comerciantes que se recusam a pagar tributo mensal a elas.\n\n⚠️ PERIGO\n\nAtacam sempre em dupla e dominam o uso de óleo inflamável e tochas rituais; um confronto pode incendiar quarteirões inteiros.\n\n🎯 CONDIÇÃO\n\nOs mercadores aceitam sua entrega viva ou morta, desde que os incêndios cessem.",
+        "danger": "☠☠☠",
+        "status": "vivo",
+        "status_label": "Vivo ou Morto",
+        "reward": "850 Dracmas"
+    },
+    "10": {
+        "title": "O Curandeiro Amargo",
+        "img": "imagens/procu010.png",
+        "desc": "🧪 CRIME\n\nFalso boticário que vende poções adulteradas com veneno de lesma-das-sombras nas ruas de Kruma, responsável por dezenas de mortes lentas entre fiéis desesperados que buscavam cura para seus males.\n\n⚠️ PERIGO\n\nNão luta diretamente, mas carrega frascos que podem ser usados como armas de contato caso encurralado.\n\n🎯 CONDIÇÃO\n\nO clero prefere julgá-lo vivo para que revele a fórmula do antídoto, mas aceita prova de morte.",
+        "danger": "☠☠",
+        "status": "vivo",
+        "status_label": "Vivo ou Morto",
+        "reward": "500 Dracmas"
+    },
+    "11": {
+        "title": "Xantos, o Devorador de Contratos",
+        "img": "imagens/procu011.png",
+        "desc": "📜 CRIME\n\nAdvogado corrupto que forja contratos de escravidão por dívida em Kruma, condenando famílias inteiras ao trabalho forçado nas minas fora da cidade através de cláusulas falsificadas.\n\n⚠️ PERIGO\n\nSem habilidades de combate; sua defesa é a rede de contatos corruptos que protege.\n\n🎯 CONDIÇÃO\n\nDeve ser entregue vivo, para depor sobre os nomes envolvidos na falsificação dos contratos.",
+        "danger": "☠☠",
+        "status": "vivo",
+        "status_label": "Vivo",
+        "reward": "300 Dracmas"
+    },
+    "12": {
+        "title": "A Sombra do Anfiteatro",
+        "img": "imagens/procu012.png",
+        "desc": "🎭 CRIME\n\nAssassina ritualística que mata atores e sacerdotes durante os festivais dionisíacos, deixando símbolos amaldiçoados gravados nos corpos das vítimas como oferendas a um deus esquecido.\n\n⚠️ PERIGO\n\nMove-se sem ser vista mesmo em meio a multidões e utiliza magia sombria para escapar de perseguições.\n\n🎯 CONDIÇÃO\n\nSeus rituais podem ser revertidos apenas com sua morte; o clero exige o corpo para consagrar novamente o anfiteatro.",
+        "danger": "☠☠☠☠",
+        "status": "morto",
+        "status_label": "Somente Morto",
+        "reward": "1.700 Dracmas"
+    },
+    "13": {
+        "title": "Grom, o Punho de Pedra",
+        "img": "imagens/procu013.png",
+        "desc": "👊 CRIME\n\nFugitivo das arenas subterrâneas que espancou até a morte um juiz de combate por declarar sua derrota. Esconde-se agora nos vales ao redor de Kruma, atacando viajantes que cruzam seu caminho.\n\n⚠️ PERIGO\n\nForça bruta capaz de esmagar armaduras leves com as próprias mãos; pouca resistência a táticas ou armadilhas.\n\n🎯 CONDIÇÃO\n\nO Mestre de Armas Theron exige prova de sua morte, recusando-se a arriscar outra fuga.",
+        "danger": "☠☠☠",
+        "status": "morto",
+        "status_label": "Morto",
+        "reward": "950 Dracmas"
+    },
+    "14": {
+        "title": "Madame Ossanha",
+        "img": "imagens/procu014.png",
+        "desc": "🏺 CRIME\n\nComerciante clandestina de relíquias amaldiçoadas retiradas das Ruínas Antigas, vendendo artefatos que já corromperam três famílias nobres de Kruma através de posses e maldições lentas.\n\n⚠️ PERIGO\n\nGuarda armadilhas mágicas em seu depósito secreto e pode usar as próprias relíquias como armas de defesa.\n\n🎯 CONDIÇÃO\n\nAs famílias afetadas aceitam sua entrega viva, para reverter as maldições, ou morta.",
+        "danger": "☠☠",
+        "status": "vivo",
+        "status_label": "Vivo ou Morto",
+        "reward": "600 Dracmas"
+    },
+    "15": {
+        "title": "O Herege de Cinzas",
+        "img": "imagens/procu015.png",
+        "desc": "🔥 CRIME\n\nSacerdote apóstata que profanou o altar de Dionísio invocando um elemental de fogo que consumiu parte do Distrito Dionisíaco durante o último festival, matando dezenas de fiéis nas chamas descontroladas.\n\n⚠️ PERIGO\n\nAinda mantém um vínculo instável com o elemental invocado, podendo incendiar arredores inteiros mesmo desarmado.\n\n🎯 CONDIÇÃO\n\nA Sacerdotisa de Dionísio exige que ele seja morto para romper o vínculo com o elemental de uma vez por todas.",
+        "danger": "☠☠☠☠☠",
+        "status": "morto",
+        "status_label": "Somente Morto",
+        "reward": "2.500 Dracmas"
+    }
+};
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            }, 1000);
+        });
+
+        function openWanted(id) {
+            const w = wanteds[id];
+            document.getElementById('modal-title').innerText = w.title;
+            document.getElementById('modal-desc').innerText = w.desc;
+            document.getElementById('modal-danger').innerText = w.danger;
+            document.getElementById('modal-reward').innerText = w.reward;
+            const statusEl = document.getElementById('modal-status');
+            statusEl.innerText = w.status_label;
+            statusEl.className = 'status-badge ' + (w.status === 'morto' ? 'status-morto' : 'status-vivo');
+            const photo = document.getElementById('modal-photo');
+            photo.src = w.img;
+            photo.alt = w.title;
+            photo.onerror = function() { this.style.display = 'none'; };
+            photo.onload = function() { this.style.display = 'block'; };
+            document.getElementById('wanted-modal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('wanted-modal').style.display = 'none'; }
+        window.onclick = e => { if (e.target == document.getElementById('wanted-modal')) closeModal(); }
+
+        function openLightbox(src, alt) {
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightboxImg.alt = alt;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
