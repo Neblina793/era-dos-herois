@@ -293,21 +293,20 @@
               <h4>🐍 CORPO SERPENTINO (HIDRA)</h4>
               <p>Sua fisiologia se adapta a toxinas e regenera agressivamente.</p>
               <p class="rule-line">Você possui resistência a dano de veneno e vantagem em testes de resistência contra a condição Envenenado.</p>
-              <p class="rule-line">Além disso, uma vez por turno, quando você acerta um ataque físico, o alvo sofre +1d6 de dano de veneno adicional. Esse dano aumenta conforme seu nível, seguindo a progressão de truques.</p>
+              <p class="rule-line">Além disso, uma vez por turno, quando você acerta um ataque físico, o alvo sofre +1d4 de dano de veneno adicional. Esse dano não aumenta com o nível.</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/garras.png" alt="GARRAS PREDATÓRIAS" class="ability-sprite" onerror="this.style.display='none'">
               <h4>🦁 GARRAS PREDATÓRIAS (QUIMERA)</h4>
               <p>Suas mãos se transformam em garras predatórias.</p>
               <p class="rule-line">Ataque Natural. Suas garras são consideradas uma arma natural que causa 1d6 + seu modificador de Força ou Destreza de dano cortante.</p>
-              <p class="rule-line">Se você acertar uma criatura com dois ataques no mesmo turno, o segundo acerto causa +1d6 de dano cortante adicional, escalando conforme um truque.</p>
+              <p class="rule-line">Uma vez por turno, se você acertar uma criatura com dois ataques no mesmo turno, o segundo acerto causa +1d6 de dano cortante adicional.</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/couraca.png" alt="COURAÇA NATURAL" class="ability-sprite" onerror="this.style.display='none'">
               <h4>🐗 COURAÇA NATURAL</h4>
               <p>Sua pele se torna espessa e resistente como a de uma criatura selvagem.</p>
               <p class="rule-line">Enquanto não estiver vestindo armadura pesada, você recebe +1 na Classe de Armadura.</p>
-              <p class="rule-line">Além disso, você possui resistência a dano contundente, perfurante e cortante.</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/asas_grifo.png" alt="ASAS DE GRIFO" class="ability-sprite" onerror="this.style.display='none'">
@@ -315,6 +314,8 @@
               <p>Você desenvolve asas capazes de sustentar voo.</p>
               <p class="rule-line">Você adquire um deslocamento de voo de 9 metros.</p>
               <p class="rule-line">Você não pode utilizar esse deslocamento enquanto estiver vestindo armadura pesada.</p>
+              <p class="rule-line">Duração: 10 minutos por uso.</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência, recuperados após um descanso longo.</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/sopro.png" alt="SOPRO BESTIAL" class="ability-sprite" onerror="this.style.display='none'">
@@ -325,15 +326,14 @@
               <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de Constituição.</p>
               <p class="rule-line">Dano. 2d6 de dano ácido.</p>
               <p class="rule-line">Sucesso. A criatura sofre metade do dano.</p>
-              <p class="rule-line">O alcance do cone aumenta em 1,5 metro conforme escala de truques, e o dano também aumenta conforme essa progressão.</p>
+              <p class="rule-line">O dano aumenta para 3d6 no nível 11 e para 4d6 no nível 17.</p>
               <p class="rule-line">Usos. Você pode usar esta habilidade um número de vezes igual ao seu bônus de proficiência, recuperando todos os usos após um descanso longo.</p>
             </div>
             <div class="variant-box" style="grid-column:1/-1">
               <img src="imagens/sprites/regeneracao.png" alt="REGENERAÇÃO DE HIDRA" class="ability-sprite" onerror="this.style.display='none'">
               <h4>🩸 REGENERAÇÃO DE HIDRA</h4>
               <p>Sua vitalidade é extremamente resiliente.</p>
-              <p class="rule-line">No início de cada um de seus turnos, você recupera uma quantidade de pontos de vida igual ao seu bônus de proficiência.</p>
-              <p class="rule-line">Se você tiver sofrido dano de fogo desde o seu último turno, esta habilidade não funciona naquele turno.</p>
+              <p class="rule-line">Ação Bônus. Uma vez por descanso longo, você recupera pontos de vida igual ao seu bônus de proficiência + seu nível.</p>
             </div>
           </div>
         </div>
@@ -355,7 +355,7 @@
               <img src="imagens/sprites/essencia_abismo.png" alt="ESSÊNCIA DO ABISMO" class="ability-sprite" onerror="this.style.display='none'">
               <h4>🌑 ESSÊNCIA DO ABISMO</h4>
               <p>• Tipo: Humanoide.</p>
-              <p>• Resistências: Você possui resistência a dano necrótico e psíquico.</p>
+              <p>• Resistências: Você possui resistência a dano necrótico.</p>
               <p>• Visão das Profundezas (18m)</p>
               <p>• Deslocamento: Seu deslocamento base de caminhada é de 9 metros.</p>
             </div>
@@ -368,7 +368,7 @@
             </div>
           </div>
 
-          <h3 class="variant-section-title">👁 PODERES INATOS</h3>
+          <h3 class="variant-section-title">👁 PODERES INATOS (Escolha 1)</h3>
           <div class="variant-grid">
               <div class="variant-box">
                   <img src="imagens/sprites/visao_profundezas.png" alt="Visão das Profundezas" class="ability-sprite" onerror="this.style.display='none'">
@@ -397,8 +397,8 @@
               <img src="imagens/sprites/marca_abismo.png" alt="MARCA DO ABISMO" class="ability-sprite" onerror="this.style.display='none'">
               <h4>🕳 MARCA DO ABISMO</h4>
               <p>Você marca seus inimigos com energia do Tártaro.</p>
-              <p class="rule-line">Ao acertar um ataque físico, você pode fazer com que o alvo sofra dano necrótico adicional igual a metade do seu bônus de proficiência (arredondado para cima).</p>
-              <p class="rule-line">Este efeito permanece ativo por 5 turnos.</p>
+              <p class="rule-line">Uma vez por turno, ao acertar um ataque físico, você pode fazer com que o alvo sofra dano necrótico adicional igual ao seu bônus de proficiência.</p>
+              <p class="rule-line">Este efeito permanece ativo por 1 minuto.</p>
               <p class="rule-line">Usos. Igual ao seu bônus de proficiência.</p>
             </div>
           </div>
@@ -411,7 +411,7 @@
               <p>Você aprisiona seus inimigos com correntes abissais.</p>
               <p class="rule-line">Quando você acerta uma criatura com um ataque, ela deve realizar um teste de resistência de Força.</p>
               <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.</p>
-              <p class="rule-line">Falha. A criatura fica Contida por 2 turnos.</p>
+              <p class="rule-line">Falha. A criatura fica Agarrada. No final de cada um de seus turnos, ela pode repetir o teste, encerrando o efeito em caso de sucesso.</p>
               <p class="rule-line">Usos. Igual ao seu bônus de proficiência.</p>
             </div>
             <div class="variant-box">
@@ -420,7 +420,7 @@
               <p>Você fragmenta a mente do alvo com energia psíquica.</p>
               <p class="rule-line">Quando você acerta uma criatura com um ataque, ela deve realizar um teste de resistência de Sabedoria.</p>
               <p class="rule-line">CD do Teste. 8 + seu bônus de proficiência + seu modificador de conjuração.</p>
-              <p class="rule-line">Falha. A criatura sofre: Desvantagem em jogadas de ataque. Não pode usar reações.</p>
+              <p class="rule-line">Falha. Escolha um efeito ao ativar esta habilidade: a criatura sofre Desvantagem em jogadas de ataque OU não pode usar reações.</p>
               <p class="rule-line">Duração: 2 turnos.</p>
               <p class="rule-line">Usos. Igual ao seu bônus de proficiência.</p>
             </div>
@@ -440,17 +440,17 @@
               <h4>🌘 FORMA INTANGÍVEL</h4>
               <p>Você abandona parcialmente o plano material.</p>
               <p class="rule-line">Ação Bônus. Você assume uma forma intangível.</p>
-              <p class="rule-line">Durante essa forma: Você possui resistência a todo dano. Pode atravessar criaturas e objetos como se fossem terreno difícil. Não pode ser Agarrado.</p>
+              <p class="rule-line">Durante essa forma: Você possui resistência a dano contundente, perfurante e cortante. Pode atravessar criaturas e objetos como se fossem terreno difícil. Não pode ser Agarrado.</p>
               <p class="rule-line">Duração: 1 turno.</p>
-              <p class="rule-line">Usos. Metade do seu bônus de proficiência.</p>
+              <p class="rule-line">Usos. 1 vez por descanso longo.</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/julgamento.png" alt="JULGAMENTO INEVITÁVEL" class="ability-sprite" onerror="this.style.display='none'">
               <h4>⚖ JULGAMENTO INEVITÁVEL</h4>
               <p>Você impõe uma sentença absoluta sobre inimigos enfraquecidos.</p>
-              <p class="rule-line">Quando você acerta uma criatura que esteja com metade ou menos dos pontos de vida, ela não pode recuperar pontos de vida.</p>
-              <p class="rule-line">Duração: 2 turnos.</p>
-              <p class="rule-line">Este efeito é passivo e não possui limite de uso.</p>
+              <p class="rule-line">Ação Bônus. Quando você acerta uma criatura que esteja com metade ou menos dos pontos de vida, você pode ativar esta habilidade para que ela não possa recuperar pontos de vida.</p>
+              <p class="rule-line">Duração: 1 turno.</p>
+              <p class="rule-line">Usos. 1 vez por descanso longo.</p>
             </div>
           </div>
         </div>
@@ -478,7 +478,7 @@
             <div class="ability-box">
               <img src="imagens/sprites/essencia_celestial.png" alt="ESSÊNCIA CELESTIAL" class="ability-sprite" onerror="this.style.display='none'">
               <h4>🌟 ESSÊNCIA CELESTIAL</h4>
-              <p>• Resistência: Você possui resistência a dano radiante e necrótico.</p>
+              <p>• Resistência: Você possui resistência a dano radiante.</p>
               <p>• Intuição Elevada: Você possui vantagem em testes de Sabedoria (Intuição).</p>
               <p>• Aprimoramento: Você ganha proficiência em um atributo adicional à sua escolha.</p>
             </div>
@@ -520,6 +520,7 @@
               <p class="rule-line">Ação Bônus. Você se teleporta para um espaço desocupado a até 9 metros.</p>
               <p class="rule-line">Criaturas a até 1,5 metro do ponto de chegada devem realizar um teste de resistência de Sabedoria.</p>
               <p class="rule-line">Falha. A criatura sofre desvantagem em suas jogadas de ataque até o final do próximo turno.</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência, recuperados após um descanso longo.</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/luz_reveladora.png" alt="LUZ REVELADORA" class="ability-sprite" onerror="this.style.display='none'">
@@ -532,19 +533,21 @@
               <img src="imagens/sprites/egide.png" alt="Égide Radiante" class="ability-sprite" onerror="this.style.display='none'">
               <h4>🛡 ÉGIDE RADIANTE</h4>
               <p class="rule-line">Reação. Quando uma criatura aliada a até 1,5 metro de você sofre dano, você pode reduzir esse dano em uma quantidade igual a:</p>
-              <p class="rule-line">1d10 + seu bônus de proficiência + seu nível</p>
+              <p class="rule-line">1d6 + seu bônus de proficiência</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência, recuperados após um descanso longo.</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/inspiracao.png" alt="INSPIRAÇÃO ELEVADA" class="ability-sprite" onerror="this.style.display='none'">
               <h4>✨ INSPIRAÇÃO ELEVADA</h4>
               <p class="rule-line">Ao acertar um ataque, você pode conceder a um aliado um bônus de 1d4 em jogadas de ataque e testes de resistência.</p>
-              <p class="rule-line">Duração: 2 turnos.</p>
+              <p class="rule-line">Duração: até o início do próximo turno do aliado.</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/olhar_eter.png" alt="OLHAR DO ÉTER" class="ability-sprite" onerror="this.style.display='none'">
               <h4>🌠 OLHAR DO ÉTER</h4>
               <p class="rule-line">Ação. Uma criatura deve realizar um teste de resistência de Sabedoria.</p>
               <p class="rule-line">Falha. A criatura sofre desvantagem em jogadas de ataque por 2 turnos.</p>
+              <p class="rule-line">Usos. Igual ao seu bônus de proficiência, recuperados após um descanso longo.</p>
             </div>
           </div>
         </div>
@@ -574,7 +577,7 @@
               <h4>🔄 MANIFESTAÇÃO GIGANTE</h4>
               <p>Você manifesta o verdadeiro poder dos gigantes.</p>
               <p class="rule-line">Ação Bônus. Você assume uma forma ampliada.</p>
-              <p class="rule-line">Duração: 10 minutos.</p>
+              <p class="rule-line">Duração: 1 minuto.</p>
               <p class="rule-line">Durante esse tempo:</p>
               <p class="rule-line">• Você é considerado como uma criatura de uma categoria de tamanho maior</p>
               <p class="rule-line">• Seu alcance corpo a corpo aumenta em 1,5 metro</p>
@@ -589,15 +592,15 @@
             <div class="variant-box">
               <img src="imagens/sprites/ataques_colossais.png" alt="ATAQUES COLOSSAIS" class="ability-sprite" onerror="this.style.display='none'">
               <h4>🧬 ATAQUES COLOSSAIS</h4>
-              <p class="rule-line">Enquanto estiver sob efeito da Forma Colossal:</p>
+              <p class="rule-line">Enquanto estiver sob efeito da Forma Colossal, escolha um dos benefícios abaixo (a escolha é feita ao ativar a Forma Colossal):</p>
               <p class="rule-line">• Seus ataques causam +1d4 de dano físico adicional, exceto com armas leves</p>
-              <p class="rule-line">• O dano de suas armas aumenta em uma categoria, seguindo progressão semelhante à do monge, até o máximo de d10.</p>
+              <p class="rule-line">• OU o dano de suas armas aumenta em uma categoria, seguindo progressão semelhante à do monge, até o máximo de d10.</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/pele_colosso.png" alt="PELE DE COLOSSO" class="ability-sprite" onerror="this.style.display='none'">
               <h4>🛡 PELE DE COLOSSO</h4>
               <p>Seu corpo resiste a impactos massivos.</p>
-              <p class="rule-line">Você reduz o dano recebido em uma quantidade igual ao seu bônus de proficiência.</p>
+              <p class="rule-line">Uma vez por turno, você reduz o dano recebido em uma quantidade igual ao seu bônus de proficiência.</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/passos_tremores.png" alt="PASSOS TREMORES" class="ability-sprite" onerror="this.style.display='none'">
@@ -623,8 +626,6 @@
               <h4>☁️ GIGANTE DAS NUVENS</h4>
               <p>Criaturas inimigas a até 1,5 metro de você:</p>
               <p class="rule-line">• Têm seu deslocamento reduzido pela metade</p>
-              <p class="rule-line">• Não podem usar a ação Desengajar</p>
-              <p class="rule-line">• Sempre provocam ataques de oportunidade ao sair do seu alcance</p>
             </div>
             <div class="variant-box">
               <img src="imagens/sprites/gigante_fogo.png" alt="GIGANTE DO FOGO" class="ability-sprite" onerror="this.style.display='none'">
@@ -641,9 +642,7 @@
             <div class="variant-box">
               <img src="imagens/sprites/gigante_colina.png" alt="GIGANTE DA COLINA" class="ability-sprite" onerror="this.style.display='none'">
               <h4>⛰ GIGANTE DA COLINA</h4>
-              <p class="rule-line">• Você ignora as propriedades Pesada e Duas Mãos de armas</p>
               <p class="rule-line">• Possui vantagem em testes de Força (Atletismo)</p>
-              <p class="rule-line">• É considerado como uma criatura de tamanho maior para efeitos de empurrar e agarrar</p>
             </div>
           </div>
         </div>
