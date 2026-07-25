@@ -37,6 +37,74 @@
       color: #9a9a9a;
       border: 2px solid #666;
     }
+
+    /* ===== GALERIA DE NOTÍCIAS ===== */
+    .news-panel { position: relative; }
+    .news-masthead {
+      text-align:center;
+      font-family:'Press Start 2P', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold, #d4af37);
+      margin-bottom: 18px;
+      opacity: .85;
+    }
+    .news-gallery { position: relative; min-height: 300px; }
+    .news-slide { display: none; }
+    .news-slide.active { display: block; animation: newsFade .35s ease; }
+    @keyframes newsFade { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+    .news-image-frame {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto 18px;
+      border: 3px solid var(--ink, #3a2a1a);
+      background: repeating-linear-gradient(45deg,#1a1a1a,#1a1a1a 10px,#222 10px,#222 20px);
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .news-image-frame img { width: 100%; height: auto; display: block; }
+    .news-image-frame .placeholder-icon {
+      font-family:'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--gold, #d4af37);
+      opacity: .6;
+      text-align: center;
+      padding: 20px;
+      letter-spacing: 1px;
+    }
+    .news-location {
+      text-align:center;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color:#9a9a9a;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .news-headline {
+      text-align:center;
+      color: var(--gold, #d4af37);
+      font-family:'Press Start 2P', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 6px 0 14px;
+      text-shadow: 0 0 6px rgba(212,175,55,.5);
+    }
+    .news-sub { font-style: italic; color: #cfae6a; text-align:center; margin-bottom: 16px; font-size: 14px; line-height: 1.5; }
+    .news-body p { margin: 0 0 14px; line-height: 1.75; font-size: 15px; }
+    .news-quote {
+      border-left: 3px solid var(--gold, #d4af37);
+      padding: 10px 14px;
+      font-style: italic;
+      color: #e8dcc0;
+      background: rgba(212,175,55,.06);
+      border-radius: 2px;
+    }
+    .news-quote b { color: var(--gold, #d4af37); font-style: normal; }
+    .news-nav { display:flex; align-items:center; justify-content:center; gap:20px; margin-top: 22px; flex-wrap: wrap; }
+    .news-nav span { font-family:'VT323', monospace; font-size: 20px; color:#9a9a9a; }
   </style>
 </head>
 <body>
@@ -172,14 +240,127 @@
         </article>
       </div>
 
-      <!-- VÍDEO DE APRESENTAÇÃO -->
-      <div class="panel" style="margin-top:32px">
-        <div class="panel-title">▼ VÍDEO DE APRESENTAÇÃO ▼</div>
-        <video controls style="width:100%;border:3px solid var(--ink);background:#000;display:block">
-          <source src="002.mp4" type="video/mp4">
-          Seu navegador não suporta a reprodução de vídeos.
-        </video>
+      <!-- NOTÍCIAS DA SEMANA -->
+      <div class="panel news-panel" style="margin-top:32px">
+        <div class="panel-title">▼ NOTÍCIAS DA SEMANA ▼</div>
+        <p class="news-masthead">✦ O ARAUTO DE KRUMA ✦ Edição Semanal do Mundo Mitológico</p>
+
+        <div class="news-gallery" id="newsGallery">
+
+          <!-- NOTÍCIA 01 · KRUMA -->
+          <article class="news-slide active" data-slide="0">
+            <div class="news-image-frame">
+              <img src="imagens/not001.png" alt="Ilustração da notícia 01" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 01</div>
+            </div>
+            <div class="news-location">Kruma</div>
+            <h3 class="news-headline">O PERVERTIDO DE OLHOS AMARELOS DE KRUMA</h3>
+            <p class="news-sub">A mansão do Doutor Xantos, um dos advogados mais brilhantes de Kruma, foi assaltada na madrugada de ontem, tendo como única testemunha sua esposa, a Senhora Drixia, que concedeu depoimento a este arauto sobre o terrível ocorrido.</p>
+            <div class="news-body">
+              <p class="news-quote"><b>Depoimento da Senhora Drixia:</b> "Eu estava no corredor quando, de repente, ouvi um barulho vindo da Biblioteca. Chamei os seguranças imediatamente, e eles entraram no cômodo — mas o terrível assaltante já estava escondido, à espreita, esperando a oportunidade de escapar. Quando os guardas entraram, ele empurrou a estante de livros sobre eles e avançou contra mim. Vejam a marca da mão dele em meu rosto! Aquele ser asqueroso possuía chifres e olhos amarelos — infelizmente não consegui ver seu rosto, pois o Pervertido usava uma calcinha como máscara. E, como se não bastasse, era repugnante: carregava um rato sobre o ombro."</p>
+              <p>O Doutor Xantos evitou dar depoimentos, alegando estar profundamente abalado — o assaltante marcara o rosto de sua amada esposa. Ainda assim, o advogado já acionou as autoridades de Kruma e convocou alguns de seus aliados, uma vez que o criminoso, além de ferir sua esposa, também roubou documentos de grande importância.</p>
+              <p>Atualmente, ele oferece a recompensa de <b class="news-quote" style="border:none;background:none;padding:0;font-style:normal;color:var(--gold,#d4af37)">1.500 dracmas</b> pela cabeça do assaltante — vivo ou morto.</p>
+            </div>
+          </article>
+
+          <!-- NOTÍCIA 02 · ESPARTA -->
+          <article class="news-slide" data-slide="1">
+            <div class="news-image-frame">
+              <img src="imagens/not002.png" alt="Ilustração da notícia 02" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 02</div>
+            </div>
+            <div class="news-location">Esparta</div>
+            <h3 class="news-headline">SANGUE NA ARENA: DESCONHECIDO DESAFIA DRAKION, O INQUEBRÁVEL</h3>
+            <p class="news-sub">Nos campos de treino ao sul de Creta, um forasteiro encapuzado surgiu na arena espartana e desafiou publicamente o Rei Drakion para um duelo até a submissão — algo que ninguém ousava fazer há quase uma década.</p>
+            <div class="news-body">
+              <p class="news-quote"><b>Depoimento de Kassian, veterano do Conselho de Generais:</b> "Ele não trouxe armas, não trouxe escudo. Apenas entrou na arena e disse que tinha vindo cobrar uma dívida do rei. Drakion riu — e isso já é raro. Lutaram por quase uma hora. O forasteiro acertou três golpes que deveriam ter matado qualquer homem, e Drakion sequer sangrou como deveria. No fim, o desconhecido foi derrubado, mas antes de ser levado pelos guardas, gritou algo que ainda ecoa entre nós: 'Eu vi seu túmulo, Inquebrável. E ele já está vazio há tempo demais.'"</p>
+              <p>O forasteiro está preso nas masmorras de Esparta aguardando julgamento pelo Conselho de Generais, porém recusa-se a revelar seu nome ou de onde veio. Drakion, por sua vez, ordenou que ninguém tocasse no prisioneiro até que ele mesmo decida seu destino — decisão que tem gerado sussurros entre os generais mais antigos, pois o rei jamais mostrou tanta cautela diante de um oponente já derrotado.</p>
+            </div>
+          </article>
+
+          <!-- NOTÍCIA 03 · CORINTOS -->
+          <article class="news-slide" data-slide="2">
+            <div class="news-image-frame">
+              <img src="imagens/not003.png" alt="Ilustração da notícia 03" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 03</div>
+            </div>
+            <div class="news-location">Corintos</div>
+            <h3 class="news-headline">OS COFRES QUE CHORAM: DESAPARECIMENTO ABALA O CONSELHO MERCANTE</h3>
+            <p class="news-sub">Um dos cofres mais antigos guardados sob a cidade de Corintos foi encontrado aberto na manhã de terça-feira — vazio, sem qualquer sinal de arrombamento. O caso já chegou aos ouvidos de Aureon Varkas, o Senhor das Moedas, que convocou reunião de emergência do Conselho Mercante.</p>
+            <div class="news-body">
+              <p class="news-quote"><b>Depoimento de Nomarco Filias, guarda dos cofres:</b> "Eu vigiava aquela porta há doze anos, e ela nunca havia se movido sozinha. Naquela noite, ouvi um som metálico, como moedas caindo em cascata, mas quando desci não havia ninguém. A porta estava aberta, o cofre vazio, e havia um cheiro estranho, doce demais, como incenso queimado. Nenhuma moeda foi encontrada nas ruas, nos mercados, em lugar nenhum. É como se o ouro tivesse voltado para casa."</p>
+              <p>Aureon Varkas se recusou a comentar publicamente o valor exato do prejuízo, alegando apenas que "certas dívidas antigas sempre encontram um jeito de serem cobradas." Rumores nas tavernas do porto já apontam para o envolvimento do lendário Homem Sem Sombra, o assassino sem rosto que, segundo as lendas, ora trabalha para o Senhor das Moedas, ora contra ele.</p>
+            </div>
+          </article>
+
+          <!-- NOTÍCIA 04 · ATENAS -->
+          <article class="news-slide" data-slide="3">
+            <div class="news-image-frame">
+              <img src="imagens/not004.png" alt="Ilustração da notícia 04" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 04</div>
+            </div>
+            <div class="news-location">Atenas</div>
+            <h3 class="news-headline">A ESTÁTUA FALOU? PÂNICO TOMA A ASSEMBLEIA DE ATENAS</h3>
+            <p class="news-sub">Durante sessão pública da Assembleia, um cidadão interrompeu o discurso de Leônidas Asterion, o Rei das Vozes, afirmando ter ouvido a antiga estátua no centro da cidade sussurrar antes de um voto decisivo.</p>
+            <div class="news-body">
+              <p class="news-quote"><b>Depoimento de Doristo, comerciante de cerâmica:</b> "Eu estava perto da estátua esperando minha vez de falar, quando ouvi, claro como o sino do templo: 'vote conforme já foi decidido.' Olhei ao redor — ninguém próximo o suficiente para ter dito aquilo. Contei aos outros e fui chamado de louco, mas juro pelos deuses do Olimpo que aquela pedra tem uma voz."</p>
+              <p>Leônidas Asterion classificou o episódio como "fadiga e imaginação do povo", encerrando o debate com um discurso que, segundo testemunhas, "convenceu até os que discordavam minutos antes." A Assembleia aprovou a proposta por unanimidade. Nenhuma investigação foi aberta sobre a estátua.</p>
+            </div>
+          </article>
+
+          <!-- NOTÍCIA 05 · TROIA -->
+          <article class="news-slide" data-slide="4">
+            <div class="news-image-frame">
+              <img src="imagens/not005.png" alt="Ilustração da notícia 05" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 05</div>
+            </div>
+            <div class="news-location">Troia</div>
+            <h3 class="news-headline">O PRESENTE QUE NINGUÉM PEDIU: MERCADOR OFERECE ESTÁTUA DE MADEIRA AO REI PRÍAMO</h3>
+            <p class="news-sub">Um mercador estrangeiro, ainda não identificado, apresentou-se aos portões de Troia oferecendo de presente ao Rei Príamo uma estátua de madeira em forma de cavalo, "em sinal de paz entre os povos". A proposta foi recebida com desconfiança imediata pela guarda real.</p>
+            <div class="news-body">
+              <p class="news-quote"><b>Depoimento de Nestor Kallis, capitão da guarda:</b> "Ninguém aqui esquece a profecia sobre um presente que não deve ser aceito. O mercador insistiu, disse que era apenas um símbolo de boa vontade, mas seus olhos não combinavam com o sorriso. Mandamos ele embora antes mesmo de a estátua cruzar os portões."</p>
+              <p>O Rei Príamo recusou o presente e ordenou reforço na vigilância das muralhas "por precaução". O mercador desapareceu na mesma noite, e ninguém em Troia sabe seu verdadeiro nome ou de onde veio — apenas que, segundo os guardas, ele "falava grego perfeito demais para um estrangeiro."</p>
+            </div>
+          </article>
+
+          <!-- NOTÍCIA 06 · DELFOS -->
+          <article class="news-slide" data-slide="5">
+            <div class="news-image-frame">
+              <img src="imagens/not006.png" alt="Ilustração da notícia 06" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 06</div>
+            </div>
+            <div class="news-location">Delfos</div>
+            <h3 class="news-headline">PROFECIA PERDIDA: PEREGRINO ENLOUQUECE APÓS CONSULTAR O ORÁCULO DE DELFOS</h3>
+            <p class="news-sub">Um peregrino que buscava respostas sobre o futuro de sua família retornou do Templo de Apolo em estado de choque, incapaz de repetir as palavras que ouviu da sacerdotisa em transe. O caso reacendeu antigos boatos sobre a "profecia perdida" guardada pelo sacerdote Eryon Solarys.</p>
+            <div class="news-body">
+              <p class="news-quote"><b>Depoimento de Elissa de Delfos, parente do peregrino:</b> "Ele entrou andando e saiu sendo carregado. Não fala, não come direito, só repete um número: sete. Sete o quê, ninguém sabe. Fomos ao templo pedir explicações e Eryon apenas disse que 'nem toda verdade deveria ser ouvida antes da hora'."</p>
+              <p>O Templo de Apolo negou qualquer irregularidade no ritual e afirmou que o peregrino "recebeu exatamente o que buscou." Eryon Solarys não concedeu mais declarações, mas moradores locais evitam agora se aproximar da fenda sagrada sem antes deixar oferendas em dobro.</p>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="news-nav">
+          <button class="btn-pixel" type="button" onclick="prevNews()">◀ ANTERIOR</button>
+          <span id="newsCounter">1 / 6</span>
+          <button class="btn-pixel" type="button" onclick="nextNews()">PRÓXIMA ▶</button>
+        </div>
       </div>
+
+      <script>
+        (function () {
+          var slides = document.querySelectorAll('#newsGallery .news-slide');
+          var current = 0;
+          var counter = document.getElementById('newsCounter');
+          function render() {
+            slides.forEach(function (s, i) { s.classList.toggle('active', i === current); });
+            if (counter) counter.textContent = (current + 1) + ' / ' + slides.length;
+          }
+          window.nextNews = function () { current = (current + 1) % slides.length; render(); };
+          window.prevNews = function () { current = (current - 1 + slides.length) % slides.length; render(); };
+          render();
+        })();
+      </script>
     </section>
 
     <!-- ============== TALENTOS ============== -->
