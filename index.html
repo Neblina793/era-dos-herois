@@ -1,605 +1,87 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ERA DOS HERÓIS · RPG D&D 5.5 (2024) · Mitologia Grega</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10151b">
+  <title>Era dos Heróis — Portal Mitológico</title>
   <style>
-    .btn-pixel { position: relative; overflow: visible; }
-    .new-badge {
-      position: absolute;
-      top: -12px;
-      right: -10px;
-      background: #ff2b2b;
-      color: #fff;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 8px;
-      padding: 4px 6px;
-      border: 2px solid #fff5d6;
-      border-radius: 4px;
-      transform: rotate(12deg);
-      box-shadow: 0 0 6px 2px rgba(255,43,43,0.9), 0 0 14px 4px rgba(255,215,0,0.6);
-      animation: novo-pulse 1.2s infinite;
-      z-index: 20;
-      letter-spacing: 1px;
-      pointer-events: none;
-    }
-    @keyframes novo-pulse {
-      0%, 100% { transform: rotate(12deg) scale(1); box-shadow: 0 0 6px 2px rgba(255,43,43,0.9), 0 0 14px 4px rgba(255,215,0,0.6); }
-      50% { transform: rotate(12deg) scale(1.15); box-shadow: 0 0 10px 4px rgba(255,43,43,1), 0 0 20px 8px rgba(255,215,0,0.85); }
-    }
-    .status.done {
-      background: #2a2a2a;
-      color: #9a9a9a;
-      border: 2px solid #666;
-    }
-
-    /* ===== GALERIA DE NOTÍCIAS ===== */
-    .news-panel { position: relative; }
-    .news-masthead {
-      text-align:center;
-      font-family:'Press Start 2P', monospace;
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: var(--gold, #d4af37);
-      margin-bottom: 18px;
-      opacity: .85;
-    }
-    .news-gallery { position: relative; min-height: 300px; }
-    .news-slide { display: none; }
-    .news-slide.active { display: block; animation: newsFade .35s ease; }
-    @keyframes newsFade { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
-    .news-image-frame {
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; margin: 0; background: #10151b; }
+    body { overflow: hidden; }
+    #portal {
+      display: block;
       width: 100%;
-      max-width: 520px;
-      margin: 0 auto 18px;
-      border: 3px solid var(--ink, #3a2a1a);
-      background: repeating-linear-gradient(45deg,#1a1a1a,#1a1a1a 10px,#222 10px,#222 20px);
-      min-height: 220px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
+      height: 100vh;
+      height: 100dvh;
+      border: 0;
+      background: #10151b;
     }
-    .news-image-frame img { width: 100%; height: auto; display: block; }
-    .news-image-frame .placeholder-icon {
-      font-family:'Press Start 2P', monospace;
-      font-size: 10px;
-      color: var(--gold, #d4af37);
-      opacity: .6;
+    #aviso {
+      position: fixed;
+      z-index: 5;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      gap: 12px;
+      padding: 24px;
+      color: #eee5d2;
+      background: #10151b;
       text-align: center;
-      padding: 20px;
-      letter-spacing: 1px;
+      font: 16px/1.5 Georgia, serif;
     }
-    .news-location {
-      text-align:center;
-      font-size: 12px;
-      letter-spacing: 2px;
-      color:#9a9a9a;
-      margin-bottom: 6px;
-      text-transform: uppercase;
+    #aviso strong {
+      color: #d8b56a;
+      font: 700 22px Georgia, serif;
     }
-    .news-headline {
-      text-align:center;
-      color: var(--gold, #d4af37);
-      font-family:'Press Start 2P', monospace;
-      font-size: 13px;
-      line-height: 1.7;
-      margin: 6px 0 14px;
-      text-shadow: 0 0 6px rgba(212,175,55,.5);
-    }
-    .news-sub { font-style: italic; color: #cfae6a; text-align:center; margin-bottom: 16px; font-size: 14px; line-height: 1.5; }
-    .news-body p { margin: 0 0 14px; line-height: 1.75; font-size: 15px; }
-    .news-quote {
-      border-left: 3px solid var(--gold, #d4af37);
-      padding: 10px 14px;
-      font-style: italic;
-      color: #e8dcc0;
-      background: rgba(212,175,55,.06);
-      border-radius: 2px;
-    }
-    .news-quote b { color: var(--gold, #d4af37); font-style: normal; }
-    .news-nav { display:flex; align-items:center; justify-content:center; gap:20px; margin-top: 22px; flex-wrap: wrap; }
-    .news-nav span { font-family:'VT323', monospace; font-size: 20px; color:#9a9a9a; }
+    #aviso small { color: #b8ad98; }
+    .oculto { display: none !important; }
   </style>
 </head>
 <body>
-  <!-- CRT SCANLINES + VIGNETTE -->
-  <div class="crt"></div>
-  <div class="vignette"></div>
-
-  <!-- BOOT SCREEN -->
-  <div id="boot">
-    <div class="boot-inner">
-      <p class="boot-line">&gt; INSERINDO CARTUCHO...</p>
-      <p class="boot-line">&gt; CARREGANDO PERGAMINHO DO ORÁCULO...</p>
-      <p class="boot-line">&gt; CONVOCANDO MUSAS...</p>
-      <p class="boot-line blink">&gt; PRESS START</p>
-    </div>
+  <div id="aviso">
+    <strong>ERA DOS HERÓIS</strong>
+    <span>Invocando o mundo mitológico…</span>
+    <small>Se esta mensagem permanecer, confira se o arquivo <b>index-original.html</b> está na raiz do repositório.</small>
   </div>
 
-  <!-- HUD TOPO -->
-  <header class="hud">
-    <div class="hud-left">
-      <span class="hp">HP <span class="bar"><i style="width:88%"></i></span> 88/100</span>
-      <span class="mp">MP <span class="bar mp-bar"><i style="width:62%"></i></span> 62/100</span>
-    </div>
-    <div class="hud-center">★ ERA DOS HERÓIS ★</div>
-    <div class="hud-right">
-      <span>NÍVEL 5</span>
-      <span>XP 1240</span>
-      <span class="coins">◎ 320</span>
-    </div>
-  </header>
+  <iframe
+    id="portal"
+    title="Portal de Era dos Heróis"
+    src="index-original.html"
+    loading="eager"
+    allow="fullscreen"
+  ></iframe>
 
-  <!-- MENU NAVEGAÇÃO -->
-  <nav class="menu">
-    <a href="#inicio"      class="menu-item active"><span class="cursor">▶</span> INÍCIO</a>
-    <a href="#regras"      class="menu-item"><span class="cursor">▶</span> REGRAS</a>
-    <a href="#talentos"    class="menu-item"><span class="cursor">▶</span> TALENTOS</a>
-    <a href="#sessoes"     class="menu-item"><span class="cursor">▶</span> SESSÕES</a>
-    <a href="#ferramentas" class="menu-item"><span class="cursor">▶</span> FERRAMENTAS</a>
-    <a href="index2.html"  class="menu-item"><span class="cursor">▶</span> PRÓLOGO</a>
-  </nav>
+  <script>
+    (function () {
+      const frame = document.getElementById('portal');
+      const aviso = document.getElementById('aviso');
 
-  <main>
-    <!-- ============== INÍCIO ============== -->
-    <section id="inicio" class="screen">
-      <div class="title-art">
-        <!-- pixel art animado nas laterais -->
-        <div class="pixel-bg" aria-hidden="true">
-          <div class="pixel-bg-left">
-            <div class="sprite-strip sprite-strip-left">
-              <img class="px-sprite" src="imagens/hoplita.png"   alt="">
-              <img class="px-sprite" src="imagens/espada.png"    alt="">
-              <img class="px-sprite" src="imagens/escudo.png"    alt="">
-              <img class="px-sprite" src="imagens/medusa.png"    alt="">
-              <img class="px-sprite" src="imagens/hoplita.png"   alt="">
-              <img class="px-sprite" src="imagens/espada.png"    alt="">
-              <img class="px-sprite" src="imagens/escudo.png"    alt="">
-              <img class="px-sprite" src="imagens/medusa.png"    alt="">
-              <img class="px-sprite" src="imagens/D8.png"        alt="">
-              <img class="px-sprite" src="imagens/D10.png"       alt="">
-              <img class="px-sprite" src="imagens/zeus.png"       alt="">
+      frame.addEventListener('load', function () {
+        try {
+          const doc = frame.contentDocument;
+          if (!doc || !doc.head) throw new Error('Página original indisponível');
 
-            </div>
-          </div>
-          <div class="pixel-bg-right">
-            <div class="sprite-strip sprite-strip-right">
-              <img class="px-sprite" src="imagens/centauro.png"  alt="">
-              <img class="px-sprite" src="imagens/pocao.png"     alt="">
-              <img class="px-sprite" src="imagens/d20.png"       alt="">
-              <img class="px-sprite" src="imagens/atena.png"     alt="">
-              <img class="px-sprite" src="imagens/centauro.png"  alt="">
-              <img class="px-sprite" src="imagens/pocao.png"     alt="">
-              <img class="px-sprite" src="imagens/D4.png"        alt="">
-              <img class="px-sprite" src="imagens/atena.png"     alt="">
-              <img class="px-sprite" src="imagens/D6.png"        alt="">
-              <img class="px-sprite" src="imagens/D12.png"       alt="">
-              <img class="px-sprite" src="imagens/pegaso.png"    alt="">
-
-            </div>
-          </div>
-        </div>
-
-        <h2 class="subtitle" style="color:var(--gold);position:relative;z-index:2">~ BEM VINDOS ~</h2>
-        <h1 class="game-title">
-          <span class="t-line t1">ERA DOS</span>
-          <span class="t-line t2 glow">HERÓIS</span>
-        </h1>
-        <p class="subtitle">~ um mundo onde os deuses caminham entre mortais ~</p>
-        <div class="d20-wrap">
-          <div class="d20" aria-label="dado d20">
-            <div class="d20-face">20</div>
-          </div>
-        </div>
-        <div class="press-start blink">PRESS START</div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-title">▼ PRÓLOGO ▼</div>
-        <p class="typewriter">Explore um mundo onde os deuses caminham entre mortais. Baseado no sistema D&amp;D 5.5 (2024), com mecânicas únicas e ambientação épica na Grécia Mitológica. Crie seu herói, escolha sua raça, ascenda à grandeza e que os deuses guiem seus dados.</p>
-        <div class="cta-row">
-          <a href="ficha_personagem.html"   class="btn-pixel">⚔ CRIAR HERÓI</a>
-          <a href="Raça.html"               class="btn-pixel">☉ RAÇAS</a>
-          <a href="ascensao.html"           class="btn-pixel">★ ASCENSÃO</a>
-          <a href="item.html"               class="btn-pixel">◈ ITENS</a>
-          <a href="Taverna.html"            class="btn-pixel">♨ TAVERNA</a>
-          <a href="divindades.html"         class="btn-pixel">☷ HQ'S</a>
-          <a href="ferreiro.html"           class="btn-pixel">⚒ FERREIRO</a>
-          <a href="visualizar_mapa.html"    class="btn-pixel">▣ MAPAS</a>
-          <a href="https://neblina793.github.io/MundoAbandonado/" class="btn-pixel">✦ MUNDO ABANDONADO<span class="new-badge">NOVO!</span></a>
-          <a href="GPSMitologico.html"      class="btn-pixel ghost">⌖ GPS MITOLÓGICO</a>
-          <a href="cardgame.html"      class="btn-pixel ghost">CARD GAME</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============== REGRAS ============== -->
-    <section id="regras" class="screen">
-      <h2 class="screen-title">▣ INFORMAÇÕES DO SISTEMA ▣</h2>
-
-      <div class="lore-grid">
-        <article class="card-pixel">
-          <header>▼ SISTEMA</header>
-          <p><b style="color:var(--gold)">BASE REGRADA</b><br>Utilizamos a estrutura do D&amp;D 5.5 (2024).</p>
-        </article>
-        <article class="card-pixel">
-          <header>▼ PONTOS BASE</header>
-          <p><b style="color:var(--gold)">ATRIBUTOS</b><br>Distribuição padrão de Pontos Base: 16, 16, 14, 12, 10, 10.</p>
-        </article>
-        <article class="card-pixel">
-          <header>▼ ESTADO</header>
-          <p><b style="color:var(--gold)">TEMPORADA</b><br>Rebute da 1ª Temporada.</p>
-        </article>
-        <article class="card-pixel">
-          <header>▼ MITOLOGIA</header>
-          <p><b style="color:var(--gold)">CENÁRIO</b><br>Ambientação focada na Grécia Mitológica.</p>
-        </article>
-      </div>
-
-      <!-- NOTÍCIAS DA SEMANA -->
-      <div class="panel news-panel" style="margin-top:32px">
-        <div class="panel-title">▼ NOTÍCIAS DA SEMANA ▼</div>
-        <p class="news-masthead">✦ O ARAUTO DE KRUMA ✦ Edição Semanal do Mundo Mitológico</p>
-
-        <div class="news-gallery" id="newsGallery">
-
-          <!-- NOTÍCIA 01 · CORINTOS -->
-          <article class="news-slide active" data-slide="0">
-            <div class="news-image-frame">
-              <img src="imagens/not000.png" alt="Ilustração da notícia 01" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 01</div>
-            </div>
-            <div class="news-location">Corintos</div>
-            <h3 class="news-headline">EVOLUÇÃO OU FÚRIA DE POSEIDON?</h3>
-            <p class="news-sub">Em Corintos, peixes começaram a aparecer mortos ao longo da baía do porto fluvial que liga a cidade a Creta. Moradores locais afirmam que o peixe está contaminado e impróprio para consumo. Diante da escassez, alguns pescadores arriscaram-se além da baía, rumo ao mar aberto — mas poucos retornaram.</p>
-            <div class="news-body">
-              <p class="news-quote"><b>Depoimento de Doristas, pescador:</b> "Eu estava lá, vi com meus próprios olhos uma lula gigante, com uma gosma preta grudada em seus tentáculos! Ela virou nosso barco e engoliu meus amigos um a um. Não houve tempo nem para gritar por socorro."</p>
-              <p class="news-quote"><b>Depoimento de Kalyx, pescador sobrevivente:</b> "Era uma tartaruga gigante, com cabeça de Hidra, coberta daquela mesma gosma preta. Vejam — ela arrancou meu braço com uma única mordida. Ainda ouço o barulho dos meus ossos quebrando."</p>
-              <p class="news-quote"><b>Depoimento do Sumo Sacerdote Filemon, do Templo de Poseidon:</b> "Vejam a verdade: os Deuses estão furiosos com a promiscuidade desta cidade, e estão enviando criaturas para nos castigar!"</p>
-              <p class="news-quote"><b>Depoimento da Sacerdotisa Melantha, vidente do templo:</b> "Poseidon está em fúria! Eu o vi em minhas visões — ele continuará mandando mais e mais pragas sobre nossas águas. Devemos erguer uma estátua gigante em sua homenagem, ou sofreremos ainda mais a fúria do Senhor dos Oceanos."</p>
-              <p>O comércio local encontra-se abalado, pois a maior movimentação comercial da baía vinha justamente da venda de peixes. Diante da crise, alguns comerciantes já estudam a possibilidade de abrir uma nova rota marítima, enquanto outros defendem a construção imediata da estátua em homenagem ao deus dos mares, na esperança de aplacar sua fúria antes que novas criaturas emerjam das profundezas.</p>
-            </div>
-          </article>
-
-          <!-- NOTÍCIA 02 · KRUMA -->
-          <article class="news-slide" data-slide="1">
-            <div class="news-image-frame">
-              <img src="imagens/not001.png" alt="Ilustração da notícia 02" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 02</div>
-            </div>
-            <div class="news-location">Kruma</div>
-            <h3 class="news-headline">O PERVERTIDO DE OLHOS AMARELOS DE KRUMA</h3>
-            <p class="news-sub">A mansão do Doutor Xantos, um dos advogados mais brilhantes de Kruma, foi assaltada na madrugada de ontem, tendo como única testemunha sua esposa, a Senhora Drixia, que concedeu depoimento a este arauto sobre o terrível ocorrido.</p>
-            <div class="news-body">
-              <p class="news-quote"><b>Depoimento da Senhora Drixia:</b> "Eu estava no corredor quando, de repente, ouvi um barulho vindo da Biblioteca. Chamei os seguranças imediatamente, e eles entraram no cômodo — mas o terrível assaltante já estava escondido, à espreita, esperando a oportunidade de escapar. Quando os guardas entraram, ele empurrou a estante de livros sobre eles e avançou contra mim. Vejam a marca da mão dele em meu rosto! Aquele ser asqueroso possuía chifres e olhos amarelos — infelizmente não consegui ver seu rosto, pois o Pervertido usava uma calcinha como máscara. E, como se não bastasse, era repugnante: carregava um rato sobre o ombro."</p>
-              <p>O Doutor Xantos evitou dar depoimentos, alegando estar profundamente abalado — o assaltante marcara o rosto de sua amada esposa. Ainda assim, o advogado já acionou as autoridades de Kruma e convocou alguns de seus aliados, uma vez que o criminoso, além de ferir sua esposa, também roubou documentos de grande importância.</p>
-              <p>Atualmente, ele oferece a recompensa de <b class="news-quote" style="border:none;background:none;padding:0;font-style:normal;color:var(--gold,#d4af37)">1.500 dracmas</b> pela cabeça do assaltante — vivo ou morto.</p>
-            </div>
-          </article>
-
-          <!-- NOTÍCIA 03 · ESPARTA -->
-          <article class="news-slide" data-slide="2">
-            <div class="news-image-frame">
-              <img src="imagens/not002.png" alt="Ilustração da notícia 03" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 03</div>
-            </div>
-            <div class="news-location">Esparta</div>
-            <h3 class="news-headline">SANGUE NA ARENA: DESCONHECIDO DESAFIA DRAKION, O INQUEBRÁVEL</h3>
-            <p class="news-sub">Nos campos de treino ao sul de Creta, um forasteiro encapuzado surgiu na arena espartana e desafiou publicamente o Rei Drakion para um duelo até a submissão — algo que ninguém ousava fazer há quase uma década.</p>
-            <div class="news-body">
-              <p class="news-quote"><b>Depoimento de Kassian, veterano do Conselho de Generais:</b> "Ele não trouxe armas, não trouxe escudo. Apenas entrou na arena e disse que tinha vindo cobrar uma dívida do rei. Drakion riu — e isso já é raro. Lutaram por quase uma hora. O forasteiro acertou três golpes que deveriam ter matado qualquer homem, e Drakion sequer sangrou como deveria. No fim, o desconhecido foi derrubado, mas antes de ser levado pelos guardas, gritou algo que ainda ecoa entre nós: 'Eu vi seu túmulo, Inquebrável. E ele já está vazio há tempo demais.'"</p>
-              <p>O forasteiro está preso nas masmorras de Esparta aguardando julgamento pelo Conselho de Generais, porém recusa-se a revelar seu nome ou de onde veio. Drakion, por sua vez, ordenou que ninguém tocasse no prisioneiro até que ele mesmo decida seu destino — decisão que tem gerado sussurros entre os generais mais antigos, pois o rei jamais mostrou tanta cautela diante de um oponente já derrotado.</p>
-            </div>
-          </article>
-
-          <!-- NOTÍCIA 04 · CORINTOS -->
-          <article class="news-slide" data-slide="3">
-            <div class="news-image-frame">
-              <img src="imagens/not003.png" alt="Ilustração da notícia 04" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 04</div>
-            </div>
-            <div class="news-location">Corintos</div>
-            <h3 class="news-headline">OS COFRES QUE CHORAM: DESAPARECIMENTO ABALA O CONSELHO MERCANTE</h3>
-            <p class="news-sub">Um dos cofres mais antigos guardados sob a cidade de Corintos foi encontrado aberto na manhã de terça-feira — vazio, sem qualquer sinal de arrombamento. O caso já chegou aos ouvidos de Aureon Varkas, o Senhor das Moedas, que convocou reunião de emergência do Conselho Mercante.</p>
-            <div class="news-body">
-              <p class="news-quote"><b>Depoimento de Nomarco Filias, guarda dos cofres:</b> "Eu vigiava aquela porta há doze anos, e ela nunca havia se movido sozinha. Naquela noite, ouvi um som metálico, como moedas caindo em cascata, mas quando desci não havia ninguém. A porta estava aberta, o cofre vazio, e havia um cheiro estranho, doce demais, como incenso queimado. Nenhuma moeda foi encontrada nas ruas, nos mercados, em lugar nenhum. É como se o ouro tivesse voltado para casa."</p>
-              <p>Aureon Varkas se recusou a comentar publicamente o valor exato do prejuízo, alegando apenas que "certas dívidas antigas sempre encontram um jeito de serem cobradas." Rumores nas tavernas do porto já apontam para o envolvimento do lendário Homem Sem Sombra, o assassino sem rosto que, segundo as lendas, ora trabalha para o Senhor das Moedas, ora contra ele.</p>
-            </div>
-          </article>
-
-          <!-- NOTÍCIA 05 · ATENAS -->
-          <article class="news-slide" data-slide="4">
-            <div class="news-image-frame">
-              <img src="imagens/not004.png" alt="Ilustração da notícia 05" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 05</div>
-            </div>
-            <div class="news-location">Atenas</div>
-            <h3 class="news-headline">A ESTÁTUA FALOU? PÂNICO TOMA A ASSEMBLEIA DE ATENAS</h3>
-            <p class="news-sub">Durante sessão pública da Assembleia, um cidadão interrompeu o discurso de Leônidas Asterion, o Rei das Vozes, afirmando ter ouvido a antiga estátua no centro da cidade sussurrar antes de um voto decisivo.</p>
-            <div class="news-body">
-              <p class="news-quote"><b>Depoimento de Doristo, comerciante de cerâmica:</b> "Eu estava perto da estátua esperando minha vez de falar, quando ouvi, claro como o sino do templo: 'vote conforme já foi decidido.' Olhei ao redor — ninguém próximo o suficiente para ter dito aquilo. Contei aos outros e fui chamado de louco, mas juro pelos deuses do Olimpo que aquela pedra tem uma voz."</p>
-              <p>Leônidas Asterion classificou o episódio como "fadiga e imaginação do povo", encerrando o debate com um discurso que, segundo testemunhas, "convenceu até os que discordavam minutos antes." A Assembleia aprovou a proposta por unanimidade. Nenhuma investigação foi aberta sobre a estátua.</p>
-            </div>
-          </article>
-
-          <!-- NOTÍCIA 06 · TROIA -->
-          <article class="news-slide" data-slide="5">
-            <div class="news-image-frame">
-              <img src="imagens/not005.png" alt="Ilustração da notícia 06" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 06</div>
-            </div>
-            <div class="news-location">Troia</div>
-            <h3 class="news-headline">O PRESENTE QUE NINGUÉM PEDIU: MERCADOR OFERECE ESTÁTUA DE MADEIRA AO REI PRÍAMO</h3>
-            <p class="news-sub">Um mercador estrangeiro, ainda não identificado, apresentou-se aos portões de Troia oferecendo de presente ao Rei Príamo uma estátua de madeira em forma de cavalo, "em sinal de paz entre os povos". A proposta foi recebida com desconfiança imediata pela guarda real.</p>
-            <div class="news-body">
-              <p class="news-quote"><b>Depoimento de Nestor Kallis, capitão da guarda:</b> "Ninguém aqui esquece a profecia sobre um presente que não deve ser aceito. O mercador insistiu, disse que era apenas um símbolo de boa vontade, mas seus olhos não combinavam com o sorriso. Mandamos ele embora antes mesmo de a estátua cruzar os portões."</p>
-              <p>O Rei Príamo recusou o presente e ordenou reforço na vigilância das muralhas "por precaução". O mercador desapareceu na mesma noite, e ninguém em Troia sabe seu verdadeiro nome ou de onde veio — apenas que, segundo os guardas, ele "falava grego perfeito demais para um estrangeiro."</p>
-            </div>
-          </article>
-
-          <!-- NOTÍCIA 07 · DELFOS -->
-          <article class="news-slide" data-slide="6">
-            <div class="news-image-frame">
-              <img src="imagens/not006.png" alt="Ilustração da notícia 07" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-              <div class="placeholder-icon" style="display:none">🗞<br>IMAGEM<br>NOTÍCIA 07</div>
-            </div>
-            <div class="news-location">Delfos</div>
-            <h3 class="news-headline">PROFECIA PERDIDA: PEREGRINO ENLOUQUECE APÓS CONSULTAR O ORÁCULO DE DELFOS</h3>
-            <p class="news-sub">Um peregrino que buscava respostas sobre o futuro de sua família retornou do Templo de Apolo em estado de choque, incapaz de repetir as palavras que ouviu da sacerdotisa em transe. O caso reacendeu antigos boatos sobre a "profecia perdida" guardada pelo sacerdote Eryon Solarys.</p>
-            <div class="news-body">
-              <p class="news-quote"><b>Depoimento de Elissa de Delfos, parente do peregrino:</b> "Ele entrou andando e saiu sendo carregado. Não fala, não come direito, só repete um número: sete. Sete o quê, ninguém sabe. Fomos ao templo pedir explicações e Eryon apenas disse que 'nem toda verdade deveria ser ouvida antes da hora'."</p>
-              <p>O Templo de Apolo negou qualquer irregularidade no ritual e afirmou que o peregrino "recebeu exatamente o que buscou." Eryon Solarys não concedeu mais declarações, mas moradores locais evitam agora se aproximar da fenda sagrada sem antes deixar oferendas em dobro.</p>
-            </div>
-          </article>
-
-        </div>
-
-        <div class="news-nav">
-          <button class="btn-pixel" type="button" onclick="prevNews()">◀ ANTERIOR</button>
-          <span id="newsCounter">1 / 7</span>
-          <button class="btn-pixel" type="button" onclick="nextNews()">PRÓXIMA ▶</button>
-        </div>
-      </div>
-
-      <script>
-        (function () {
-          var slides = document.querySelectorAll('#newsGallery .news-slide');
-          var current = 0;
-          var counter = document.getElementById('newsCounter');
-          function render() {
-            slides.forEach(function (s, i) { s.classList.toggle('active', i === current); });
-            if (counter) counter.textContent = (current + 1) + ' / ' + slides.length;
+          // Carrega a camada mitológica depois dos estilos originais,
+          // sem apagar os estilos, textos ou scripts já existentes.
+          if (!doc.querySelector('link[data-camada-mitologica]')) {
+            const camada = doc.createElement('link');
+            camada.rel = 'stylesheet';
+            camada.href = 'styles-mitologico.css';
+            camada.dataset.camadaMitologica = 'true';
+            doc.head.appendChild(camada);
           }
-          window.nextNews = function () { current = (current + 1) % slides.length; render(); };
-          window.prevNews = function () { current = (current - 1 + slides.length) % slides.length; render(); };
-          render();
-        })();
-      </script>
-    </section>
 
-    <!-- ============== TALENTOS ============== -->
-    <section id="talentos" class="screen">
-      <h2 class="screen-title">▣ TALENTOS ▣</h2>
-      <p class="hint">▲▼ navegue · ⓐ leia · talentos do D&amp;D 5.5 (2024)</p>
-
-      <h3 style="color:var(--gold);text-align:center;margin:10px 0 14px;font-size:12px;letter-spacing:2px">⚔ TALENTOS DE COMBATE ⚔</h3>
-      <div class="hero-grid">
-        <article class="hero-card" data-class="atacante">
-          <div class="talent-icon"><img src="imagens/atacante.png" alt="Atacante Selvagem"></div>
-          <h3>ATACANTE SELVAGEM</h3>
-          <p class="hero-sub">Combate · Pré: Nenhum</p>
-          <p class="lore">Sempre que você rola um dado de dano para ataques com armas no seu turno, pode rolar novamente se o resultado for 1 (deve usar a nova rolagem).</p>
-        </article>
-
-        <article class="hero-card" data-class="duelista">
-          <div class="talent-icon"><img src="imagens/duelista.png" alt="Duelista Defensivo"></div>
-          <h3>DUELISTA DEFENSIVO</h3>
-          <p class="hero-sub">Combate · Pré: DEX 13+</p>
-          <p class="lore">Empunhando arma de acuidade na qual seja proficiente, quando atingido por ataque corpo-a-corpo, use sua reação para somar o bônus de proficiência à CA contra esse ataque.</p>
-        </article>
-
-        <article class="hero-card" data-class="armadura">
-          <div class="talent-icon"><img src="imagens/armadura.png" alt="Mestre em Armaduras Pesadas"></div>
-          <h3>MESTRE EM ARMADURAS PESADAS</h3>
-          <p class="hero-sub">Geral · Pré: Nível 4+ · Treino em Armadura Pesada</p>
-          <p class="lore">+1 em FOR ou CON (máx 20). Vestindo armadura pesada, dano Contundente, Cortante e Perfurante recebido é reduzido em valor igual ao seu Bônus de Proficiência.</p>
-        </article>
-      </div>
-
-      <h3 style="color:var(--gold);text-align:center;margin:24px 0 14px;font-size:12px;letter-spacing:2px">✦ SUPORTE E MAGIA ✦</h3>
-      <div class="hero-grid">
-        <article class="hero-card" data-class="atirador">
-          <div class="talent-icon"><img src="imagens/atirador.png" alt="Atirador de Magia"></div>
-          <h3>ATIRADOR DE MAGIA</h3>
-          <p class="hero-sub">Magia · Pré: Conjurar 1+ magia</p>
-          <p class="lore">Magias com ataque têm alcance dobrado e ignoram meia/três-quartos de cobertura. Aprende um truque com ataque (bardo, bruxo, clérigo, druida, feiticeiro ou mago).</p>
-        </article>
-
-        <article class="hero-card" data-class="belico">
-          <div class="talent-icon"><img src="imagens/belico.png" alt="Conjurador Bélico"></div>
-          <h3>CONJURADOR BÉLICO</h3>
-          <p class="hero-sub">Geral · Pré: Nível 4+ · Conjuração</p>
-          <p class="lore">+1 em INT/SAB/CAR. Vantagem em CON para Concentração. Pode trocar Ataque de Oportunidade por magia de 1 ação contra o alvo. Realiza componentes somáticos com armas/escudo nas mãos.</p>
-        </article>
-
-        <article class="hero-card" data-class="sortudo">
-          <div class="talent-icon"><img src="imagens/sortudo.png" alt="Sortudo"></div>
-          <h3>SORTUDO</h3>
-          <p class="hero-sub">Geral · Pré: Nenhum</p>
-          <p class="lore">Você possui Pontos de Sorte iguais ao seu Bônus de Proficiência. Recupera todos em um Descanso Longo. Que as Moiras estejam contigo.</p>
-        </article>
-      </div>
-
-      <!-- MESA DE ROLAGEM -->
-      <div class="dice-station panel">
-        <div class="panel-title">▼ MESA DE ROLAGEM ▼</div>
-        <p class="hint">Escolha seu dado, herói. Que as Moiras decidam o destino.</p>
-        <div class="dice-row">
-          <button class="dice-btn"  data-sides="4"><span class="d-shape d4">4</span><b>D4</b></button>
-          <button class="dice-btn"  data-sides="6"><span class="d-shape d6">6</span><b>D6</b></button>
-          <button class="dice-btn"  data-sides="8"><span class="d-shape d8">8</span><b>D8</b></button>
-          <button class="dice-btn"  data-sides="10"><span class="d-shape d10">10</span><b>D10</b></button>
-          <button class="dice-btn"  data-sides="12"><span class="d-shape d12">12</span><b>D12</b></button>
-          <button class="dice-btn"  data-sides="20"><span class="d-shape d20s">20</span><b>D20</b></button>
-          <button class="dice-btn"  data-sides="100"><span class="d-shape d100">%</span><b>D100</b></button>
-        </div>
-        <div class="roller">
-          <div id="roll-result" class="roll-result">--</div>
-          <div id="roll-msg" class="roll-msg">aguardando rolagem...</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============== SESSÕES ============== -->
-    <section id="sessoes" class="screen">
-      <h2 class="screen-title">▣ CALENDÁRIO DE SESSÕES ▣</h2>
-
-      <ul class="session-list">
-        <li class="session">
-          <span class="session-date">07<br><b>MAI</b></span>
-          <div class="session-body">
-            <h3>SESSÃO 01 · A FULGA DE KARCERUS</h3>
-            <p>Os heróis tentam escapar do destino cruel entre ficar e enfrentar a temivel fera que esta destruindo o coliseu de Karcerus.</p>
-            <span class="tag">ARCO: ESCAPANDO DO INFERNO</span>
-          </div>
-          <span class="status done">✔ CONCLUÍDA</span>
-        </li>
-        <li class="session">
-          <span class="session-date">21<br><b>JUN</b></span>
-          <div class="session-body">
-            <h3>SESSÃO 02 · A FULGA DE KARCERUS PARTE 02</h3>
-            <p>Os herois conseguiram fugir do coliseu porem alguns de seus aliados acabaram ficando para tras. Eles agora se encontram em uma caverna abandona em baixo do coliseu. o que sera que os aguarda?</p>
-            <span class="tag">DUNGEON · 14:00hs</span>
-          </div>
-          <span class="status done">✔ CONCLUÍDA</span>
-        </li>
-        <li class="session">
-          <span class="session-date">17<br><b>JUL</b></span>
-          <div class="session-body">
-            <h3>SESSÃO 03 · AS PORTAS DE KRUMA</h3>
-            <p>Sob um céu que ainda cheira a sal e fumaça de forja, três desconhecidos cruzam os portões invisíveis da cidade-estado de Kruma pela primeira vez. Não se conhecem — ainda. O destino, porém, já teceu os fios que os uniram nesta noite. Nas ruas de pedra escura, entre o brilho das tochas e o sussurro dos mercadores, uma nova lenda começa a ser escrita. Os deuses observam em silêncio... e as Moiras já apostam quem sobreviverá até o amanhecer.</p>
-            <span class="tag">ARCO: O INÍCIO DA LENDA · 18:00hs · GRUPO DE 3 HERÓIS</span>
-          </div>
-          <span class="status done">✔ CONCLUÍDA</span>
-        </li>
-        <li class="session">
-          <span class="session-date">18<br><b>JUL</b></span>
-          <div class="session-body">
-            <h3>SESSÃO 04 · A FUGA DE KARCERUS</h3>
-            <p>Cinco almas condenadas despertam acorrentadas nas profundezas da ilha-prisão de Karcerus, onde o mar nunca dorme e os gritos dos esquecidos ecoam pelas muralhas encharcadas. Não há julgamento, não há clemência — apenas a escuridão, os carcereiros implacáveis e uma única certeza: fugir ou apodrecer entre as rochas. Enquanto a maré sobe e os corredores se fecham como fauces de uma besta, o grupo terá que decidir até onde está disposto a ir por sua liberdade.</p>
-            <span class="tag">ARCO: ESCAPANDO DO INFERNO · 18:00hs · GRUPO DE 5 HERÓIS</span>
-          </div>
-          <span class="status done">✔ CONCLUÍDA</span>
-        </li>
-        <li class="session">
-          <span class="session-date">22<br><b>JUL</b></span>
-          <div class="session-body">
-            <h3>SESSÃO 05 · O SOLSTÍCIO DE DIONÍSIO</h3>
-            <p>Na noite mais longa do ano, os tambores de Dionísio ecoam pelos vinhedos sagrados, e o vinho corre como sangue divino pelas ruas enfeitadas com hera e uvas maduras. Três heróis são convocados por um chamado que não podem ignorar — um perfume doce e inebriante que carrega promessas e perigos em igual medida. Diz a lenda que, nesta noite, o véu entre mortais e o divino se afina, e aqueles que ousam dançar sob a lua do Solstício podem tanto receber bênçãos quanto atrair a fúria das Ménades. Que os deuses guiem seus dados, pois o vinho já foi derramado e o ritual está prestes a começar.</p>
-            <span class="tag">ARCO: O SOLSTÍCIO DE DIONÍSIO · 18:00hs · GRUPO DE 3 HERÓIS</span>
-          </div>
-          <span class="status open">▶ ABERTA</span>
-        </li>
-        <li class="session">
-          <span class="session-date">25<br><b>JUL</b></span>
-          <div class="session-body">
-            <h3>SESSÃO 06 · A FUGA DE KARCERUS PARTE 02</h3>
-            <p>A maré subiu, mas os corredores encharcados de Karcerus ainda escondem algo pior do que carcereiros. No coração das profundezas, um guardião nascido do próprio sofrimento da ilha-prisão desperta para barrar o caminho dos fugitivos. Não há mais tempo para hesitar — entre as correntes quebradas e o eco de gritos antigos, os quatro sobreviventes terão que enfrentar a besta que guarda a última porta antes da liberdade... ou da perdição.</p>
-            <span class="tag">SUB-BOSS · ARCO: ESCAPANDO DO INFERNO · 18:00hs · GRUPO DE 4 HERÓIS</span>
-          </div>
-          <span class="status done">✔ CONCLUÍDA</span>
-        </li>
-        <li class="session">
-          <span class="session-date">09<br><b>AGO</b></span>
-          <div class="session-body">
-            <h3>SESSÃO 07 · BEM VINDO A CRETA</h3>
-            <p>Os portões marítimos de Creta recebem os heróis sob um céu carregado de gaivotas inquietas e um cheiro estranho de peixe podre que paira sobre o cais. Mercadores sussurram entre si, evitando os olhos dos recém-chegados, enquanto pescadores fitam o horizonte com o medo grudado no rosto. Nos últimos dias, corpos de peixes cobrem a maré baixa, e histórias de tentáculos negros, cascos partidos e uma tartaruga com cabeça de Hidra correm de taverna em taverna. Diz-se que o próprio Poseidon voltou seu olhar furioso para estas águas — e que poucos dos que ousaram cruzar a baía voltaram para contar a história. É neste porto amaldiçoado, entre redes rasgadas e sacerdotes que já discutem erguer uma estátua para aplacar o Senhor dos Oceanos, que a jornada dos heróis em Creta está prestes a começar.</p>
-            <span class="tag">ARCO: A FÚRIA DE POSEIDON · 18:00hs · GRUPO DE 4 HERÓIS</span>
-          </div>
-          <span class="status open">▶ ABERTA</span>
-        </li>
-        <li class="session">
-          <span class="session-date">??<br><b>???</b></span>
-          <div class="session-body">
-            <h3>SESSÃO ??? · ????</h3>
-            <p>Reservado para o boss da Campanha</p>
-            <span class="tag">BOSS · CAMPANHA</span>
-          </div>
-          <span class="status locked">✖ BLOQUEADA</span>
-        </li>
-      </ul>
-
-      <div class="panel">
-        <div class="panel-title">▼ INFORMAÇÕES DA MESA ▼</div>
-        <div class="info-grid">
-          <div><b>SISTEMA</b><br>D&amp;D 5.5 (2024)</div>
-          <div><b>MESTRE</b><br>Evandro Neto de Oliveira</div>
-          <div><b>JOGADORES</b><br>4 / 5 (1 vaga!)</div>
-          <div><b>PLATAFORMA</b><br>VTT + Presencial</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============== FERRAMENTAS ============== -->
-    <section id="ferramentas" class="screen">
-      <h2 class="screen-title">▣ FERRAMENTAS DE JOGO ▣</h2>
-
-      <ul class="session-list">
-        <li class="session">
-          <span class="session-date">◈<br><b>FICHA</b></span>
-          <div class="session-body">
-            <h3>FICHA ONLINE</h3>
-            <p>Gerencie seus status e atributos em tempo real. Ferramenta oficial da campanha.</p>
-            <span class="tag">SAVE AUTOMÁTICO</span>
-          </div>
-          <a href="ficha_personagem.html" class="status open">▶ ACESSAR</a>
-        </li>
-        <li class="session">
-          <span class="session-date">▣<br><b>VTT</b></span>
-          <div class="session-body">
-            <h3>MAPA VIRTUAL</h3>
-            <p>Sistema de mapa com Fog of War e grid dinâmico. Servido na rede local do Mestre.</p>
-            <span class="tag">FOG OF WAR · GRID</span>
-          </div>
-          <a href="http://192.168.1.101:3333" class="status open">▶ ACESSAR</a>
-        </li>
-        <li class="session">
-          <span class="session-date">✎<br><b>BETA</b></span>
-          <div class="session-body">
-            <h3>FICHA 2.0</h3>
-            <p>Criador de fichas em fase de teste. Use por sua conta e risco, herói.</p>
-            <span class="tag">EM TESTES</span>
-          </div>
-          <a href="https://neblina793.github.io/apks/RPG_ficha.html" class="status soon">▶ TESTE</a>
-        </li>
-      </ul>
-
-      <div class="panel">
-        <div class="panel-title">▼ INFORMAÇÕES DA MESA ▼</div>
-        <div class="info-grid">
-          <div><b>SISTEMA</b><br>D&amp;D 5.5 (2024)</div>
-          <div><b>PONTOS BASE</b><br>16,16,14,12,10,10</div>
-          <div><b>TEMPORADA</b><br>Rebute da 1ª</div>
-          <div><b>CENÁRIO</b><br>Grécia Mitológica</div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <p>★ ERA DOS HERÓIS ★ · "que os deuses guiem seus dados"</p>
-    <p class="copyleft">
-      Criador: Evandro Neto de Oliveira · WhatsApp: (22) 9 9727 3243<br>
-      © 2026 Era dos Heróis · Todos os direitos reservados.
-    </p>
-  </footer>
-
-  <script src="script.js"></script>
+          doc.documentElement.style.scrollBehavior = 'smooth';
+          aviso.classList.add('oculto');
+        } catch (erro) {
+          aviso.innerHTML =
+            '<strong>Não foi possível carregar o portal</strong>' +
+            '<span>Confira se <b>index-original.html</b> e <b>styles-mitologico.css</b> estão na raiz do repositório.</span>';
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
