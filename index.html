@@ -738,7 +738,7 @@
           <span class="session-date">28<br><b>NOV</b></span>
           <div class="session-body">
             <h3>SESSÃO 08 · PRÓXIMA SESSÃO</h3>
-            <p>Os heróis se reencontram após o salto temporal de dois anos. O próximo capítulo da campanha começa aqui.</p>
+            <p>Sessão reservada para continuar a campanha após o salto temporal de dois anos.</p>
             <span class="tag">28/11/2026 · 18:00 · PRÓXIMA SESSÃO</span>
           </div>
           <span class="status soon">◆ AGENDADA</span>
@@ -860,12 +860,22 @@
     const triangles=[[0,1,8],[1,2,8],[2,3,8],[3,4,8],[4,5,8],[5,6,8],[6,7,8],[7,0,8]];
     return '<svg viewBox="0 0 160 140" role="img" aria-label="D8 em forma de octaedro">'+triangles.map((t,i)=>polygon(t.map(k=>v[k].join(',')).join(' '),i)).join('')+'<text class="die-mark" x="80" y="73">D8</text></svg>';
   }
+  function dodecahedron() {
+    const outer=[[80,5],[145,52],[120,132],[40,132],[15,52]];
+    const inner=[[80,38],[111,61],[99,98],[61,98],[49,61]];
+    let faces=polygon(inner.map(p=>p.join(',')).join(' '),0);
+    for(let i=0;i<5;i++){
+      const j=(i+1)%5;
+      faces+=polygon([outer[i],outer[j],inner[j],inner[i]].map(p=>p.join(',')).join(' '),i+1);
+    }
+    return '<svg viewBox="0 0 160 140" role="img" aria-label="D12 em forma de dodecaedro">'+faces+'<text class="die-mark" x="80" y="70">D12</text></svg>';
+  }
   function renderDie(sides) {
     if (sides===6) return cube();
     if (sides===8) return octahedron();
     if (sides===4) return regularDie(3,'D4');
     if (sides===10) return regularDie(10,'D10');
-    if (sides===12) return regularDie(12,'D12');
+    if (sides===12) return dodecahedron();
     if (sides===20) return regularDie(20,'D20');
     return regularDie(10,'%');
   }
