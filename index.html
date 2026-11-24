@@ -268,9 +268,55 @@
     *,*:before,*:after { animation-duration:.01ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; transition:none!important; }
   }
 
-  </style>
+  
+  /* FUNDO CINEMATOGRÁFICO EM VÍDEO — castelo medieval em floresta */
+  html, body { background:#0b1116!important; }
+  body { position:relative; isolation:isolate; background:transparent!important; }
+  body::before {
+    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:linear-gradient(180deg,rgba(5,10,15,.58),rgba(5,10,15,.82) 48%,#0b1116 100%);
+  }
+  .portal-bg-video {
+    position:fixed; inset:0; z-index:-2; width:100%; height:100%;
+    object-fit:cover; object-position:center; opacity:.48; pointer-events:none;
+  }
+  .title-art {
+    background:linear-gradient(180deg,rgba(6,11,16,.12),rgba(6,11,16,.5) 45%,rgba(6,11,16,.94))!important;
+  }
+  @media(max-width:760px) { .portal-bg-video { opacity:.32; } }
+  @media(prefers-reduced-motion:reduce) { .portal-bg-video { display:none!important; } }
+
+  /* DADOS FACETADOS: cada formato usa uma silhueta própria */
+  .die-visual { width:124px; height:112px; margin:12px auto 8px; perspective:700px; }
+  .die-visual svg {
+    width:100%; height:100%; overflow:visible;
+    filter:drop-shadow(0 9px 12px rgba(0,0,0,.72));
+    transform-style:preserve-3d;
+  }
+  .die-visual.rolling svg { animation:die-tumble 1.28s cubic-bezier(.18,.72,.22,1) both; }
+  .die-visual.settled svg { animation:die-settle .22s ease-out both; }
+  .die-facet { stroke:#f1d38f; stroke-width:2.2; stroke-linejoin:round; }
+  .die-mark {
+    fill:#fff0c6; font:700 15px Cinzel,Georgia,serif;
+    text-anchor:middle; dominant-baseline:middle;
+    paint-order:stroke; stroke:rgba(38,25,13,.8); stroke-width:2px;
+  }
+  @keyframes die-tumble {
+    0% { transform:translate3d(0,-25px,0) rotateX(0) rotateY(0) rotateZ(0) scale(.72); }
+    22% { transform:translate3d(20px,-34px,0) rotateX(220deg) rotateY(170deg) rotateZ(115deg) scale(1.12); }
+    48% { transform:translate3d(-18px,9px,0) rotateX(430deg) rotateY(390deg) rotateZ(245deg) scale(.96); }
+    74% { transform:translate3d(7px,-5px,0) rotateX(610deg) rotateY(560deg) rotateZ(390deg) scale(1.04); }
+    100% { transform:translate3d(0,0,0) rotateX(720deg) rotateY(720deg) rotateZ(540deg) scale(1); }
+  }
+  @keyframes die-settle { from { transform:scale(1.08) rotateZ(-5deg); } to { transform:scale(1) rotateZ(0); } }
+  @media(prefers-reduced-motion:reduce) { .die-visual.rolling svg { animation:none!important; } }
+</style>
 </head>
 <body>
+  <video class="portal-bg-video" autoplay muted loop playsinline preload="none" aria-hidden="true" poster="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1600&q=75">
+    <source src="https://videos.pexels.com/video-files/8399789/8399789-hd_1920_1080_30fps.mp4" type="video/mp4">
+    <source src="https://videos.pexels.com/video-files/8399789/8399789-uhd_3840_2160_30fps.mp4" type="video/mp4">
+  </video>
   <!-- CRT SCANLINES + VIGNETTE -->
   <div class="crt"></div>
   <div class="vignette"></div>
@@ -374,8 +420,8 @@
           <a href="Taverna.html"            class="btn-pixel">♨ TAVERNA</a>
           <a href="divindades.html"         class="btn-pixel">☷ HQ'S</a>
           <a href="ferreiro.html"           class="btn-pixel">⚒ FERREIRO</a>
-          <a href="visualizar_mapa.html"    class="btn-pixel">▣ MAPAS</a>
-          <a href="https://neblina793.github.io/MundoAbandonado/" class="btn-pixel">✦ MUNDO ABANDONADO<span class="new-badge">NOVO!</span></a>
+          <a href="visualizar_mapa.html"    class="btn-pixel">▣ MAPAS<span class="new-badge">NOVO!</span></a>
+          
           <a href="GPSMitologico.html"      class="btn-pixel ghost">⌖ GPS MITOLÓGICO</a>
           <a href="cardgame.html"      class="btn-pixel ghost">CARD GAME</a>
         </div>
@@ -397,7 +443,7 @@
         </article>
         <article class="card-pixel">
           <header>▼ ESTADO</header>
-          <p><b style="color:var(--gold)">TEMPORADA</b><br>Rebute da 1ª Temporada.</p>
+          <p><b style="color:var(--gold)">ESTADO ATUAL</b><br>Timeskip de 2 anos — uma nova era começa.</p>
         </article>
         <article class="card-pixel">
           <header>▼ MITOLOGIA</header>
@@ -612,7 +658,8 @@
           <button class="dice-btn"  data-sides="20"><span class="d-shape d20s">20</span><b>D20</b></button>
           <button class="dice-btn"  data-sides="100"><span class="d-shape d100">%</span><b>D100</b></button>
         </div>
-        <div class="roller">
+        <div class="roller" aria-live="polite">
+          <div id="die-visual" class="die-visual" aria-hidden="true"></div>
           <div id="roll-result" class="roll-result">--</div>
           <div id="roll-msg" class="roll-msg">aguardando rolagem...</div>
         </div>
@@ -667,7 +714,7 @@
             <p>Na noite mais longa do ano, os tambores de Dionísio ecoam pelos vinhedos sagrados, e o vinho corre como sangue divino pelas ruas enfeitadas com hera e uvas maduras. Três heróis são convocados por um chamado que não podem ignorar — um perfume doce e inebriante que carrega promessas e perigos em igual medida. Diz a lenda que, nesta noite, o véu entre mortais e o divino se afina, e aqueles que ousam dançar sob a lua do Solstício podem tanto receber bênçãos quanto atrair a fúria das Ménades. Que os deuses guiem seus dados, pois o vinho já foi derramado e o ritual está prestes a começar.</p>
             <span class="tag">ARCO: O SOLSTÍCIO DE DIONÍSIO · 18:00hs · GRUPO DE 3 HERÓIS</span>
           </div>
-          <span class="status open">▶ ABERTA</span>
+          <span class="status done">✔ CONCLUÍDA</span>
         </li>
         <li class="session">
           <span class="session-date">25<br><b>JUL</b></span>
@@ -685,7 +732,16 @@
             <p>Os portões marítimos de Creta recebem os heróis sob um céu carregado de gaivotas inquietas e um cheiro estranho de peixe podre que paira sobre o cais. Mercadores sussurram entre si, evitando os olhos dos recém-chegados, enquanto pescadores fitam o horizonte com o medo grudado no rosto. Nos últimos dias, corpos de peixes cobrem a maré baixa, e histórias de tentáculos negros, cascos partidos e uma tartaruga com cabeça de Hidra correm de taverna em taverna. Diz-se que o próprio Poseidon voltou seu olhar furioso para estas águas — e que poucos dos que ousaram cruzar a baía voltaram para contar a história. É neste porto amaldiçoado, entre redes rasgadas e sacerdotes que já discutem erguer uma estátua para aplacar o Senhor dos Oceanos, que a jornada dos heróis em Creta está prestes a começar.</p>
             <span class="tag">ARCO: A FÚRIA DE POSEIDON · 18:00hs · GRUPO DE 4 HERÓIS</span>
           </div>
-          <span class="status open">▶ ABERTA</span>
+          <span class="status done">✔ CONCLUÍDA</span>
+        </li>
+        <li class="session">
+          <span class="session-date">28<br><b>NOV</b></span>
+          <div class="session-body">
+            <h3>SESSÃO 08 · PRÓXIMA SESSÃO</h3>
+            <p>Os heróis se reencontram após o salto temporal de dois anos. O próximo capítulo da campanha começa aqui.</p>
+            <span class="tag">28/11/2026 · 18:00 · PRÓXIMA SESSÃO</span>
+          </div>
+          <span class="status soon">◆ AGENDADA</span>
         </li>
         <li class="session">
           <span class="session-date">??<br><b>???</b></span>
@@ -764,5 +820,101 @@
   </footer>
 
   <script src="script.js"></script>
+  
+<script id="animated-dice-engine">
+(function () {
+  const visual = document.getElementById('die-visual');
+  const result = document.getElementById('roll-result');
+  const message = document.getElementById('roll-msg');
+  const buttons = Array.from(document.querySelectorAll('.dice-btn'));
+  if (!visual || !result || !message || !buttons.length) return;
+  let finishTimer = null;
+  const colors = ['#3d5968','#8d6635','#354b59','#6e4938','#536a70','#8b713e'];
+  function polygon(points, i) {
+    return '<polygon class="die-facet" fill="' + colors[i % colors.length] + '" points="' + points + '"></polygon>';
+  }
+  function regularDie(faceCount, label) {
+    const cx=80, cy=70, rx=61, ry=57, pts=[];
+    for(let i=0;i<faceCount;i++){
+      const a=(-90 + i*360/faceCount)*Math.PI/180;
+      pts.push([cx+Math.cos(a)*rx,cy+Math.sin(a)*ry]);
+    }
+    const center=[cx,cy];
+    let faces='';
+    for(let i=0;i<faceCount;i++){
+      const p=[center,pts[i],pts[(i+1)%faceCount]].map(v=>v.map(n=>n.toFixed(1)).join(',')).join(' ');
+      faces+=polygon(p,i);
+    }
+    return '<svg viewBox="0 0 160 140" role="img" aria-label="'+label+' facetado">'+faces+
+      '<text class="die-mark" x="80" y="72">'+label+'</text></svg>';
+  }
+  function cube() {
+    return '<svg viewBox="0 0 160 140" role="img" aria-label="D6 em forma de cubo">'+
+      polygon('80,8 137,39 80,70 23,39',0)+
+      polygon('23,39 80,70 80,132 23,100',1)+
+      polygon('137,39 80,70 80,132 137,100',2)+
+      '<text class="die-mark" x="80" y="38">D6</text><text class="die-mark" x="49" y="88">6</text><text class="die-mark" x="108" y="88">3</text></svg>';
+  }
+  function octahedron() {
+    const v=[[80,5],[125,37],[150,70],[125,103],[80,135],[35,103],[10,70],[35,37],[80,70]];
+    const triangles=[[0,1,8],[1,2,8],[2,3,8],[3,4,8],[4,5,8],[5,6,8],[6,7,8],[7,0,8]];
+    return '<svg viewBox="0 0 160 140" role="img" aria-label="D8 em forma de octaedro">'+triangles.map((t,i)=>polygon(t.map(k=>v[k].join(',')).join(' '),i)).join('')+'<text class="die-mark" x="80" y="73">D8</text></svg>';
+  }
+  function renderDie(sides) {
+    if (sides===6) return cube();
+    if (sides===8) return octahedron();
+    if (sides===4) return regularDie(3,'D4');
+    if (sides===10) return regularDie(10,'D10');
+    if (sides===12) return regularDie(12,'D12');
+    if (sides===20) return regularDie(20,'D20');
+    return regularDie(10,'%');
+  }
+  function sound(freq,dur) { if (typeof window.playBlip==='function') window.playBlip(freq,dur); }
+  function finish(sides) {
+    const value=1+Math.floor(Math.random()*sides);
+    result.textContent=value;
+    visual.classList.remove('rolling');
+    visual.classList.add('settled');
+    result.classList.remove('rolling','crit','fumble');
+    if ((sides===20 && value===20) || (sides===100 && value===100) || (sides!==20 && sides!==100 && value===sides)) {
+      result.classList.add('crit');
+      message.textContent=sides===20?'★ ACERTO CRÍTICO! Os deuses sorriem.':sides===100?'★ 100! O destino é teu.':'★ MÁXIMO no D'+sides+'! '+value+'.';
+      sound(880,.3);
+    } else if ((sides===20 || sides===100) && value===1) {
+      result.classList.add('fumble');
+      message.textContent=sides===20?'✖ FALHA CRÍTICA! Cuidado com a Hidra...':'✖ 01! As Moiras te abandonaram.';
+      sound(110,.3);
+    } else {
+      message.textContent='D'+sides+' = '+value+' · rolagem concluída.';
+      sound(440,.14);
+    }
+  }
+  document.addEventListener('click',function(event){
+    const button=event.target.closest && event.target.closest('.dice-btn');
+    if(!button) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    const sides=Number(button.dataset.sides);
+    if(![4,6,8,10,12,20,100].includes(sides)) return;
+    if(finishTimer) clearTimeout(finishTimer);
+    buttons.forEach(b=>b.classList.toggle('selected',b===button));
+    result.classList.remove('crit','fumble');
+    result.textContent='…';
+    message.textContent='O D'+sides+' está rolando...';
+    visual.classList.remove('settled','rolling');
+    visual.innerHTML=renderDie(sides);
+    void visual.offsetWidth;
+    visual.classList.add('rolling');
+    sound(220,.05);
+    finishTimer=setTimeout(()=>finish(sides),1280);
+  },true);
+  const bg=document.querySelector('.portal-bg-video');
+  if(bg && (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+     (navigator.connection && navigator.connection.saveData))) {
+    bg.pause();
+  }
+})();
+</script>
 </body>
 </html>
